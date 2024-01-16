@@ -26,7 +26,7 @@ int Vertices::indicesLength() {
 void Vertices::setVerticesArr(float* arr, int len) {
     verticesLength_ = len;
     verticesArr_ = new float[len];
-    std::memcpy(verticesArr_, arr, sizeof(float) * 9);
+    std::memcpy(verticesArr_, arr, sizeof(float) * len);
 }
 
 void Vertices::setIndices(unsigned int* arr, int len){

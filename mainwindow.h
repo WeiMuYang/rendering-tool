@@ -2,10 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QMap>
-#include "data_type.h"
-#include "vertices.h"
-#include "shader.h"
+#include <QVector4D>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,12 +16,18 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void initAction();
-    void initVertices();
-    void initShaders();
+
+private slots:
+    void on_xSpinBox_valueChanged(double arg1);
+
+    void on_ySpinBox_valueChanged(double arg1);
+
+    void on_zSpinBox_valueChanged(double arg1);
+
+    void on_wSpinBox_valueChanged(double arg1);
 
 private:
     Ui::MainWindow *ui;
-    QMap<Module, Vertices> verticesMap_;
-    QMap<QString, Shader> shaderMap_;
+    QVector4D u_Color;
 };
 #endif // MAINWINDOW_H

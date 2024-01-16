@@ -15,7 +15,6 @@ public:
     int indicesLength();
     void setVerticesArr(float* arr, int len);
     void setIndices(unsigned int* arr, int len);
-
 signals:
 
 private:

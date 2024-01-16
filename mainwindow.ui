@@ -16,7 +16,113 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="Preview" name="PreviewWgt" native="true"/>
+     <widget class="QGroupBox" name="colorUniformBox">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>u_Color:</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>x：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="xSpinBox">
+         <property name="maximum">
+          <double>1.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.100000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>y：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="ySpinBox">
+         <property name="maximum">
+          <double>1.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.100000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>z：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="zSpinBox">
+         <property name="maximum">
+          <double>1.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.100000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>w：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="wSpinBox">
+         <property name="maximum">
+          <double>1.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.100000000000000</double>
+         </property>
+         <property name="value">
+          <double>1.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="Preview" name="PreviewWgt" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -39,6 +145,7 @@
     <addaction name="actionTriangle"/>
     <addaction name="actionRectangle"/>
     <addaction name="actionDoubleTriangle"/>
+    <addaction name="actionRectaCol"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -48,18 +155,27 @@
     <addaction name="actionLine"/>
     <addaction name="actionFill"/>
    </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>着色器</string>
+    </property>
+    <addaction name="actionBase"/>
+    <addaction name="actionBaseUniform"/>
+    <addaction name="actionBaseACol"/>
+   </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionTriangle">
    <property name="text">
-    <string>三角形</string>
+    <string>三角形(a_Pos)</string>
    </property>
   </action>
   <action name="actionRectangle">
    <property name="text">
-    <string>矩形</string>
+    <string>矩形(a_Pos)</string>
    </property>
   </action>
   <action name="actionDoubleTriangle">
@@ -80,6 +196,26 @@
   <action name="actionFill">
    <property name="text">
     <string>面</string>
+   </property>
+  </action>
+  <action name="actionBase">
+   <property name="text">
+    <string>基础</string>
+   </property>
+  </action>
+  <action name="actionBaseUniform">
+   <property name="text">
+    <string>带有Uniform</string>
+   </property>
+  </action>
+  <action name="actionBaseACol">
+   <property name="text">
+    <string>带有aColor</string>
+   </property>
+  </action>
+  <action name="actionRectaCol">
+   <property name="text">
+    <string>矩形(aPos,aCol)</string>
    </property>
   </action>
  </widget>

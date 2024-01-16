@@ -11,21 +11,15 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    modeling/rectangle.cpp \
-    modeling/triangle.cpp \
     preview.cpp \
     shader.cpp \
-    triangle.cpp \
     vertices.cpp
 
 HEADERS += \
     data_type.h \
     mainwindow.h \
-    modeling/rectangle.h \
-    modeling/triangle.h \
     preview.h \
     shader.h \
-    triangle.h \
     vertices.h
 
 FORMS += \
@@ -35,3 +29,11 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    shader/base.frag \
+    shader/base.vert \
+    shader/base_aCol.frag \
+    shader/base_aCol.vert \
+    shader/base_uniform.frag \
+    shader/base_uniform.vert

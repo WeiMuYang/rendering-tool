@@ -1,11 +1,80 @@
 #include "preview.h"
+// 顶点的数据：没有解析的数据是没有意义的
+// 内存中的数据，关键是如何将内存中的数据给显卡
+float verticesRectPos[VERTICES_RECT_SIZE] = {
+    0.5f, 0.5f, 0.0f,   // 右上角
+    0.5f, -0.5f, 0.0f,  // 右下角
+    -0.5f, -0.5f, 0.0f, // 左下角
+    -0.5f, 0.5f, 0.0f   // 左上角
+};
+
+float verticesRectPosCol[] = {
+    // positions        // colors
+    0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,	// top right
+    0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,	// bottom right
+    -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 	// bottom left
+    -0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.5f,	// top left
+    };
+
+unsigned int indicesRect[INDICES_RECT_SIZE] = {
+    // 注意索引从0开始!
+    // 此例的索引(0,1,2,3)就是顶点数组vertices的下标，
+    // 这样可以由下标代表顶点组合成矩形
+    0, 1, 3, // 第一个三角形
+    1, 2, 3  // 第二个三角形
+};
+
+// 顶点的数据：没有解析的数据是没有意义的
+// 内存中的数据，关键是如何将内存中的数据给显卡
+float verDataTri[9] = {
+    // 所有的值是在[-1, 1]之间的
+    -0.5f, -0.5f, 0.0f,
+    0.5f, -0.5f, 0.0f,
+    0.0f,  0.5f, 0.0f
+};
 
 Preview::Preview(QWidget *parent)
     : QOpenGLWidget{parent}
 {
-    currentModelType_ = Module::isRectangle;
+    currentModelType_ = Module::isRectanglePosCol;
     drawMode_ = DrawMode::isFillMode;
-    pShader_ = new Shader(this);
+    currrentShaderPro_ = ShaderProgram::BaseWithAColor;
+    initVertices();
+}
+
+Preview::~Preview()
+{
+    // 非initializeGL()、resizeGL()和paintGL()中调用，如果有修改的话，需要获取状态机，
+    // 再调用OpenGL的接口
+    makeCurrent();
+    glDeleteBuffers(1,&VBO_id);
+    glDeleteBuffers(1,&EBO_id);
+    glDeleteVertexArrays(1,&VAO_id);
+    doneCurrent();
+}
+
+void Preview::initShaderProgram() {
+    bool success;
+    shaderProgramBase.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/base.vert");
+    shaderProgramBase.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/base.frag");
+    success = shaderProgramBase.link();
+    if(!success) {
+        qDebug()<<"ERR:"<<shaderProgramBase.log();
+    }
+
+    shaderProgramUniform.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/base_uniform.vert");
+    shaderProgramUniform.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/base_uniform.frag");
+    success = shaderProgramUniform.link();
+    if(!success) {
+        qDebug()<<"ERR:"<<shaderProgramUniform.log();
+    }
+
+    shaderProgramAColor.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/base_aCol.vert");
+    shaderProgramAColor.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/base_aCol.frag");
+    success = shaderProgramAColor.link();
+    if(!success) {
+        qDebug()<<"ERR:"<<shaderProgramAColor.log();
+    }
 }
 
 void Preview::initializeGL()
@@ -21,89 +90,111 @@ void Preview::initializeGL()
 
     // 2.绑定VAO，开始记录属性相关
     glBindVertexArray(VAO_id);
-
     // 3.绑定VBO(一定是先绑定VAO再绑定VBO)
     glBindBuffer(GL_ARRAY_BUFFER, VBO_id);
+
+    // EBO ： 次序不能在VBO上面，有绑定次序的 ???????????????
+    glGenBuffers(1, &EBO_id);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_id);
 
     // 4.添加顶点数据
     vertexData2VBO();
 
-    // 5.解析数据
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
-    // 6.开启location = 0的属性解析
-    glEnableVertexAttribArray(0);
-
-    // 7.解绑VBO和VAO
+    // 5.解绑VBO和VAO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
     // -----------------------------end---------------------------
-
-    // ------------------------二、着色器相关------------------------
-    // 创建顶点着色器
-    unsigned int vertexShader_id = glCreateShader(GL_VERTEX_SHADER);
-    char* vertexShaderSource = pShader_->getVertexShader();
-    glShaderSource(vertexShader_id, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader_id);
-
-    // 创建片段着色器
-    unsigned int fragmentShader_id = glCreateShader(GL_FRAGMENT_SHADER);
-    char* fragmentShaderSource = pShader_->getFragmentShader();
-    glShaderSource(fragmentShader_id, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader_id);
-    // -----------------------------end---------------------------
-
-    // -----------------------三、着色器程序相关----------------------
-    shaderProgram_id = glCreateProgram();
-    glAttachShader(shaderProgram_id, vertexShader_id);
-    glAttachShader(shaderProgram_id, fragmentShader_id);
-    glLinkProgram(shaderProgram_id);
-    // -----------------------------end---------------------------
-
-    // 删除顶点着色器和片段着色器(不能将着色器程序也给delete掉)
-    glDeleteShader(vertexShader_id);
-    glDeleteShader(fragmentShader_id);
+    // 6. 初始化着色器
+    initShaderProgram();
 }
 
 void Preview::resizeGL(int w, int h)
 {
-
+    Q_UNUSED(w)
+    Q_UNUSED(h)
 }
 
 void Preview::paintGL()
 {
-    // 2.initializeOpenGLFunctions();执行后，下面的函数才有执行的意义
+    //    initializeOpenGLFunctions(); // 执行后，下面的函数才有执行的意义
     // 设置窗口颜色，背景颜色
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // 【画一个图形时需要说使用哪个着色器】
-    glUseProgram(shaderProgram_id);
+    switch (currrentShaderPro_) {
+    case ShaderProgram::Base:
+        // 【画一个图形时需要说使用哪个着色器】
+        shaderProgramBase.bind();
+        break;
+    case ShaderProgram::BaseWithUniform:
+        // 【画一个图形时需要说使用哪个着色器】
+        shaderProgramUniform.bind();
+        break;
+    case ShaderProgram::BaseWithAColor:
+        // 【画一个图形时需要说使用哪个着色器】
+        shaderProgramAColor.bind();
+        break;
+    default:
+//        shaderProgramBase.bind();
+        break;
+    }
+
     // 使用时还需要再绑定一次
     glBindVertexArray(VAO_id);
-
     draw();
 }
 
-
 void Preview::vertexData2VBO() {
+    // 初始化调用的，不用添加 makeCurrent
     switch (currentModelType_) {
     case Module::isTriangle:
     {
-        // 1.把数据放进VBO
+        // 1.把数据放进 VBO
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * triangle_.verticeLength() , triangle_.getVertices(), GL_STATIC_DRAW);
+        // 2.解析数据  a_Position
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        // 3.开启location = 0的属性解析
+        glEnableVertexAttribArray(0);
     }
         break;
-    case Module::isRectangle:
+    case Module::isRectanglePos:
     {
         // 1.把数据放进VBO
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * rectangle_.verticeLength() , rectangle_.getVertices(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * rectanglePos_.verticeLength() , rectanglePos_.getVertices(), GL_STATIC_DRAW);
         // 2.配置EBO相关
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_id);
-        int* indices = rectangle_.getIndices();
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * rectangle_.indicesLength(), indices, GL_STATIC_DRAW);
+        unsigned int* indices = rectanglePos_.getIndices();
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * rectanglePos_.indicesLength(), indices, GL_STATIC_DRAW);
+        // 3.解析数据  a_Position
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        // 4.开启location = 0的属性解析
+        glEnableVertexAttribArray(0);
     }
+        break;
+    case Module::isRectanglePosCol:
+    {
+        // 1.把数据放进VBO
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * rectanglePosCol_.verticeLength() , rectanglePosCol_.getVertices(), GL_STATIC_DRAW);
+
+        // 6.配置EBO相关
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_id);
+        unsigned int* indices = rectanglePosCol_.getIndices();
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * rectanglePosCol_.indicesLength(), indices, GL_STATIC_DRAW);
+
+        // 2.解析数据 a_Postion
+        //  GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+        // 3.开启VAO管理的第一个属性值 Position 开启location = 0的属性解析
+        glEnableVertexAttribArray(0);
+        // 4.解析数据 a_Color
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+        // 5.开启VAO管理的第二个属性值 Color 解析   开启location = 1的属性解析
+        glEnableVertexAttribArray(1);
+
+        }
         break;
     default:
         break;
@@ -112,6 +203,7 @@ void Preview::vertexData2VBO() {
 
 // 开始绘制
 void Preview::draw() {
+    makeCurrent();
     // 模式：点  线  面
     switch (drawMode_) {
     case DrawMode::isPointMode:
@@ -133,12 +225,54 @@ void Preview::draw() {
     case Module::isTriangle:
         glDrawArrays(GL_TRIANGLES, 0, 3);
         break;
-    case Module::isRectangle:
+    case Module::isRectanglePos:
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        break;
+    case Module::isRectanglePosCol:
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
         break;
     default:
         break;
     }
+    doneCurrent();
 }
+
+void Preview::initVertices() {
+    // 三角形
+    triangle_.setVerticesArr(verDataTri, 9);
+    // 矩形 Pos
+    rectanglePos_.setVerticesArr(verticesRectPos, VERTICES_RECT_SIZE);
+    rectanglePos_.setIndices(indicesRect, INDICES_RECT_SIZE);
+    // 矩形 Pos Col
+    rectanglePosCol_.setVerticesArr(verticesRectPosCol, 24);
+    rectanglePosCol_.setIndices(indicesRect, INDICES_RECT_SIZE);
+}
+
+void Preview::setModuleType(Module type) {
+    currentModelType_ = type;
+    update();
+}
+
+void Preview::setDrawMode(DrawMode mode) {
+    drawMode_ = mode;
+    update();
+}
+
+void Preview::setUniform(char* uniformName, QVector4D color) {
+    makeCurrent();
+    shaderProgramUniform.setUniformValue(uniformName ,color.x(), color.y(), color.z(), color.w());
+    doneCurrent();
+    update();
+}
+
+void Preview::setShaderProgram(ShaderProgram shader) {
+    currrentShaderPro_ = shader;
+    update();
+}
+
+void Preview::ModidyVAO(Module module) {
+
+}
+
 
 

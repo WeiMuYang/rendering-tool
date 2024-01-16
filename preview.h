@@ -6,11 +6,11 @@
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions_3_3_Core>
 
-#include "modeling/triangle.h"
-#include "modeling/rectangle.h"
 #include "shader.h"
-#include "data_type.h"
+#include "vertices.h"
 #include <QVector>
+#include "data_type.h"
+
 
 // 2.继承相关类
 class Preview : public QOpenGLWidget, QOpenGLFunctions_3_3_Core
@@ -18,7 +18,7 @@ class Preview : public QOpenGLWidget, QOpenGLFunctions_3_3_Core
     Q_OBJECT
 public:
     explicit Preview(QWidget *parent = nullptr);
-
+    ~Preview();
     // 可以绘制多个
     unsigned int VAO_id,VBO_id,EBO_id;
     // 着色器变量
@@ -27,18 +27,19 @@ public:
     void vertexData2VBO();
     void draw();
 
-    void setModuleType(Module type) {
-        currentModelType_ = type;
-    }
+    void setModuleType(Module type);
 
-    void setDrawMode(DrawMode mode) {
-        drawMode_ = mode;
-    }
+    void setDrawMode(DrawMode mode);
 
-    void setShader(Shader* s) {
-        pShader_ = s;
-    }
+    void initVertices();
 
+    void setUniform(char* uniformName, QVector4D color);
+
+    void setShaderProgram(ShaderProgram sh);
+
+    void initShaderProgram();
+
+    void ModidyVAO(Module module);
 protected:
     // 3.重载三个相关虚函数, 无需调用，会自动的调用执行
     // 1）initializeGL() : 设置OpenGL资源和状态，最先调用且调用一次。
@@ -53,11 +54,16 @@ protected:
 signals:
 
 private:
-    Modeling::Triangle triangle_;
-    Modeling::Rectangle rectangle_;
-    Shader* pShader_{nullptr};
     Module currentModelType_;
     DrawMode drawMode_;
+    Vertices triangle_; // 创建一个 triangle 对象
+    Vertices rectanglePos_; // 创建一个 rectanglePos_ 对象
+    Vertices rectanglePosCol_; // 创建一个 rectanglePosCol_ 对象
+    QOpenGLShaderProgram shaderProgramUniform;
+    QOpenGLShaderProgram shaderProgramBase;
+    QOpenGLShaderProgram shaderProgramAColor;
+
+    ShaderProgram currrentShaderPro_; // Base, BaseWithUniform
 };
 
 #endif // PREVIEW_H
