@@ -8,6 +8,7 @@
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
+#include <QOpenGLTexture>
 
 #include "shader.h"
 #include "vertices.h"
@@ -40,11 +41,11 @@ public:
 
     void setUniform(char* uniformName, QVector4D color);
 
-    void setShaderProgram(ShaderProgram sh);
-
     void initShaderProgram();
+    void initTexture();
 
-    void setVAO();
+    void setModelVAO();
+    void setAxisVAO();
 protected:
     // 3.重载三个相关虚函数, 无需调用，会自动的调用执行
     // 1）initializeGL() : 设置OpenGL资源和状态，最先调用且调用一次。
@@ -61,22 +62,22 @@ signals:
 private:
     Module currentModelType_;
     DrawMode drawMode_;
-    Vertices triangle_; // 创建一个 triangle 对象
-    Vertices rectanglePos_; // 创建一个 rectanglePos_ 对象
-    Vertices rectanglePosCol_; // 创建一个 rectanglePosCol_ 对象
+    Vertices triangle_;         // 创建一个 triangle 对象
+    Vertices rectanglePos_;     // 创建一个 rectanglePos_ 对象
+    Vertices rectanglePosCol_;  // 创建一个 rectanglePosCol_ 对象
+    Vertices rectanglePosColTex_;
     Vertices axisX_;
     Vertices axisY_;
     Vertices axisZ_;
-    QOpenGLVertexArrayObject vao2;
-    QOpenGLBuffer vbo2;
 
+    QOpenGLShaderProgram shaderProRectUniform;
+    QOpenGLShaderProgram shaderProTri;
+    QOpenGLShaderProgram shaderProRectACol;
+    QOpenGLShaderProgram shaderProAxis;
+    QOpenGLShaderProgram shaderProRectTex;
 
-    QOpenGLShaderProgram shaderProgramUniform;
-    QOpenGLShaderProgram shaderProgramBase;
-    QOpenGLShaderProgram shaderProgramAColor;
-    QOpenGLShaderProgram shaderProgramAxis;
-
-    ShaderProgram currrentShaderPro_; // Base, BaseWithUniform
+    QOpenGLTexture * textureWall;
+    QOpenGLTexture * textureSmile;
 };
 
 #endif // PREVIEW_H

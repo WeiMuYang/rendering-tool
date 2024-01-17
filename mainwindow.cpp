@@ -38,31 +38,24 @@ void MainWindow::initAction() {
     // 使用的顶点信息
     connect(ui->actionTriangle, &QAction::triggered, [this]() {
         ui->PreviewWgt->setModuleType(Module::isTriangle);
+        ui->colorUniformBox->hide();
     });
 
     connect(ui->actionRectangle, &QAction::triggered, [this]() {
-        ui->PreviewWgt->setModuleType(Module::isRectanglePos);
+        ui->PreviewWgt->setModuleType(Module::isRectPos);
+        ui->colorUniformBox->show();
     });
 
     connect(ui->actionRectaCol, &QAction::triggered, [this]() {
-        ui->PreviewWgt->setModuleType(Module::isRectanglePosCol);
-    });
-
-
-    // 使用的着色器
-    connect(ui->actionBase, &QAction::triggered, [this]() {
-        ui->PreviewWgt->setShaderProgram(ShaderProgram::Base);
+        ui->PreviewWgt->setModuleType(Module::isRectPosCol);
         ui->colorUniformBox->hide();
     });
-    connect(ui->actionBaseUniform, &QAction::triggered, [this]() {
-        ui->PreviewWgt->setShaderProgram(ShaderProgram::BaseWithUniform);
-        ui->colorUniformBox->show();
-    });
-    connect(ui->actionBaseACol, &QAction::triggered, [this]() {
-        ui->PreviewWgt->setShaderProgram(ShaderProgram::BaseWithAColor);
-//        ui->PreviewWgt->setModuleType(Module::isRectanglePosCol);
+
+    connect(ui->actionRectTex, &QAction::triggered, [this]() {
+        ui->PreviewWgt->setModuleType(Module::isRectPosColTex);
         ui->colorUniformBox->hide();
     });
+
 }
 
 void MainWindow::on_xSpinBox_valueChanged(double arg1)

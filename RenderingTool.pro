@@ -38,4 +38,15 @@ DISTFILES += \
     shader/base_aCol.frag \
     shader/base_aCol.vert \
     shader/base_uniform.frag \
-    shader/base_uniform.vert
+    shader/base_uniform.vert \
+    shader/rect_aCol.frag \
+    shader/rect_aCol.vert \
+    shader/rect_tex.frag \
+    shader/rect_tex.vert \
+    shader/rect_uniform.frag \
+    shader/rect_uniform.vert \
+    shader/triangle.frag \
+    shader/triangle.vert
+
+RESOURCES += \
+    img.qrc

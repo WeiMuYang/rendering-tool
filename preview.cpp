@@ -1,20 +1,25 @@
 #include "preview.h"
-float verticesAxisY[] = {
-    0.0f, 1.0f, 0.0f,   // y+1
-    0.0f, -1.0f, 0.0f,  // y-1
+
+float verticesTex[] = {
+    // positions      | //  colors      | // texture coords
+     0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
+     0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
+    -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
+    -0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left
 };
 
 float verticesAxisX[] = {
     1.0f, 0.0f, 0.0f,   // x+1
     -1.0f, 0.0f, 0.0f,  // x-1
 };
-
+float verticesAxisY[] = {
+    0.0f, 1.0f, 0.0f,   // y+1
+    0.0f, -1.0f, 0.0f,  // y-1
+};
 float verticesAxisZ[] = {
     0.0f, 0.0f, 1.0f,   // z+1
     0.0f, 0.0f, -1.0f,  // z-1
 };
-
-
 
 // 顶点的数据：没有解析的数据是没有意义的
 // 内存中的数据，关键是如何将内存中的数据给显卡
@@ -55,7 +60,7 @@ Preview::Preview(QWidget *parent)
 {
     currentModelType_ = Module::isTriangle;
     drawMode_ = DrawMode::isFillMode;
-    currrentShaderPro_ = ShaderProgram::Base;
+//    currrentShaderPro_ = ShaderProgram::Base;
     initVertices();
 }
 
@@ -72,33 +77,69 @@ Preview::~Preview()
 
 void Preview::initShaderProgram() {
     bool success;
-    shaderProgramBase.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/base.vert");
-    shaderProgramBase.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/base.frag");
-    success = shaderProgramBase.link();
+
+    shaderProAxis.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/axis.vert");
+    shaderProAxis.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/axis.frag");
+    success = shaderProAxis.link();
     if(!success) {
-        qDebug()<<"ERR:"<<shaderProgramBase.log();
+        qDebug()<<"ERR:"<<shaderProAxis.log();
     }
 
-    shaderProgramUniform.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/base_uniform.vert");
-    shaderProgramUniform.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/base_uniform.frag");
-    success = shaderProgramUniform.link();
+    shaderProTri.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/triangle.vert");
+    shaderProTri.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/triangle.frag");
+    success = shaderProTri.link();
     if(!success) {
-        qDebug()<<"ERR:"<<shaderProgramUniform.log();
+        qDebug()<<"ERR:"<<shaderProTri.log();
     }
 
-    shaderProgramAColor.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/base_aCol.vert");
-    shaderProgramAColor.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/base_aCol.frag");
-    success = shaderProgramAColor.link();
+    shaderProRectUniform.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/rect_uniform.vert");
+    shaderProRectUniform.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/rect_uniform.frag");
+    success = shaderProRectUniform.link();
     if(!success) {
-        qDebug()<<"ERR:"<<shaderProgramAColor.log();
+        qDebug()<<"ERR:"<<shaderProRectUniform.log();
     }
 
-    shaderProgramAxis.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/axis.vert");
-    shaderProgramAxis.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/axis.frag");
-    success = shaderProgramAxis.link();
+    shaderProRectACol.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/rect_aCol.vert");
+    shaderProRectACol.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/rect_aCol.frag");
+    success = shaderProRectACol.link();
     if(!success) {
-        qDebug()<<"ERR:"<<shaderProgramAxis.log();
+        qDebug()<<"ERR:"<<shaderProRectACol.log();
     }
+
+//    shaderProRectACol.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/rect_tex.vert");
+//    shaderProRectACol.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/rect_tex.frag");
+//    success = shaderProRectACol.link();
+//    if(!success) {
+//        qDebug()<<"ERR:"<<shaderProRectACol.log();
+//    }
+}
+
+void Preview::initTexture() {
+    textureWall=new QOpenGLTexture(QImage(":/images/images/wall.jpg").mirrored());
+    textureSmile=new QOpenGLTexture(QImage(":/images/images/awesomeface.png").mirrored());
+}
+
+void Preview::setAxisVAO() {
+    // 绘制坐标轴 X
+    glBindVertexArray(VAO_id[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_id[0]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * axisX_.verticeLength() , axisX_.getVertices(),GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // 绘制坐标轴 Y
+    glBindVertexArray(VAO_id[1]);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_id[1]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * axisY_.verticeLength() , axisY_.getVertices(),GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // 绘制坐标轴 Z
+    glBindVertexArray(VAO_id[2]);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_id[2]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * axisZ_.verticeLength() , axisZ_.getVertices(),GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
 }
 
 void Preview::initializeGL()
@@ -112,51 +153,12 @@ void Preview::initializeGL()
     //   顶点数组对象(Vertex Array Object, VAO)可以像顶点缓冲对象那样被绑定，任何随后的顶点属性调用都会存储在这个VAO中。
     glGenVertexArrays(4, VAO_id);
     glGenBuffers(4, VBO_id);
-
-    {
-        // 绘制坐标轴 X
-        glBindVertexArray(VAO_id[0]);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO_id[0]);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * axisX_.verticeLength() , axisX_.getVertices(),GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
-
-        // 绘制坐标轴 Y
-        glBindVertexArray(VAO_id[1]);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO_id[1]);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * axisY_.verticeLength() , axisY_.getVertices(),GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
-
-        // 绘制坐标轴 Z
-        glBindVertexArray(VAO_id[2]);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO_id[2]);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * axisZ_.verticeLength() , axisZ_.getVertices(),GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
-
-    }
-
-    {   // 模型的VAO
-        // 2.绑定VAO，开始记录属性相关
-        glBindVertexArray(VAO_id[3]);
-        // 3.绑定VBO(一定是先绑定VAO再绑定VBO)
-        glBindBuffer(GL_ARRAY_BUFFER, VBO_id[3]);
-
-        // EBO ： 次序不能在VBO上面，有绑定次序的 ???????????????
-        glGenBuffers(1, &EBO_id);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_id);
-
-        // 4.添加顶点数据
-        vertexData2VBO();
-
-        // 5.解绑VBO和VAO
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-    }
-    // -----------------------------end---------------------------
-
+    setAxisVAO();
+    setModelVAO();
+    // 2. shader
     initShaderProgram();
+    // 3. texture
+    initTexture();
 }
 
 void Preview::resizeGL(int w, int h)
@@ -166,8 +168,6 @@ void Preview::resizeGL(int w, int h)
     Q_UNUSED(h)
 }
 
-
-
 void Preview::paintGL()
 {
     qDebug() << "paintGL" ;
@@ -175,7 +175,6 @@ void Preview::paintGL()
     // 设置窗口颜色，背景颜色
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-
     drawAxis();
     drawModule();
 }
@@ -191,9 +190,11 @@ void Preview::vertexData2VBO() {
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         // 3.开启location = 0的属性解析
         glEnableVertexAttribArray(0);
+
+
     }
         break;
-    case Module::isRectanglePos:
+    case Module::isRectPos:
     {
         // 1.把数据放进VBO
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * rectanglePos_.verticeLength() , rectanglePos_.getVertices(), GL_STATIC_DRAW);
@@ -208,7 +209,7 @@ void Preview::vertexData2VBO() {
         glEnableVertexAttribArray(0);
     }
         break;
-    case Module::isRectanglePosCol:
+    case Module::isRectPosCol:
     {
         // 1.把数据放进VBO
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * rectanglePosCol_.verticeLength() , rectanglePosCol_.getVertices(), GL_STATIC_DRAW);
@@ -237,7 +238,7 @@ void Preview::vertexData2VBO() {
 }
 
 void Preview::drawAxis() {
-    shaderProgramAxis.bind();
+    shaderProAxis.bind();
     glBindVertexArray(VAO_id[0]);
     glDrawArrays(GL_LINES, 0, 2);
     glBindVertexArray(VAO_id[1]);
@@ -248,28 +249,8 @@ void Preview::drawAxis() {
 
 // 开始绘制
 void Preview::drawModule() {
-
-    switch (currrentShaderPro_) {
-    case ShaderProgram::Base:
-        // 【画一个图形时需要说使用哪个着色器】
-        shaderProgramBase.bind();
-        break;
-    case ShaderProgram::BaseWithUniform:
-        // 【画一个图形时需要说使用哪个着色器】
-        shaderProgramUniform.bind();
-        break;
-    case ShaderProgram::BaseWithAColor:
-        // 【画一个图形时需要说使用哪个着色器】
-        shaderProgramAColor.bind();
-        break;
-    default:
-        shaderProgramBase.bind();
-        break;
-    }
     // 使用时还需要再绑定一次
     glBindVertexArray(VAO_id[3]);
-
-//    makeCurrent();  可能导致
     // 模式：点  线  面
     switch (drawMode_) {
     case DrawMode::isPointMode:
@@ -289,18 +270,20 @@ void Preview::drawModule() {
     // 形状： 三角形，矩形
     switch (currentModelType_) {
     case Module::isTriangle:
+        shaderProTri.bind();
         glDrawArrays(GL_TRIANGLES, 0, 3);
         break;
-    case Module::isRectanglePos:
+    case Module::isRectPos:
+        shaderProRectUniform.bind();
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         break;
-    case Module::isRectanglePosCol:
+    case Module::isRectPosCol:
+        shaderProRectACol.bind();
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
         break;
     default:
         break;
     }
-//    doneCurrent();
 }
 
 void Preview::initVertices() {
@@ -316,13 +299,17 @@ void Preview::initVertices() {
     // 矩形 Pos Col
     rectanglePosCol_.setVerticesArr(verticesRectPosCol, 24);
     rectanglePosCol_.setIndices(indicesRect, INDICES_RECT_SIZE);
-
+    // 矩形 Pos Col Tex
+    rectanglePosColTex_.setVerticesArr(verticesTex, 4 * ( 3 + 3 + 2) );
+    rectanglePosCol_.setIndices(indicesRect, INDICES_RECT_SIZE);
 }
 
 void Preview::setModuleType(Module type) {
     currentModelType_ = type;
-    setVAO();
+    makeCurrent();
+    setModelVAO();
     update();
+    doneCurrent();
 }
 
 void Preview::setDrawMode(DrawMode mode) {
@@ -332,21 +319,12 @@ void Preview::setDrawMode(DrawMode mode) {
 
 void Preview::setUniform(char* uniformName, QVector4D color) {
     makeCurrent();
-    shaderProgramUniform.setUniformValue(uniformName ,color.x(), color.y(), color.z(), color.w());
+    shaderProRectUniform.setUniformValue(uniformName ,color.x(), color.y(), color.z(), color.w());
+    update();
     doneCurrent();
-    update();
 }
 
-void Preview::setShaderProgram(ShaderProgram shader) {
-    currrentShaderPro_ = shader;
-    update();
-}
-
-void Preview::setVAO() {
-    makeCurrent();
-    glGenVertexArrays(4, VAO_id);
-    glGenBuffers(4, VBO_id);
-
+void Preview::setModelVAO() {
     // 2.绑定VAO，开始记录属性相关
     glBindVertexArray(VAO_id[3]);
     // 3.绑定VBO(一定是先绑定VAO再绑定VBO)
@@ -363,10 +341,6 @@ void Preview::setVAO() {
 
     // 5.解绑VBO和VAO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    //    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-    doneCurrent();
 }
-
-
 

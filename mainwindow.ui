@@ -144,8 +144,8 @@
     </property>
     <addaction name="actionTriangle"/>
     <addaction name="actionRectangle"/>
-    <addaction name="actionDoubleTriangle"/>
     <addaction name="actionRectaCol"/>
+    <addaction name="actionRectTex"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -159,9 +159,6 @@
     <property name="title">
      <string>着色器</string>
     </property>
-    <addaction name="actionBase"/>
-    <addaction name="actionBaseUniform"/>
-    <addaction name="actionBaseACol"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -178,9 +175,9 @@
     <string>矩形(a_Pos)</string>
    </property>
   </action>
-  <action name="actionDoubleTriangle">
+  <action name="actionRectTex">
    <property name="text">
-    <string>两个着色器</string>
+    <string>矩形(a_Pos,a_Col,a_Tex)</string>
    </property>
   </action>
   <action name="actionPoint">

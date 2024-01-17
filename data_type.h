@@ -7,17 +7,12 @@
 
 
 enum Module {
-    isTriangle = 0, isRectanglePos = 1, isDoubleTriangle = 2,isRectanglePosCol = 3
+    isTriangle , isRectPos , isRectPosCol , isRectPosColTex
 };
-
 
 // 点模式 线框模式 填充模式
 enum DrawMode {
     isPointMode = 0, isLineMode = 1, isFillMode = 2
-};
-
-enum ShaderProgram {
-    Base, BaseWithUniform, BaseWithAColor
 };
 
 
