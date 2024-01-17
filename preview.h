@@ -5,6 +5,9 @@
 // 1.引入相关库
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions_3_3_Core>
+#include <QOpenGLVertexArrayObject>
+#include <QOpenGLBuffer>
+#include <QOpenGLShaderProgram>
 
 #include "shader.h"
 #include "vertices.h"
@@ -20,12 +23,14 @@ public:
     explicit Preview(QWidget *parent = nullptr);
     ~Preview();
     // 可以绘制多个
-    unsigned int VAO_id,VBO_id,EBO_id;
-    // 着色器变量
-    unsigned int shaderProgram_id;
+    unsigned int VAO_id[4],VBO_id[4],EBO_id;
+
+    // 坐标轴
+    unsigned int VAO_Axis,VBO_Axis;
 
     void vertexData2VBO();
-    void draw();
+    void drawModule();
+    void drawAxis();
 
     void setModuleType(Module type);
 
@@ -39,7 +44,7 @@ public:
 
     void initShaderProgram();
 
-    void ModidyVAO(Module module);
+    void setVAO();
 protected:
     // 3.重载三个相关虚函数, 无需调用，会自动的调用执行
     // 1）initializeGL() : 设置OpenGL资源和状态，最先调用且调用一次。
@@ -59,9 +64,17 @@ private:
     Vertices triangle_; // 创建一个 triangle 对象
     Vertices rectanglePos_; // 创建一个 rectanglePos_ 对象
     Vertices rectanglePosCol_; // 创建一个 rectanglePosCol_ 对象
+    Vertices axisX_;
+    Vertices axisY_;
+    Vertices axisZ_;
+    QOpenGLVertexArrayObject vao2;
+    QOpenGLBuffer vbo2;
+
+
     QOpenGLShaderProgram shaderProgramUniform;
     QOpenGLShaderProgram shaderProgramBase;
     QOpenGLShaderProgram shaderProgramAColor;
+    QOpenGLShaderProgram shaderProgramAxis;
 
     ShaderProgram currrentShaderPro_; // Base, BaseWithUniform
 };

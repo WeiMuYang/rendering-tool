@@ -7,7 +7,7 @@
 
 
 enum Module {
-    isTriangle = 0, isRectanglePos = 1, isRectanglePosCol = 2
+    isTriangle = 0, isRectanglePos = 1, isDoubleTriangle = 2,isRectanglePosCol = 3
 };
 
 

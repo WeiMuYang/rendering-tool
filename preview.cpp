@@ -1,4 +1,21 @@
 #include "preview.h"
+float verticesAxisY[] = {
+    0.0f, 1.0f, 0.0f,   // y+1
+    0.0f, -1.0f, 0.0f,  // y-1
+};
+
+float verticesAxisX[] = {
+    1.0f, 0.0f, 0.0f,   // x+1
+    -1.0f, 0.0f, 0.0f,  // x-1
+};
+
+float verticesAxisZ[] = {
+    0.0f, 0.0f, 1.0f,   // z+1
+    0.0f, 0.0f, -1.0f,  // z-1
+};
+
+
+
 // 顶点的数据：没有解析的数据是没有意义的
 // 内存中的数据，关键是如何将内存中的数据给显卡
 float verticesRectPos[VERTICES_RECT_SIZE] = {
@@ -14,7 +31,7 @@ float verticesRectPosCol[] = {
     0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,	// bottom right
     -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 	// bottom left
     -0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.5f,	// top left
-    };
+};
 
 unsigned int indicesRect[INDICES_RECT_SIZE] = {
     // 注意索引从0开始!
@@ -36,9 +53,9 @@ float verDataTri[9] = {
 Preview::Preview(QWidget *parent)
     : QOpenGLWidget{parent}
 {
-    currentModelType_ = Module::isRectanglePosCol;
+    currentModelType_ = Module::isTriangle;
     drawMode_ = DrawMode::isFillMode;
-    currrentShaderPro_ = ShaderProgram::BaseWithAColor;
+    currrentShaderPro_ = ShaderProgram::Base;
     initVertices();
 }
 
@@ -47,9 +64,9 @@ Preview::~Preview()
     // 非initializeGL()、resizeGL()和paintGL()中调用，如果有修改的话，需要获取状态机，
     // 再调用OpenGL的接口
     makeCurrent();
-    glDeleteBuffers(1,&VBO_id);
+    glDeleteBuffers(1,VBO_id);
     glDeleteBuffers(1,&EBO_id);
-    glDeleteVertexArrays(1,&VAO_id);
+    glDeleteVertexArrays(1,VAO_id);
     doneCurrent();
 }
 
@@ -75,74 +92,92 @@ void Preview::initShaderProgram() {
     if(!success) {
         qDebug()<<"ERR:"<<shaderProgramAColor.log();
     }
+
+    shaderProgramAxis.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/axis.vert");
+    shaderProgramAxis.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/axis.frag");
+    success = shaderProgramAxis.link();
+    if(!success) {
+        qDebug()<<"ERR:"<<shaderProgramAxis.log();
+    }
 }
 
 void Preview::initializeGL()
 {
+    qDebug() << "initializeGL" ;
     // 1.初始化OpenGL函数，否则OpenGL函数不可调用
     initializeOpenGLFunctions();
     // ------------------------一、VAO和VBO------------------------
     // 1.创建VAO和VBO对象，并赋予ID（使用Gen）
     // 1.创建一个VBO对象(OpenGL中) 顶点缓冲对象(Vertex Buffer Objects, VBO)
     //   顶点数组对象(Vertex Array Object, VAO)可以像顶点缓冲对象那样被绑定，任何随后的顶点属性调用都会存储在这个VAO中。
-    glGenVertexArrays(1, &VAO_id);
-    glGenBuffers(1, &VBO_id);
+    glGenVertexArrays(4, VAO_id);
+    glGenBuffers(4, VBO_id);
 
-    // 2.绑定VAO，开始记录属性相关
-    glBindVertexArray(VAO_id);
-    // 3.绑定VBO(一定是先绑定VAO再绑定VBO)
-    glBindBuffer(GL_ARRAY_BUFFER, VBO_id);
+    {
+        // 绘制坐标轴 X
+        glBindVertexArray(VAO_id[0]);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO_id[0]);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * axisX_.verticeLength() , axisX_.getVertices(),GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
 
-    // EBO ： 次序不能在VBO上面，有绑定次序的 ???????????????
-    glGenBuffers(1, &EBO_id);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_id);
+        // 绘制坐标轴 Y
+        glBindVertexArray(VAO_id[1]);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO_id[1]);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * axisY_.verticeLength() , axisY_.getVertices(),GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
 
-    // 4.添加顶点数据
-    vertexData2VBO();
+        // 绘制坐标轴 Z
+        glBindVertexArray(VAO_id[2]);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO_id[2]);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * axisZ_.verticeLength() , axisZ_.getVertices(),GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
 
-    // 5.解绑VBO和VAO
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    }
 
+    {   // 模型的VAO
+        // 2.绑定VAO，开始记录属性相关
+        glBindVertexArray(VAO_id[3]);
+        // 3.绑定VBO(一定是先绑定VAO再绑定VBO)
+        glBindBuffer(GL_ARRAY_BUFFER, VBO_id[3]);
+
+        // EBO ： 次序不能在VBO上面，有绑定次序的 ???????????????
+        glGenBuffers(1, &EBO_id);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_id);
+
+        // 4.添加顶点数据
+        vertexData2VBO();
+
+        // 5.解绑VBO和VAO
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    }
     // -----------------------------end---------------------------
-    // 6. 初始化着色器
+
     initShaderProgram();
 }
 
 void Preview::resizeGL(int w, int h)
 {
+    qDebug() << "resizeGL" ;
     Q_UNUSED(w)
     Q_UNUSED(h)
 }
 
+
+
 void Preview::paintGL()
 {
+    qDebug() << "paintGL" ;
     //    initializeOpenGLFunctions(); // 执行后，下面的函数才有执行的意义
     // 设置窗口颜色，背景颜色
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    switch (currrentShaderPro_) {
-    case ShaderProgram::Base:
-        // 【画一个图形时需要说使用哪个着色器】
-        shaderProgramBase.bind();
-        break;
-    case ShaderProgram::BaseWithUniform:
-        // 【画一个图形时需要说使用哪个着色器】
-        shaderProgramUniform.bind();
-        break;
-    case ShaderProgram::BaseWithAColor:
-        // 【画一个图形时需要说使用哪个着色器】
-        shaderProgramAColor.bind();
-        break;
-    default:
-//        shaderProgramBase.bind();
-        break;
-    }
-
-    // 使用时还需要再绑定一次
-    glBindVertexArray(VAO_id);
-    draw();
+    drawAxis();
+    drawModule();
 }
 
 void Preview::vertexData2VBO() {
@@ -194,16 +229,47 @@ void Preview::vertexData2VBO() {
         // 5.开启VAO管理的第二个属性值 Color 解析   开启location = 1的属性解析
         glEnableVertexAttribArray(1);
 
-        }
+    }
         break;
     default:
         break;
     }
 }
 
+void Preview::drawAxis() {
+    shaderProgramAxis.bind();
+    glBindVertexArray(VAO_id[0]);
+    glDrawArrays(GL_LINES, 0, 2);
+    glBindVertexArray(VAO_id[1]);
+    glDrawArrays(GL_LINES, 0, 2);
+    glBindVertexArray(VAO_id[2]);
+    glDrawArrays(GL_LINES, 0, 2);
+}
+
 // 开始绘制
-void Preview::draw() {
-    makeCurrent();
+void Preview::drawModule() {
+
+    switch (currrentShaderPro_) {
+    case ShaderProgram::Base:
+        // 【画一个图形时需要说使用哪个着色器】
+        shaderProgramBase.bind();
+        break;
+    case ShaderProgram::BaseWithUniform:
+        // 【画一个图形时需要说使用哪个着色器】
+        shaderProgramUniform.bind();
+        break;
+    case ShaderProgram::BaseWithAColor:
+        // 【画一个图形时需要说使用哪个着色器】
+        shaderProgramAColor.bind();
+        break;
+    default:
+        shaderProgramBase.bind();
+        break;
+    }
+    // 使用时还需要再绑定一次
+    glBindVertexArray(VAO_id[3]);
+
+//    makeCurrent();  可能导致
     // 模式：点  线  面
     switch (drawMode_) {
     case DrawMode::isPointMode:
@@ -234,10 +300,14 @@ void Preview::draw() {
     default:
         break;
     }
-    doneCurrent();
+//    doneCurrent();
 }
 
 void Preview::initVertices() {
+    // 坐标轴
+    axisX_.setVerticesArr(verticesAxisX, 6);
+    axisY_.setVerticesArr(verticesAxisY, 6);
+    axisZ_.setVerticesArr(verticesAxisZ, 6);
     // 三角形
     triangle_.setVerticesArr(verDataTri, 9);
     // 矩形 Pos
@@ -246,10 +316,12 @@ void Preview::initVertices() {
     // 矩形 Pos Col
     rectanglePosCol_.setVerticesArr(verticesRectPosCol, 24);
     rectanglePosCol_.setIndices(indicesRect, INDICES_RECT_SIZE);
+
 }
 
 void Preview::setModuleType(Module type) {
     currentModelType_ = type;
+    setVAO();
     update();
 }
 
@@ -270,8 +342,30 @@ void Preview::setShaderProgram(ShaderProgram shader) {
     update();
 }
 
-void Preview::ModidyVAO(Module module) {
+void Preview::setVAO() {
+    makeCurrent();
+    glGenVertexArrays(4, VAO_id);
+    glGenBuffers(4, VBO_id);
 
+    // 2.绑定VAO，开始记录属性相关
+    glBindVertexArray(VAO_id[3]);
+    // 3.绑定VBO(一定是先绑定VAO再绑定VBO)
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_id[3]);
+
+    // EBO ： 次序不能在VBO上面，有绑定次序的 ???????????????
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);  // 需要解绑
+    glGenBuffers(1, &EBO_id);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_id);
+
+    // 4.添加顶点数据
+    vertexData2VBO();
+
+    // 5.解绑VBO和VAO
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+    doneCurrent();
 }
 
 

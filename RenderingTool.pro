@@ -31,6 +31,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
+    shader/axis.frag \
+    shader/axis.vert \
     shader/base.frag \
     shader/base.vert \
     shader/base_aCol.frag \

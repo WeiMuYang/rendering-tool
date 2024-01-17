@@ -60,7 +60,7 @@ void MainWindow::initAction() {
     });
     connect(ui->actionBaseACol, &QAction::triggered, [this]() {
         ui->PreviewWgt->setShaderProgram(ShaderProgram::BaseWithAColor);
-        ui->PreviewWgt->setModuleType(Module::isRectanglePosCol);
+//        ui->PreviewWgt->setModuleType(Module::isRectanglePosCol);
         ui->colorUniformBox->hide();
     });
 }
