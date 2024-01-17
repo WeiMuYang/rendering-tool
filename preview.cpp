@@ -1,11 +1,11 @@
 #include "preview.h"
 
 float verticesTex[] = {
-    // positions      | //  colors      | // texture coords
-     0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
-     0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
+    // positions      // colors        // texture coords
+    0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
+    0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
     -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
-    -0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left
+    -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f // top left
 };
 
 float verticesAxisX[] = {
@@ -60,7 +60,7 @@ Preview::Preview(QWidget *parent)
 {
     currentModelType_ = Module::isTriangle;
     drawMode_ = DrawMode::isFillMode;
-//    currrentShaderPro_ = ShaderProgram::Base;
+    //    currrentShaderPro_ = ShaderProgram::Base;
     initVertices();
 }
 
@@ -106,17 +106,17 @@ void Preview::initShaderProgram() {
         qDebug()<<"ERR:"<<shaderProRectACol.log();
     }
 
-//    shaderProRectACol.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/rect_tex.vert");
-//    shaderProRectACol.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/rect_tex.frag");
-//    success = shaderProRectACol.link();
-//    if(!success) {
-//        qDebug()<<"ERR:"<<shaderProRectACol.log();
-//    }
+    shaderProRectTex.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/rect_tex.vert");
+    shaderProRectTex.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/rect_tex.frag");
+    success = shaderProRectTex.link();
+    if(!success) {
+        qDebug()<<"ERR:"<<shaderProRectTex.log();
+    }
 }
 
 void Preview::initTexture() {
-    textureWall=new QOpenGLTexture(QImage(":/images/images/wall.jpg").mirrored());
-    textureSmile=new QOpenGLTexture(QImage(":/images/images/awesomeface.png").mirrored());
+    textureWall=new QOpenGLTexture(QImage(":/img/wall.jpg").mirrored());
+    textureSmile=new QOpenGLTexture(QImage(":/img/awesomeface.png").mirrored());
 }
 
 void Preview::setAxisVAO() {
@@ -232,6 +232,30 @@ void Preview::vertexData2VBO() {
 
     }
         break;
+    case Module::isRectPosColTex:
+    {
+        // 1.把数据放进VBO
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * rectanglePosColTex_.verticeLength() , rectanglePosColTex_.getVertices(), GL_STATIC_DRAW);
+
+        // 6.配置EBO相关
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_id);
+        unsigned int* indices = rectanglePosColTex_.getIndices();
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * rectanglePosColTex_.indicesLength(), indices, GL_STATIC_DRAW);
+
+        // 2.解析数据 a_Postion
+        //  GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+        // 3.开启VAO管理的第一个属性值 Position 开启location = 0的属性解析
+        glEnableVertexAttribArray(0);
+        // 4.解析数据 a_Color
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+        // 5.解析数据 a_Texture
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+        glEnableVertexAttribArray(2);
+    }
+        break;
     default:
         break;
     }
@@ -281,6 +305,14 @@ void Preview::drawModule() {
         shaderProRectACol.bind();
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
         break;
+    case Module::isRectPosColTex:
+        shaderProRectTex.bind();
+        shaderProRectTex.setUniformValue("textureWall",0);
+        shaderProRectTex.setUniformValue("textureSmile",1);
+        textureWall->bind(0);
+        textureSmile->bind(1);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+        break;
     default:
         break;
     }
@@ -300,8 +332,8 @@ void Preview::initVertices() {
     rectanglePosCol_.setVerticesArr(verticesRectPosCol, 24);
     rectanglePosCol_.setIndices(indicesRect, INDICES_RECT_SIZE);
     // 矩形 Pos Col Tex
-    rectanglePosColTex_.setVerticesArr(verticesTex, 4 * ( 3 + 3 + 2) );
-    rectanglePosCol_.setIndices(indicesRect, INDICES_RECT_SIZE);
+    rectanglePosColTex_.setVerticesArr(verticesTex, 32);
+    rectanglePosColTex_.setIndices(indicesRect, INDICES_RECT_SIZE);
 }
 
 void Preview::setModuleType(Module type) {
