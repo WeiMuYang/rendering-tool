@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>828</width>
+    <height>672</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -115,6 +115,92 @@
      </widget>
     </item>
     <item>
+     <widget class="QGroupBox" name="TexTureBox">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>Texture:</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Wrap</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="texWrapComBox"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="texFilterBox">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>Filter:</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>MIN</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="texMinComBox"/>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>MAG</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="texMagComBox"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
      <widget class="Preview" name="PreviewWgt" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -131,7 +217,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>828</width>
      <height>21</height>
     </rect>
    </property>
@@ -142,10 +228,18 @@
     <property name="title">
      <string>模型</string>
     </property>
+    <widget class="QMenu" name="menu_a_Pos_a_Col_a_Tex">
+     <property name="title">
+      <string>矩形(a_Pos,a_Col,a_Tex)</string>
+     </property>
+     <addaction name="actionTextureShader"/>
+     <addaction name="actionTextureWrap"/>
+    </widget>
     <addaction name="actionTriangle"/>
     <addaction name="actionRectangle"/>
     <addaction name="actionRectaCol"/>
-    <addaction name="actionRectTex"/>
+    <addaction name="menu_a_Pos_a_Col_a_Tex"/>
+    <addaction name="actionTextureFilter"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -175,11 +269,6 @@
     <string>矩形(a_Pos)</string>
    </property>
   </action>
-  <action name="actionRectTex">
-   <property name="text">
-    <string>矩形(a_Pos,a_Col,a_Tex)</string>
-   </property>
-  </action>
   <action name="actionPoint">
    <property name="text">
     <string>点</string>
@@ -195,24 +284,24 @@
     <string>面</string>
    </property>
   </action>
-  <action name="actionBase">
-   <property name="text">
-    <string>基础</string>
-   </property>
-  </action>
-  <action name="actionBaseUniform">
-   <property name="text">
-    <string>带有Uniform</string>
-   </property>
-  </action>
-  <action name="actionBaseACol">
-   <property name="text">
-    <string>带有aColor</string>
-   </property>
-  </action>
   <action name="actionRectaCol">
    <property name="text">
     <string>矩形(aPos,aCol)</string>
+   </property>
+  </action>
+  <action name="actionTextureShader">
+   <property name="text">
+    <string>普通纹理shader</string>
+   </property>
+  </action>
+  <action name="actionTextureWrap">
+   <property name="text">
+    <string>纹理滤波</string>
+   </property>
+  </action>
+  <action name="actionTextureFilter">
+   <property name="text">
+    <string>矩形纹理滤波</string>
    </property>
   </action>
  </widget>

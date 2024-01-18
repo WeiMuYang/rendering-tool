@@ -43,6 +43,8 @@ DISTFILES += \
     shader/rect_aCol.vert \
     shader/rect_tex.frag \
     shader/rect_tex.vert \
+    shader/rect_tex_filter.frag \
+    shader/rect_tex_filter.vert \
     shader/rect_uniform.frag \
     shader/rect_uniform.vert \
     shader/triangle.frag \

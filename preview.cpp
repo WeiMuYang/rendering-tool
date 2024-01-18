@@ -1,11 +1,19 @@
 #include "preview.h"
 
+float verticesTexFilter[] = {
+    // positions      // colors        // texture coords
+    0.9f, 0.9f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
+    0.9f, -0.9f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
+    -0.9f, -0.9f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
+    -0.9f, 0.9f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f // top left
+};
+
 float verticesTex[] = {
     // positions      // colors        // texture coords
-    0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
-    0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
-    -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
-    -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f // top left
+    0.9f, 0.9f, 0.0f, 1.0f, 0.0f, 0.0f, 2.0f, 2.0f, // top right
+    0.9f, -0.9f, 0.0f, 0.0f, 1.0f, 0.0f, 2.0f, -1.0f, // bottom right
+    -0.9f, -0.9f, 0.0f, 0.0f, 0.0f, 1.0f, -1.0f, -1.0f, // bottom left
+    -0.9f, 0.9f, 0.0f, 1.0f, 1.0f, 0.0f, -1.0f, 2.0f // top left
 };
 
 float verticesAxisX[] = {
@@ -112,11 +120,20 @@ void Preview::initShaderProgram() {
     if(!success) {
         qDebug()<<"ERR:"<<shaderProRectTex.log();
     }
+
+    shaderProRectTexFilter.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/rect_tex_filter.vert");
+    shaderProRectTexFilter.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/rect_tex_filter.frag");
+    success = shaderProRectTexFilter.link();
+    if(!success) {
+        qDebug()<<"ERR:"<<shaderProRectTexFilter.log();
+    }
 }
 
 void Preview::initTexture() {
-    textureWall=new QOpenGLTexture(QImage(":/img/wall.jpg").mirrored());
-    textureSmile=new QOpenGLTexture(QImage(":/img/awesomeface.png").mirrored());
+    // CPU端准备好3个纹理，分别对应编号：0 1 2。纹理至少可以支持16个
+    textureWall = new QOpenGLTexture(QImage(":/img/wall.jpg").mirrored());
+    textureSmile = new QOpenGLTexture(QImage(":/img/awesomeface.png").mirrored());
+    textureSmall = new QOpenGLTexture(QImage(":/img/small.png").mirrored());
 }
 
 void Preview::setAxisVAO() {
@@ -256,6 +273,54 @@ void Preview::vertexData2VBO() {
         glEnableVertexAttribArray(2);
     }
         break;
+    case Module::isRectPosColTexWrap: // 和isRectPosColTex的顶点数据一致
+    {
+        // 1.把数据放进VBO
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * rectanglePosColTex_.verticeLength() , rectanglePosColTex_.getVertices(), GL_STATIC_DRAW);
+
+        // 6.配置EBO相关
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_id);
+        unsigned int* indices = rectanglePosColTex_.getIndices();
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * rectanglePosColTex_.indicesLength(), indices, GL_STATIC_DRAW);
+
+        // 2.解析数据 a_Postion
+        //  GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+        // 3.开启VAO管理的第一个属性值 Position 开启location = 0的属性解析
+        glEnableVertexAttribArray(0);
+        // 4.解析数据 a_Color
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+        // 5.解析数据 a_Texture
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+        glEnableVertexAttribArray(2);
+    }
+        break;
+    case Module::isRectPosColTexFilter:
+    {
+        // 1.把数据放进VBO
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * rectanglePosColTexFilter_.verticeLength() , rectanglePosColTexFilter_.getVertices(), GL_STATIC_DRAW);
+
+        // 6.配置EBO相关
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_id);
+        unsigned int* indices = rectanglePosColTexFilter_.getIndices();
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * rectanglePosColTexFilter_.indicesLength(), indices, GL_STATIC_DRAW);
+
+        // 2.解析数据 a_Postion
+        //  GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+        // 3.开启VAO管理的第一个属性值 Position 开启location = 0的属性解析
+        glEnableVertexAttribArray(0);
+        // 4.解析数据 a_Color
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+        // 5.解析数据 a_Texture
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+        glEnableVertexAttribArray(2);
+    }
+        break;
     default:
         break;
     }
@@ -270,6 +335,160 @@ void Preview::drawAxis() {
     glBindVertexArray(VAO_id[2]);
     glDrawArrays(GL_LINES, 0, 2);
 }
+
+void Preview::setWrap(TexWrap texWrap) {
+    texWrap_ = texWrap;
+    update();
+}
+
+void Preview::setMinFilter(TexFilter TexF) {
+    texMinFilter_ = TexF;
+    update();
+}
+
+void Preview::setMagFilter(TexFilter TexF) {
+    texMagFilter_ = TexF;
+    update();
+}
+
+void Preview::texTureWrap() {
+    float borderColor[] = {0.5f, 0.0f, 0.4f, 1.0f};
+    // REPEAT,        MIRRORED_REPEAT, CLAMP_TO_BORDER, CLAMP_TO_EDGE
+    // GL_REPEAT  GL_MIRRORED_REPEAT  GL_CLAMP_TO_BORDER  GL_CLAMP_TO_EDGE
+    switch (texWrap_) {
+    case REPEAT:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        break;
+    case MIRRORED_REPEAT:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+        break;
+    case CLAMP_TO_BORDER:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        // 边界填充
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+        break;
+    case CLAMP_TO_EDGE:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        break;
+    default:
+        break;
+    }
+}
+
+void Preview::texTureMinFilter() {
+    switch (texMinFilter_) {
+    case TexFilter::LINEAR:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        break;
+    case TexFilter::NEAREST:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        break;
+    case TexFilter::NEAREST_MIPMAP_NEAREST:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+        break;
+    case TexFilter::LINEAR_MIPMAP_NEAREST:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+        break;
+    case TexFilter:: NEAREST_MIPMAP_LINEAR:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+        break;
+    case TexFilter:: LINEAR_MIPMAP_LINEAR:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        break;
+    default:
+        break;
+    }
+}
+
+void Preview::texTureMagFilter()
+{
+    // NEAREST,  LINEAR
+    switch (texMagFilter_) {
+    case TexFilter::LINEAR:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        break;
+    case TexFilter::NEAREST:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        break;
+    case TexFilter::NEAREST_MIPMAP_NEAREST:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+        break;
+    case TexFilter::LINEAR_MIPMAP_NEAREST:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+        break;
+    case TexFilter:: NEAREST_MIPMAP_LINEAR:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+        break;
+    case TexFilter:: LINEAR_MIPMAP_LINEAR:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        break;
+    default:
+        break;
+    }
+}
+
+void Preview::setTexture(Module module) {
+    switch (module) {
+    case Module::isRectPosColTex:
+        shaderProRectTex.bind();
+        // 不设置的话编号的，只有0有纹理，最后加载的起作用
+        // 设置shader中的uniform对应的编号，将纹理可以在shader中区分开
+        shaderProRectTex.setUniformValue("textureWall",0);
+        shaderProRectTex.setUniformValue("textureSmile",1);
+        // 绑定纹理 0 1，shader中可以使用到0 和 1纹理了
+        textureWall->bind(0);
+        textureSmile->bind(1);
+        break;
+
+    case Module::isRectPosColTexWrap:
+    {
+        shaderProRectTexFilter.bind();
+        // GPU端：将shader中的纹理进行区分，同时可以分别对应创建的3个纹理
+        shaderProRectTexFilter.setUniformValue("textureWall",0);
+        shaderProRectTexFilter.setUniformValue("textureSmile",1);
+        shaderProRectTexFilter.setUniformValue("textureSmall",2);
+        // 设置textureSmall的纹理
+        textureSmall->generateMipMaps();
+        textureSmall->bind(2);
+        // 设置 Wrap
+        texTureWrap();
+        // GPU中只有textureSmall起作用
+        textureWall->bind(0);
+        textureSmile->bind(1);
+        textureSmall->bind(2);
+        break;
+    }
+    case Module::isRectPosColTexFilter:
+    {
+        shaderProRectTexFilter.bind();
+        // GPU端：将shader中的纹理进行区分，同时可以分别对应创建的3个纹理
+        shaderProRectTexFilter.setUniformValue("textureWall",0);
+        shaderProRectTexFilter.setUniformValue("textureSmile",1);
+        shaderProRectTexFilter.setUniformValue("textureSmall",2);
+        // 设置textureSmall的纹理
+        textureSmall->generateMipMaps();
+        textureSmall->bind(2);
+        // 设置 Wrap
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        // 设置 Filter
+        texTureMinFilter();
+        texTureMagFilter();
+        // GPU中只有textureSmall起作用
+        textureWall->bind(0);
+        textureSmile->bind(1);
+        textureSmall->bind(2);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 
 // 开始绘制
 void Preview::drawModule() {
@@ -306,11 +525,15 @@ void Preview::drawModule() {
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
         break;
     case Module::isRectPosColTex:
-        shaderProRectTex.bind();
-        shaderProRectTex.setUniformValue("textureWall",0);
-        shaderProRectTex.setUniformValue("textureSmile",1);
-        textureWall->bind(0);
-        textureSmile->bind(1);
+        setTexture(Module::isRectPosColTex);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+        break;
+    case Module::isRectPosColTexWrap:
+        setTexture(Module::isRectPosColTexWrap);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+        break;
+    case Module::isRectPosColTexFilter:
+        setTexture(Module::isRectPosColTexFilter);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
         break;
     default:
@@ -334,6 +557,10 @@ void Preview::initVertices() {
     // 矩形 Pos Col Tex
     rectanglePosColTex_.setVerticesArr(verticesTex, 32);
     rectanglePosColTex_.setIndices(indicesRect, INDICES_RECT_SIZE);
+
+    // 矩形 Pos Col Tex
+    rectanglePosColTexFilter_.setVerticesArr(verticesTexFilter, 32);
+    rectanglePosColTexFilter_.setIndices(indicesRect, INDICES_RECT_SIZE);
 }
 
 void Preview::setModuleType(Module type) {

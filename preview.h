@@ -10,7 +10,6 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 
-#include "shader.h"
 #include "vertices.h"
 #include <QVector>
 #include "data_type.h"
@@ -32,10 +31,13 @@ public:
     void vertexData2VBO();
     void drawModule();
     void drawAxis();
+    void setTexture(Module module);
 
     void setModuleType(Module type);
 
     void setDrawMode(DrawMode mode);
+
+    void setWrap(TexWrap texWrap);
 
     void initVertices();
 
@@ -46,6 +48,13 @@ public:
 
     void setModelVAO();
     void setAxisVAO();
+
+    void texTureWrap();
+    void texTureMinFilter();
+    void texTureMagFilter();
+
+    void setMinFilter(TexFilter TexF);
+    void setMagFilter(TexFilter TexF);
 protected:
     // 3.重载三个相关虚函数, 无需调用，会自动的调用执行
     // 1）initializeGL() : 设置OpenGL资源和状态，最先调用且调用一次。
@@ -66,6 +75,7 @@ private:
     Vertices rectanglePos_;     // 创建一个 rectanglePos_ 对象
     Vertices rectanglePosCol_;  // 创建一个 rectanglePosCol_ 对象
     Vertices rectanglePosColTex_;
+    Vertices rectanglePosColTexFilter_;
     Vertices axisX_;
     Vertices axisY_;
     Vertices axisZ_;
@@ -75,9 +85,15 @@ private:
     QOpenGLShaderProgram shaderProRectACol;
     QOpenGLShaderProgram shaderProAxis;
     QOpenGLShaderProgram shaderProRectTex;
+    QOpenGLShaderProgram shaderProRectTexFilter;
 
-    QOpenGLTexture * textureWall;
-    QOpenGLTexture * textureSmile;
+    QOpenGLTexture* textureWall;
+    QOpenGLTexture* textureSmile;
+    QOpenGLTexture* textureSmall;
+
+    TexWrap texWrap_;
+    TexFilter texMinFilter_;
+    TexFilter texMagFilter_;
 };
 
 #endif // PREVIEW_H
