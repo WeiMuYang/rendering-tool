@@ -106,6 +106,8 @@ void Preview::initShaderProgram() {
     if(!success) {
         qDebug()<<"ERR:"<<shaderProRectUniform.log();
     }
+    shaderProRectUniform.bind();
+    shaderProRectUniform.setUniformValue("u_Color" ,0, 0, 0, 1);
 
     shaderProRectACol.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/rect_aCol.vert");
     shaderProRectACol.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/rect_aCol.frag");
@@ -116,10 +118,17 @@ void Preview::initShaderProgram() {
 
     shaderProRectTex.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/rect_tex.vert");
     shaderProRectTex.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/rect_tex.frag");
+
     success = shaderProRectTex.link();
     if(!success) {
         qDebug()<<"ERR:"<<shaderProRectTex.log();
     }
+    shaderProRectTex.bind();
+    shaderProRectTex.setUniformValue("ratio", 0.5f);
+    // 不设置的话编号的，只有0有纹理，最后加载的起作用
+    // 设置shader中的uniform对应的编号，将纹理可以在shader中区分开
+    shaderProRectTex.setUniformValue("textureWall",0);
+    shaderProRectTex.setUniformValue("textureSmile",1);
 
     shaderProRectTexFilter.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/rect_tex_filter.vert");
     shaderProRectTexFilter.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/rect_tex_filter.frag");
@@ -130,6 +139,12 @@ void Preview::initShaderProgram() {
 }
 
 void Preview::initTexture() {
+
+    // 打开blend, 让透明起作用
+    glEnable(GL_BLEND);
+    // alpha通道， 1 - alpha通道
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     // CPU端准备好3个纹理，分别对应编号：0 1 2。纹理至少可以支持16个
     textureWall = new QOpenGLTexture(QImage(":/img/wall.jpg").mirrored());
     textureSmile = new QOpenGLTexture(QImage(":/img/awesomeface.png").mirrored());
@@ -435,10 +450,7 @@ void Preview::setTexture(Module module) {
     switch (module) {
     case Module::isRectPosColTex:
         shaderProRectTex.bind();
-        // 不设置的话编号的，只有0有纹理，最后加载的起作用
-        // 设置shader中的uniform对应的编号，将纹理可以在shader中区分开
-        shaderProRectTex.setUniformValue("textureWall",0);
-        shaderProRectTex.setUniformValue("textureSmile",1);
+
         // 绑定纹理 0 1，shader中可以使用到0 和 1纹理了
         textureWall->bind(0);
         textureSmile->bind(1);
@@ -576,12 +588,20 @@ void Preview::setDrawMode(DrawMode mode) {
     update();
 }
 
-void Preview::setUniform(char* uniformName, QVector4D color) {
+void Preview::set_shaderProRectUniform_Uniform(char* uniformName, QVector4D color) {
     makeCurrent();
     shaderProRectUniform.setUniformValue(uniformName ,color.x(), color.y(), color.z(), color.w());
     update();
     doneCurrent();
 }
+
+void Preview::set_shaderProRectTex_Uniform(char* uniformName, float value) {
+    makeCurrent();
+    shaderProRectTex.setUniformValue(uniformName , value);
+    update();
+    doneCurrent();
+}
+
 
 void Preview::setModelVAO() {
     // 2.绑定VAO，开始记录属性相关

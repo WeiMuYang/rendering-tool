@@ -33,6 +33,8 @@ private slots:
     void setMinComBoxSlot(QString name);
 
     void setMagComBoxSlot(QString name);
+    void on_texMixSpinBox_valueChanged(double arg1);
+
 private:
     Ui::MainWindow *ui;
     QVector4D u_Color;

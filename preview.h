@@ -41,7 +41,8 @@ public:
 
     void initVertices();
 
-    void setUniform(char* uniformName, QVector4D color);
+    void set_shaderProRectUniform_Uniform(char* uniformName, QVector4D color);
+    void set_shaderProRectTex_Uniform(char* uniformName, float value);
 
     void initShaderProgram();
     void initTexture();
@@ -71,11 +72,11 @@ signals:
 private:
     Module currentModelType_;
     DrawMode drawMode_;
-    Vertices triangle_;         // 创建一个 triangle 对象
-    Vertices rectanglePos_;     // 创建一个 rectanglePos_ 对象
-    Vertices rectanglePosCol_;  // 创建一个 rectanglePosCol_ 对象
-    Vertices rectanglePosColTex_;
-    Vertices rectanglePosColTexFilter_;
+    Vertices triangle_;         // 创建一个 triangle 对象           →   shaderProTri
+    Vertices rectanglePos_;     // 创建一个 rectanglePos_ 对象      →   shaderProRectUniform
+    Vertices rectanglePosCol_;  // 创建一个 rectanglePosCol_ 对象   →   shaderProRectACol
+    Vertices rectanglePosColTex_; //                              →   shaderProRectTex
+    Vertices rectanglePosColTexFilter_;                        // →   shaderProRectTexFilter
     Vertices axisX_;
     Vertices axisY_;
     Vertices axisZ_;

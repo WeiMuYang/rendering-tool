@@ -14,9 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     u_Color.setY(ui->ySpinBox->value());
     u_Color.setZ(ui->zSpinBox->value());
     u_Color.setW(ui->wSpinBox->value());
-    ui->colorUniformBox->hide();
 
-    ui->TexTureBox->hide();
     // REPEAT, MIRRORED_REPEAT, CLAMP_TO_BORDER, CLAMP_TO_EDGE
     QStringList wrapList;
     wrapList << "REPEAT" << "MIRRORED_REPEAT" << "CLAMP_TO_BORDER" << "CLAMP_TO_EDGE";
@@ -24,21 +22,22 @@ MainWindow::MainWindow(QWidget *parent)
     ui->texWrapComBox->setCurrentText("REPEAT");
     connect(ui->texWrapComBox, &QComboBox::currentTextChanged, this, &MainWindow::setWrapComBoxSlot);
 
-    ui->texFilterBox->hide();
     //   NEAREST,  LINEAR,
     QStringList filterMagList;
     filterMagList << "NEAREST" << "LINEAR" << "NEAREST_MIPMAP_NEAREST" << "NEAREST_MIPMAP_NEAREST" << "NEAREST_MIPMAP_LINEAR"
                   << "LINEAR_MIPMAP_LINEAR";
     ui->texMagComBox->addItems(filterMagList);
     connect(ui->texMagComBox, &QComboBox::currentTextChanged, this, &MainWindow::setMinComBoxSlot);
-    ui->texMagComBox->setCurrentText("NEAREST");
+    ui->texMagComBox->setCurrentText("LINEAR");
     //  NEAREST_MIPMAP_NEAREST, LINEAR_MIPMAP_NEAREST , NEAREST_MIPMAP_LINEAR , LINEAR_MIPMAP_LINEAR
     QStringList filterMinList;
     filterMinList << "NEAREST" << "LINEAR" << "NEAREST_MIPMAP_NEAREST" << "NEAREST_MIPMAP_NEAREST" << "NEAREST_MIPMAP_LINEAR"
                   << "LINEAR_MIPMAP_LINEAR";
     ui->texMinComBox->addItems(filterMinList);
     connect(ui->texMinComBox, &QComboBox::currentTextChanged, this, &MainWindow::setMagComBoxSlot);
-    ui->texMinComBox->setCurrentText("NEAREST");
+    ui->texMinComBox->setCurrentText("LINEAR");
+
+    setShowByModuleType(Module::isTriangle);
 }
 
 MainWindow::~MainWindow()
@@ -52,17 +51,20 @@ void MainWindow::setShowByModuleType(Module module) {
     }else {
         ui->colorUniformBox->hide();
     }
-
     if(module == Module::isRectPosColTexWrap) {
         ui->TexTureBox->show();
     }else {
         ui->TexTureBox->hide();
     }
-
     if(module == Module::isRectPosColTexFilter) {
         ui->texFilterBox->show();
     }else {
         ui->texFilterBox->hide();
+    }
+    if(module == Module::isRectPosColTex) {
+        ui->TexTureMixBox->show();
+    }else {
+        ui->TexTureMixBox->hide();
     }
 }
 
@@ -99,6 +101,7 @@ void MainWindow::initAction() {
     connect(ui->actionTextureShader, &QAction::triggered, [this]() {
         ui->PreviewWgt->setModuleType(Module::isRectPosColTex);
         setShowByModuleType(Module::isRectPosColTex);
+
     });
 
     connect(ui->actionTextureWrap, &QAction::triggered, [this]() {
@@ -115,7 +118,7 @@ void MainWindow::on_xSpinBox_valueChanged(double arg1)
 {
     u_Color.setX(arg1);
     char name[] = "u_Color";
-    ui->PreviewWgt->setUniform(name, u_Color);
+    ui->PreviewWgt->set_shaderProRectUniform_Uniform(name, u_Color);
 }
 
 
@@ -123,7 +126,7 @@ void MainWindow::on_ySpinBox_valueChanged(double arg1)
 {
     u_Color.setY(arg1);
     char name[] = "u_Color";
-    ui->PreviewWgt->setUniform(name, u_Color);
+    ui->PreviewWgt->set_shaderProRectUniform_Uniform(name, u_Color);
 }
 
 
@@ -131,14 +134,14 @@ void MainWindow::on_zSpinBox_valueChanged(double arg1)
 {
     u_Color.setZ(arg1);
     char name[] = "u_Color";
-    ui->PreviewWgt->setUniform(name, u_Color);
+    ui->PreviewWgt->set_shaderProRectUniform_Uniform(name, u_Color);
 }
 
 void MainWindow::on_wSpinBox_valueChanged(double arg1)
 {
     u_Color.setW(arg1);
     char name[] = "u_Color";
-    ui->PreviewWgt->setUniform(name, u_Color);
+    ui->PreviewWgt->set_shaderProRectUniform_Uniform(name, u_Color);
 }
 
 void MainWindow::setWrapComBoxSlot(QString name)
@@ -186,5 +189,12 @@ void MainWindow::setMagComBoxSlot(QString name) {
     }else {
         ui->PreviewWgt->setMagFilter(TexFilter::LINEAR_MIPMAP_LINEAR);
     }
+}
+
+
+void MainWindow::on_texMixSpinBox_valueChanged(double arg1)
+{
+    char name[] = "ratio";
+    ui->PreviewWgt->set_shaderProRectTex_Uniform(name, arg1);
 }
 
