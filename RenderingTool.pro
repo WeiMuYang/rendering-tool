@@ -47,6 +47,8 @@ DISTFILES += \
     shader/rect_tex_filter.vert \
     shader/rect_uniform.frag \
     shader/rect_uniform.vert \
+    shader/tran_rota_scale.frag \
+    shader/tran_rota_scale.vert \
     shader/triangle.frag \
     shader/triangle.vert
 

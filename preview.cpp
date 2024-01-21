@@ -1,5 +1,13 @@
 #include "preview.h"
 
+float verticesTranRotaScale[] = {
+    // positions      // colors        // texture coords
+    0.3f, 0.3f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
+    0.3f, -0.3f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
+    -0.3f, -0.3f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
+    -0.3f, 0.3f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f // top left
+};
+
 float verticesTexFilter[] = {
     // positions      // colors        // texture coords
     0.9f, 0.9f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
@@ -136,6 +144,17 @@ void Preview::initShaderProgram() {
     if(!success) {
         qDebug()<<"ERR:"<<shaderProRectTexFilter.log();
     }
+
+
+    shaderProTransRotaScale.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/tran_rota_scale.vert");
+    shaderProTransRotaScale.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/tran_rota_scale.frag");
+    success = shaderProTransRotaScale.link();
+    if(!success) {
+        qDebug()<<"ERR:"<<shaderProTransRotaScale.log();
+    }
+    shaderProTransRotaScale.bind();
+    QMatrix4x4 matrix; // 默认是单位矩阵
+    shaderProTransRotaScale.setUniformValue("theMatrix" , matrix);
 }
 
 void Preview::initTexture() {
@@ -187,10 +206,12 @@ void Preview::initializeGL()
     glGenBuffers(4, VBO_id);
     setAxisVAO();
     setModelVAO();
-    // 2. shader
-    initShaderProgram();
-    // 3. texture
+
+    // 2. texture
     initTexture();
+
+    // 3. shader
+    initShaderProgram();
 }
 
 void Preview::resizeGL(int w, int h)
@@ -222,8 +243,6 @@ void Preview::vertexData2VBO() {
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         // 3.开启location = 0的属性解析
         glEnableVertexAttribArray(0);
-
-
     }
         break;
     case Module::isRectPos:
@@ -322,6 +341,30 @@ void Preview::vertexData2VBO() {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_id);
         unsigned int* indices = rectanglePosColTexFilter_.getIndices();
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * rectanglePosColTexFilter_.indicesLength(), indices, GL_STATIC_DRAW);
+
+        // 2.解析数据 a_Postion
+        //  GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+        // 3.开启VAO管理的第一个属性值 Position 开启location = 0的属性解析
+        glEnableVertexAttribArray(0);
+        // 4.解析数据 a_Color
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+        // 5.解析数据 a_Texture
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+        glEnableVertexAttribArray(2);
+    }
+        break;
+    case Module::isRectTranRotaScale:
+    {
+        // 1.把数据放进VBO
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * rectTranRotatScale_.verticeLength() , rectTranRotatScale_.getVertices(), GL_STATIC_DRAW);
+
+        // 6.配置EBO相关
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_id);
+        unsigned int* indices = rectTranRotatScale_.getIndices();
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * rectTranRotatScale_.indicesLength(), indices, GL_STATIC_DRAW);
 
         // 2.解析数据 a_Postion
         //  GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer
@@ -548,6 +591,13 @@ void Preview::drawModule() {
         setTexture(Module::isRectPosColTexFilter);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
         break;
+    case Module::isRectTranRotaScale:
+        shaderProTransRotaScale.bind();
+        // 绑定纹理 0 1，shader中可以使用到0 和 1纹理了
+        textureWall->bind(0);
+        textureSmile->bind(1);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+        break;
     default:
         break;
     }
@@ -573,6 +623,10 @@ void Preview::initVertices() {
     // 矩形 Pos Col Tex
     rectanglePosColTexFilter_.setVerticesArr(verticesTexFilter, 32);
     rectanglePosColTexFilter_.setIndices(indicesRect, INDICES_RECT_SIZE);
+
+    // rectTranRotatScale_
+    rectTranRotatScale_.setVerticesArr(verticesTranRotaScale, 32);
+    rectTranRotatScale_.setIndices(indicesRect, INDICES_RECT_SIZE);
 }
 
 void Preview::setModuleType(Module type) {
@@ -591,6 +645,14 @@ void Preview::setDrawMode(DrawMode mode) {
 void Preview::set_shaderProRectUniform_Uniform(char* uniformName, QVector4D color) {
     makeCurrent();
     shaderProRectUniform.setUniformValue(uniformName ,color.x(), color.y(), color.z(), color.w());
+    update();
+    doneCurrent();
+}
+
+
+void Preview::set_shaderProTransRotaScale_Uniform(QMatrix4x4 value) {
+    makeCurrent();
+    shaderProTransRotaScale.setUniformValue("theMatrix" , value);
     update();
     doneCurrent();
 }

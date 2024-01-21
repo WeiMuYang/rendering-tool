@@ -38,6 +38,19 @@ MainWindow::MainWindow(QWidget *parent)
     ui->texMinComBox->setCurrentText("LINEAR");
 
     setShowByModuleType(Module::isTriangle);
+
+
+    u_translation.setX(ui->tran_x_SpinBox->value());
+    u_translation.setY(ui->tran_y_SpinBox->value());
+    u_translation.setZ(ui->tran_z_SpinBox->value());
+
+    u_rotation.setX(ui->rota_x_SpinBox->value());
+    u_rotation.setY(ui->rota_y_SpinBox->value());
+    u_rotation.setZ(ui->rota_z_SpinBox->value());
+
+    u_scale.setX(ui->scale_x_SpinBox->value());
+    u_scale.setY(ui->scale_y_SpinBox->value());
+    u_scale.setZ(ui->scale_z_SpinBox->value());
 }
 
 MainWindow::~MainWindow()
@@ -65,6 +78,12 @@ void MainWindow::setShowByModuleType(Module module) {
         ui->TexTureMixBox->show();
     }else {
         ui->TexTureMixBox->hide();
+    }
+
+    if(module == Module::isRectTranRotaScale) {
+        ui->matPropertyBox->show();
+    }else {
+        ui->matPropertyBox->hide();
     }
 }
 
@@ -111,6 +130,12 @@ void MainWindow::initAction() {
     connect(ui->actionTextureFilter, &QAction::triggered, [this]() {
         ui->PreviewWgt->setModuleType(Module::isRectPosColTexFilter);
         setShowByModuleType(Module::isRectPosColTexFilter);
+    });
+
+    // actionTranRotaScale
+    connect(ui->actionTranRotaScale, &QAction::triggered, [this]() {
+        ui->PreviewWgt->setModuleType(Module::isRectTranRotaScale);
+        setShowByModuleType(Module::isRectTranRotaScale);
     });
 }
 
@@ -196,5 +221,115 @@ void MainWindow::on_texMixSpinBox_valueChanged(double arg1)
 {
     char name[] = "ratio";
     ui->PreviewWgt->set_shaderProRectTex_Uniform(name, arg1);
+}
+
+
+void MainWindow::on_tran_x_SpinBox_valueChanged(double arg1)
+{
+    QMatrix4x4 theMat;
+    u_translation.setX(arg1);
+    theMat.translate(u_translation);
+    theMat.rotate(u_rotateDeg, u_rotation);
+    theMat.scale(u_scale);
+    ui->PreviewWgt->set_shaderProTransRotaScale_Uniform(theMat);
+}
+
+
+void MainWindow::on_tran_y_SpinBox_valueChanged(double arg1)
+{
+    QMatrix4x4 theMat;
+    u_translation.setY(arg1);
+    theMat.translate(u_translation);
+    theMat.rotate(u_rotateDeg, u_rotation);
+    theMat.scale(u_scale);
+    ui->PreviewWgt->set_shaderProTransRotaScale_Uniform(theMat);
+}
+
+
+void MainWindow::on_tran_z_SpinBox_valueChanged(double arg1)
+{
+    QMatrix4x4 theMat;
+    u_translation.setZ(arg1);
+    theMat.translate(u_translation);
+    theMat.rotate(u_rotateDeg, u_rotation);
+    theMat.scale(u_scale);
+    ui->PreviewWgt->set_shaderProTransRotaScale_Uniform(theMat);
+}
+
+
+void MainWindow::on_rota_x_SpinBox_valueChanged(double arg1)
+{
+    QMatrix4x4 theMat;
+    u_rotation.setX(arg1);
+    theMat.translate(u_translation);
+    theMat.rotate(u_rotateDeg, u_rotation);
+    theMat.scale(u_scale);
+    ui->PreviewWgt->set_shaderProTransRotaScale_Uniform(theMat);
+}
+
+
+void MainWindow::on_rota_y_SpinBox_valueChanged(double arg1)
+{
+    QMatrix4x4 theMat;
+    u_rotation.setY(arg1);
+    theMat.translate(u_translation);
+    theMat.rotate(u_rotateDeg, u_rotation);
+    theMat.scale(u_scale);
+    ui->PreviewWgt->set_shaderProTransRotaScale_Uniform(theMat);
+}
+
+
+void MainWindow::on_rota_z_SpinBox_valueChanged(double arg1)
+{
+    QMatrix4x4 theMat;
+    u_rotation.setZ(arg1);
+    theMat.translate(u_translation);
+    theMat.rotate(u_rotateDeg, u_rotation);
+    theMat.scale(u_scale);
+    ui->PreviewWgt->set_shaderProTransRotaScale_Uniform(theMat);
+}
+
+
+void MainWindow::on_scale_x_SpinBox_valueChanged(double arg1)
+{
+    QMatrix4x4 theMat;
+    u_scale.setX(arg1);
+    theMat.translate(u_translation);
+    theMat.rotate(u_rotateDeg, u_rotation);
+    theMat.scale(u_scale);
+    ui->PreviewWgt->set_shaderProTransRotaScale_Uniform(theMat);
+}
+
+
+void MainWindow::on_scale_y_SpinBox_valueChanged(double arg1)
+{
+    QMatrix4x4 theMat;
+    u_scale.setY(arg1);
+    theMat.translate(u_translation);
+    theMat.rotate(u_rotateDeg, u_rotation);
+    theMat.scale(u_scale);
+    ui->PreviewWgt->set_shaderProTransRotaScale_Uniform(theMat);
+}
+
+
+void MainWindow::on_scale_z_SpinBox_valueChanged(double arg1)
+{
+    QMatrix4x4 theMat;
+    u_scale.setZ(arg1);
+    theMat.translate(u_translation);
+    theMat.rotate(u_rotateDeg, u_rotation);
+    theMat.scale(u_scale);
+    ui->PreviewWgt->set_shaderProTransRotaScale_Uniform(theMat);
+}
+
+
+void MainWindow::on_rota_deg_SpinBox_valueChanged(double arg1)
+{
+    QMatrix4x4 theMat;
+    u_rotateDeg = arg1;
+    theMat.translate(u_translation);
+    theMat.rotate(u_rotateDeg, u_rotation);
+    theMat.scale(u_scale);
+    ui->PreviewWgt->set_shaderProTransRotaScale_Uniform(theMat);
 }
 

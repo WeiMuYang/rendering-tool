@@ -43,6 +43,7 @@ public:
 
     void set_shaderProRectUniform_Uniform(char* uniformName, QVector4D color);
     void set_shaderProRectTex_Uniform(char* uniformName, float value);
+    void set_shaderProTransRotaScale_Uniform( QMatrix4x4 value);
 
     void initShaderProgram();
     void initTexture();
@@ -77,6 +78,11 @@ private:
     Vertices rectanglePosCol_;  // 创建一个 rectanglePosCol_ 对象   →   shaderProRectACol
     Vertices rectanglePosColTex_; //                              →   shaderProRectTex
     Vertices rectanglePosColTexFilter_;                        // →   shaderProRectTexFilter
+    Vertices rectTranRotatScale_;
+
+
+
+
     Vertices axisX_;
     Vertices axisY_;
     Vertices axisZ_;
@@ -87,6 +93,7 @@ private:
     QOpenGLShaderProgram shaderProAxis;
     QOpenGLShaderProgram shaderProRectTex;
     QOpenGLShaderProgram shaderProRectTexFilter;
+    QOpenGLShaderProgram shaderProTransRotaScale;
 
     QOpenGLTexture* textureWall;
     QOpenGLTexture* textureSmile;
