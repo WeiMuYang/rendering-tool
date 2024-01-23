@@ -44,6 +44,7 @@ public:
     void set_shaderProRectUniform_Uniform(char* uniformName, QVector4D color);
     void set_shaderProRectTex_Uniform(char* uniformName, float value);
     void set_shaderProTransRotaScale_Uniform( QMatrix4x4 value);
+    void set_shaderProBox3dMVP_Uniform(char* uniformName, QMatrix4x4 value);
 
     void initShaderProgram();
     void initTexture();
@@ -79,7 +80,7 @@ private:
     Vertices rectanglePosColTex_; //                              →   shaderProRectTex
     Vertices rectanglePosColTexFilter_;                        // →   shaderProRectTexFilter
     Vertices rectTranRotatScale_;
-
+    Vertices box3dMVPMat_;      // 3d的箱子
 
 
 
@@ -94,6 +95,7 @@ private:
     QOpenGLShaderProgram shaderProRectTex;
     QOpenGLShaderProgram shaderProRectTexFilter;
     QOpenGLShaderProgram shaderProTransRotaScale;
+    QOpenGLShaderProgram shaderProBox3dMVP;
 
     QOpenGLTexture* textureWall;
     QOpenGLTexture* textureSmile;

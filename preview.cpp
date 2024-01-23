@@ -1,5 +1,50 @@
 #include "preview.h"
 
+float vertices3DBox[] = {
+    // 第一个面：Pos.xyz  texture.uv
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+    0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+    // 第二个面：Pos.xyz  texture.uv
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+    0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+    0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+    -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+    // 第三个面：Pos.xyz  texture.uv
+    -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+    -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+    -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+    // 第四个面：Pos.xyz  texture.uv
+    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+    0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+    0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+    0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+    // 第五个面：Pos.xyz  texture.uv
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+    0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
+    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+    // 第六个面：Pos.xyz  texture.uv
+    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+    -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
+    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
+};
+
 float verticesTranRotaScale[] = {
     // positions      // colors        // texture coords
     0.3f, 0.3f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
@@ -155,6 +200,32 @@ void Preview::initShaderProgram() {
     shaderProTransRotaScale.bind();
     QMatrix4x4 matrix; // 默认是单位矩阵
     shaderProTransRotaScale.setUniformValue("theMatrix" , matrix);
+
+
+    shaderProBox3dMVP.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/box_3d_mvp.vert");
+    shaderProBox3dMVP.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/box_3d_mvp.frag");
+    success = shaderProBox3dMVP.link();
+    if(!success) {
+        qDebug()<<"ERR:"<<shaderProBox3dMVP.log();
+    }
+    shaderProBox3dMVP.bind();
+    shaderProBox3dMVP.setUniformValue("textureWall",0);
+    shaderProBox3dMVP.setUniformValue("textureSmile",1);
+    shaderProBox3dMVP.setUniformValue("textureSmall",2);
+
+    QMatrix4x4 projection;
+    projection.perspective(45,(float)width()/height(),0.1f,100);
+    shaderProBox3dMVP.setUniformValue("projection", projection);
+
+    QMatrix4x4 view; // 默认是单位矩阵
+    view.translate(0.0,0.0,0);
+    shaderProBox3dMVP.setUniformValue("view", view);
+
+    QMatrix4x4 model;
+    model.setToIdentity();
+    model.translate(0.0f, 0.0f, 0.0f);
+    model.rotate(30, 1.0f, 0.0f, 0.0f);
+    shaderProBox3dMVP.setUniformValue("model", model);
 }
 
 void Preview::initTexture() {
@@ -227,7 +298,10 @@ void Preview::paintGL()
     //    initializeOpenGLFunctions(); // 执行后，下面的函数才有执行的意义
     // 设置窗口颜色，背景颜色
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+//    glClear(GL_COLOR_BUFFER_BIT);
+    // 打开深度测试，否则立方体形状无法显示立体
+    glEnable(GL_DEPTH_TEST);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     drawAxis();
     drawModule();
 }
@@ -378,6 +452,27 @@ void Preview::vertexData2VBO() {
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
         glEnableVertexAttribArray(2);
     }
+        break;
+    case Module::isBox3dMVP_:
+    {
+        // 1.把数据放进VBO
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * box3dMVPMat_.verticeLength() , box3dMVPMat_.getVertices(), GL_STATIC_DRAW);
+
+        // 6.配置EBO相关
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_id);
+        unsigned int* indices = box3dMVPMat_.getIndices();
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * box3dMVPMat_.indicesLength(), indices, GL_STATIC_DRAW);
+
+        // 2.解析数据 a_Postion
+        //  GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        // 3.开启VAO管理的第一个属性值 Position 开启location = 0的属性解析
+        glEnableVertexAttribArray(0);
+        // 5.解析数据 a_Texture
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+    }// isBox3dMVP_
         break;
     default:
         break;
@@ -598,6 +693,19 @@ void Preview::drawModule() {
         textureSmile->bind(1);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
         break;
+    case Module::isBox3dMVP_:
+    {
+        shaderProBox3dMVP.bind();
+        // 绑定纹理 0 1，shader中可以使用到0 和 1纹理了
+        textureWall->bind(0);
+        //glActiveTexture(GL_TEXTURE1);
+        textureSmile->bind(1);
+        textureSmall->bind(2);
+        shaderProBox3dMVP.setUniformValue("ratio",0.1f);
+
+        glDrawArrays(GL_TRIANGLES,0,36);
+    }
+        break;
     default:
         break;
     }
@@ -627,6 +735,10 @@ void Preview::initVertices() {
     // rectTranRotatScale_
     rectTranRotatScale_.setVerticesArr(verticesTranRotaScale, 32);
     rectTranRotatScale_.setIndices(indicesRect, INDICES_RECT_SIZE);
+
+    // box3dMVPMat_
+    box3dMVPMat_.setVerticesArr(vertices3DBox, 180);
+    box3dMVPMat_.setIndices(indicesRect, INDICES_RECT_SIZE);
 }
 
 void Preview::setModuleType(Module type) {
@@ -660,6 +772,16 @@ void Preview::set_shaderProTransRotaScale_Uniform(QMatrix4x4 value) {
 void Preview::set_shaderProRectTex_Uniform(char* uniformName, float value) {
     makeCurrent();
     shaderProRectTex.setUniformValue(uniformName , value);
+    update();
+    doneCurrent();
+}
+
+void Preview::set_shaderProBox3dMVP_Uniform(char* uniformName, QMatrix4x4 value) {
+    makeCurrent();
+    if(strcmp(uniformName,"model") == 0){
+        value.rotate(30, 1.0f, 0.0f, 0.0f);
+    }
+    shaderProBox3dMVP.setUniformValue(uniformName , value);
     update();
     doneCurrent();
 }

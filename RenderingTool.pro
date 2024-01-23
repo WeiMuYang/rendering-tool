@@ -39,6 +39,8 @@ DISTFILES += \
     shader/base_aCol.vert \
     shader/base_uniform.frag \
     shader/base_uniform.vert \
+    shader/box_3d_mvp.frag \
+    shader/box_3d_mvp.vert \
     shader/rect_aCol.frag \
     shader/rect_aCol.vert \
     shader/rect_tex.frag \

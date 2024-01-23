@@ -57,6 +57,26 @@ private slots:
 
     void on_rota_deg_SpinBox_valueChanged(double arg1);
 
+    void on_Fov_SpinBox_valueChanged(double arg1);
+
+    void on_near_SpinBox_valueChanged(double arg1);
+
+    void on_Far_SpinBox_valueChanged(double arg1);
+
+    void on_aspectRatio_SpinBox_valueChanged(double arg1);
+
+    void on_model_tran_x_SpinBox_valueChanged(double arg1);
+
+    void on_model_tran_y_SpinBox_valueChanged(double arg1);
+
+    void on_model_tran_z_SpinBox_valueChanged(double arg1);
+
+    void on_view_tran_x_SpinBox_valueChanged(double arg1);
+
+    void on_view_tran_y_SpinBox_valueChanged(double arg1);
+
+    void on_view_tran_z_SpinBox_valueChanged(double arg1);
+
 private:
     Ui::MainWindow *ui;
     QVector4D u_Color;
@@ -66,5 +86,13 @@ private:
     float u_rotateDeg{0};
     QVector3D u_scale;
     QMatrix4x4 u_theMat;
+
+    float u_proFov;
+    float u_proNear;
+    float u_proFar;
+    float u_proAspectRatio;
+
+    QVector3D view_tran;
+    QVector3D model_tran;
 };
 #endif // MAINWINDOW_H

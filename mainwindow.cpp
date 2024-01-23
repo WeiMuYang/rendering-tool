@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    resize(QSize(1600, 800));
     // 不用给preview创建对象，因为是采用提升的方式创建的PreviewWgt
     // 只需要通过ui->PreviewWgt，就可以找到Preview的属性成员
     initAction();
@@ -51,6 +52,13 @@ MainWindow::MainWindow(QWidget *parent)
     u_scale.setX(ui->scale_x_SpinBox->value());
     u_scale.setY(ui->scale_y_SpinBox->value());
     u_scale.setZ(ui->scale_z_SpinBox->value());
+
+//    ui->Fov_SpinBox->setValue()
+    u_proFov = ui->Fov_SpinBox->value();
+    u_proNear = ui->near_SpinBox->value();
+    u_proFar = ui->Far_SpinBox->value();
+    u_proAspectRatio = ui->aspectRatio_SpinBox->value();
+
 }
 
 MainWindow::~MainWindow()
@@ -85,6 +93,13 @@ void MainWindow::setShowByModuleType(Module module) {
     }else {
         ui->matPropertyBox->hide();
     }
+
+    // mvpBox
+    if(module == Module::isBox3dMVP_) {
+        ui->mvpBox->show();
+    }else {
+        ui->mvpBox->hide();
+    }
 }
 
 void MainWindow::initAction() {
@@ -111,18 +126,15 @@ void MainWindow::initAction() {
         setShowByModuleType(Module::isRectPos);
 
     });
-
     connect(ui->actionRectaCol, &QAction::triggered, [this]() {
         ui->PreviewWgt->setModuleType(Module::isRectPosCol);
         setShowByModuleType(Module::isRectPosCol);
     });
-
     connect(ui->actionTextureShader, &QAction::triggered, [this]() {
         ui->PreviewWgt->setModuleType(Module::isRectPosColTex);
         setShowByModuleType(Module::isRectPosColTex);
 
     });
-
     connect(ui->actionTextureWrap, &QAction::triggered, [this]() {
         ui->PreviewWgt->setModuleType(Module::isRectPosColTexWrap);
         setShowByModuleType(Module::isRectPosColTexWrap);
@@ -132,10 +144,14 @@ void MainWindow::initAction() {
         setShowByModuleType(Module::isRectPosColTexFilter);
     });
 
-    // actionTranRotaScale
     connect(ui->actionTranRotaScale, &QAction::triggered, [this]() {
         ui->PreviewWgt->setModuleType(Module::isRectTranRotaScale);
         setShowByModuleType(Module::isRectTranRotaScale);
+    });
+
+    connect(ui->action3DBox, &QAction::triggered, [this]() {
+        ui->PreviewWgt->setModuleType(Module::isBox3dMVP_);
+        setShowByModuleType(Module::isBox3dMVP_);
     });
 }
 
@@ -226,6 +242,9 @@ void MainWindow::on_texMixSpinBox_valueChanged(double arg1)
 
 void MainWindow::on_tran_x_SpinBox_valueChanged(double arg1)
 {
+    // 代码中的逻辑是：先位移，再旋转，再缩放 translate.rotate.scale * Vec3(Pos.x,Pos.y,Pos.z)
+    // 但是如果乘上Pos,根据线性代数乘法次序，是先 scale 再 rotate 再 translate
+    // 记住，位移要放在最后。否则出现旋转中心偏移。
     QMatrix4x4 theMat;
     u_translation.setX(arg1);
     theMat.translate(u_translation);
@@ -331,5 +350,104 @@ void MainWindow::on_rota_deg_SpinBox_valueChanged(double arg1)
     theMat.rotate(u_rotateDeg, u_rotation);
     theMat.scale(u_scale);
     ui->PreviewWgt->set_shaderProTransRotaScale_Uniform(theMat);
+}
+
+void MainWindow::on_Fov_SpinBox_valueChanged(double arg1)
+{
+    u_proFov = arg1;
+    QMatrix4x4 projection;
+    projection.perspective(u_proFov,u_proAspectRatio,u_proNear,u_proFar);
+    char name[] = "projection";
+    ui->PreviewWgt->set_shaderProBox3dMVP_Uniform(name, projection);
+}
+
+
+void MainWindow::on_near_SpinBox_valueChanged(double arg1)
+{
+    u_proNear = arg1;
+    QMatrix4x4 projection;
+    projection.perspective(u_proFov,u_proAspectRatio,u_proNear,u_proFar);
+    char name[] = "projection";
+    ui->PreviewWgt->set_shaderProBox3dMVP_Uniform(name, projection);
+}
+
+
+void MainWindow::on_Far_SpinBox_valueChanged(double arg1)
+{
+    u_proFar = arg1;
+    QMatrix4x4 projection;
+    projection.perspective(u_proFov,u_proAspectRatio,u_proNear,u_proFar);
+    char name[] = "projection";
+    ui->PreviewWgt->set_shaderProBox3dMVP_Uniform(name, projection);
+}
+
+
+void MainWindow::on_aspectRatio_SpinBox_valueChanged(double arg1)
+{
+    u_proAspectRatio = arg1;
+    QMatrix4x4 projection;
+    projection.perspective(u_proFov,u_proAspectRatio,u_proNear,u_proFar);
+    char name[] = "projection";
+    ui->PreviewWgt->set_shaderProBox3dMVP_Uniform(name, projection);
+}
+
+
+void MainWindow::on_model_tran_x_SpinBox_valueChanged(double arg1)
+{
+    QMatrix4x4 theMat;
+    model_tran.setX(arg1);
+    theMat.translate(model_tran);
+    char name[] = "model";
+    ui->PreviewWgt->set_shaderProBox3dMVP_Uniform(name, theMat);
+}
+
+
+void MainWindow::on_model_tran_y_SpinBox_valueChanged(double arg1)
+{
+    QMatrix4x4 theMat;
+    model_tran.setY(arg1);
+    theMat.translate(model_tran);
+    char name[] = "model";
+    ui->PreviewWgt->set_shaderProBox3dMVP_Uniform(name, theMat);
+}
+
+
+void MainWindow::on_model_tran_z_SpinBox_valueChanged(double arg1)
+{
+    QMatrix4x4 theMat;
+    model_tran.setZ(arg1);
+    theMat.translate(model_tran);
+    char name[] = "model";
+    ui->PreviewWgt->set_shaderProBox3dMVP_Uniform(name, theMat);
+}
+
+
+void MainWindow::on_view_tran_x_SpinBox_valueChanged(double arg1)
+{
+    QMatrix4x4 theMat;
+    view_tran.setX(arg1);
+    theMat.translate(view_tran);
+    char name[] = "view";
+    ui->PreviewWgt->set_shaderProBox3dMVP_Uniform(name, theMat);
+}
+
+
+void MainWindow::on_view_tran_y_SpinBox_valueChanged(double arg1)
+{
+    QMatrix4x4 theMat;
+    view_tran.setY(arg1);
+    theMat.translate(view_tran);
+    char name[] = "view";
+    ui->PreviewWgt->set_shaderProBox3dMVP_Uniform(name, theMat);
+}
+
+
+void MainWindow::on_view_tran_z_SpinBox_valueChanged(double arg1)
+{
+    QMatrix4x4 theMat;
+    view_tran.setZ(arg1);
+    theMat.translate(view_tran);
+    char name[] = "view";
+    ui->PreviewWgt->set_shaderProBox3dMVP_Uniform(name, theMat);
 }
 
