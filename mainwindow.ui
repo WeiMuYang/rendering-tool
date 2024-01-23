@@ -938,6 +938,7 @@
     <addaction name="actionTextureFilter"/>
     <addaction name="actionTranRotaScale"/>
     <addaction name="action3DBox"/>
+    <addaction name="actionManyBox"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -1010,6 +1011,11 @@
   <action name="action3DBox">
    <property name="text">
     <string>3D箱子</string>
+   </property>
+  </action>
+  <action name="actionManyBox">
+   <property name="text">
+    <string>多个箱子</string>
    </property>
   </action>
  </widget>

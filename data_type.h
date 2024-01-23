@@ -8,7 +8,7 @@
 
 enum Module {
     isTriangle , isRectPos , isRectPosCol , isRectPosColTex, isRectPosColTexWrap, isRectPosColTexFilter,
-    isRectTranRotaScale, isBox3dMVP_
+    isRectTranRotaScale, isBox3dMVP , isManyBox3d
 };
 
 // 点模式 线框模式 填充模式

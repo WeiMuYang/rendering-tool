@@ -95,7 +95,7 @@ void MainWindow::setShowByModuleType(Module module) {
     }
 
     // mvpBox
-    if(module == Module::isBox3dMVP_) {
+    if(module == Module::isBox3dMVP) {
         ui->mvpBox->show();
     }else {
         ui->mvpBox->hide();
@@ -150,8 +150,14 @@ void MainWindow::initAction() {
     });
 
     connect(ui->action3DBox, &QAction::triggered, [this]() {
-        ui->PreviewWgt->setModuleType(Module::isBox3dMVP_);
-        setShowByModuleType(Module::isBox3dMVP_);
+        ui->PreviewWgt->setModuleType(Module::isBox3dMVP);
+        setShowByModuleType(Module::isBox3dMVP);
+    });
+
+    // actionManyBox
+    connect(ui->actionManyBox, &QAction::triggered, [this]() {
+        ui->PreviewWgt->setModuleType(Module::isManyBox3d);
+        setShowByModuleType(Module::isManyBox3d);
     });
 }
 

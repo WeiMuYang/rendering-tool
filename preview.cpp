@@ -45,6 +45,19 @@ float vertices3DBox[] = {
     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
 };
 
+QVector<QVector3D> BoxPositions = {
+    QVector3D( 0.0f, 0.0f, 0.0f),
+    QVector3D( 2.0f, 5.0f, -15.0f),
+    QVector3D(-1.5f, -2.2f, -2.5f),
+    QVector3D(-3.8f, -2.0f, -12.3f),
+    QVector3D( 2.4f, -0.4f, -3.5f),
+    QVector3D(-1.7f, 3.0f, -7.5f),
+    QVector3D( 1.3f, -2.0f, -2.5f),
+    QVector3D( 1.5f, 2.0f, -2.5f),
+    QVector3D( 1.5f, 0.2f, -1.5f),
+    QVector3D(-1.3f, 1.0f, -1.5f)
+};
+
 float verticesTranRotaScale[] = {
     // positions      // colors        // texture coords
     0.3f, 0.3f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
@@ -453,7 +466,7 @@ void Preview::vertexData2VBO() {
         glEnableVertexAttribArray(2);
     }
         break;
-    case Module::isBox3dMVP_:
+    case Module::isBox3dMVP:
     {
         // 1.把数据放进VBO
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * box3dMVPMat_.verticeLength() , box3dMVPMat_.getVertices(), GL_STATIC_DRAW);
@@ -472,7 +485,28 @@ void Preview::vertexData2VBO() {
         // 5.解析数据 a_Texture
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
-    }// isBox3dMVP_
+    }
+        break;
+    case Module::isManyBox3d: // 和isBox3dMVP的顶点数据一致
+    {
+        // 1.把数据放进VBO
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * box3dMVPMat_.verticeLength() , box3dMVPMat_.getVertices(), GL_STATIC_DRAW);
+
+        // 6.配置EBO相关
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_id);
+        unsigned int* indices = box3dMVPMat_.getIndices();
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * box3dMVPMat_.indicesLength(), indices, GL_STATIC_DRAW);
+
+        // 2.解析数据 a_Postion
+        //  GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        // 3.开启VAO管理的第一个属性值 Position 开启location = 0的属性解析
+        glEnableVertexAttribArray(0);
+        // 5.解析数据 a_Texture
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+    }// isManyBox3d
         break;
     default:
         break;
@@ -693,7 +727,7 @@ void Preview::drawModule() {
         textureSmile->bind(1);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
         break;
-    case Module::isBox3dMVP_:
+    case Module::isBox3dMVP:
     {
         shaderProBox3dMVP.bind();
         // 绑定纹理 0 1，shader中可以使用到0 和 1纹理了
@@ -705,6 +739,37 @@ void Preview::drawModule() {
 
         glDrawArrays(GL_TRIANGLES,0,36);
     }
+        break;
+    case Module::isManyBox3d:  //
+    {
+        shaderProBox3dMVP.bind();
+        // 绑定纹理 0 1，shader中可以使用到0 和 1纹理了
+        textureWall->bind(0);
+        //glActiveTexture(GL_TEXTURE1);
+        textureSmile->bind(1);
+        textureSmall->bind(2);
+        shaderProBox3dMVP.setUniformValue("ratio",0.1f);
+
+        QMatrix4x4 projection;
+        projection.perspective(45,(float)width()/height(),0.1f,100);
+        shaderProBox3dMVP.setUniformValue("projection", projection);
+
+        QMatrix4x4 view; // 默认是单位矩阵
+        view.translate(0.0,0.0,-9.0);
+        shaderProBox3dMVP.setUniformValue("view", view);
+
+        QMatrix4x4 model;
+        int deg = 0;
+        foreach (auto item, BoxPositions) {
+            model.setToIdentity();
+            model.translate(item);
+            model.rotate(deg, 1.0f, 5.0f, 0.5f);
+            deg += 30;
+            shaderProBox3dMVP.setUniformValue("model", model);
+            glDrawArrays(GL_TRIANGLES,0,36);
+        }
+
+    } // isManyBox3d
         break;
     default:
         break;
