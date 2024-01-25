@@ -13,7 +13,6 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     preview.cpp \
-    shader.cpp \
     vertices.cpp
 
 HEADERS += \
@@ -21,7 +20,6 @@ HEADERS += \
     data_type.h \
     mainwindow.h \
     preview.h \
-    shader.h \
     vertices.h
 
 FORMS += \
