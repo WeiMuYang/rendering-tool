@@ -100,6 +100,13 @@ void MainWindow::setShowByModuleType(Module module) {
     }else {
         ui->mvpBox->hide();
     }
+
+    // cameraWSADMouseBox
+    if(module == Module::isCameraWSADMouse) {
+        ui->cameraWSADMouseBox->show();
+    }else {
+        ui->cameraWSADMouseBox->hide();
+    }
 }
 
 void MainWindow::initAction() {
@@ -158,6 +165,12 @@ void MainWindow::initAction() {
     connect(ui->actionManyBox, &QAction::triggered, [this]() {
         ui->PreviewWgt->setModuleType(Module::isManyBox3d);
         setShowByModuleType(Module::isManyBox3d);
+    });
+
+
+    connect(ui->actionCameraWSADMouse, &QAction::triggered, [this]() {
+        ui->PreviewWgt->setModuleType(Module::isCameraWSADMouse);
+        setShowByModuleType(Module::isCameraWSADMouse);
     });
 }
 

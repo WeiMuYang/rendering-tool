@@ -132,10 +132,16 @@ float verDataTri[9] = {
 Preview::Preview(QWidget *parent)
     : QOpenGLWidget{parent}
 {
+    // 获取键盘事件
+    setFocusPolicy(Qt::StrongFocus);
+    // 获取鼠标事件
+    setMouseTracking(true);
     currentModelType_ = Module::isTriangle;
     drawMode_ = DrawMode::isFillMode;
     //    currrentShaderPro_ = ShaderProgram::Base;
     initVertices();
+
+    pCamera_ = new Camera(QVector3D(0,0,3.0));
 }
 
 Preview::~Preview()
@@ -319,6 +325,40 @@ void Preview::paintGL()
     drawModule();
 }
 
+void Preview::keyPressEvent(QKeyEvent *event)
+{
+    float deltaTime = 0.1f;
+    switch (event->key()) {
+        case Qt::Key_W: pCamera_->ProcessKeyboard(CameraMovement::FORWARD, deltaTime); break;
+        case Qt::Key_S: pCamera_->ProcessKeyboard(CameraMovement::BACKWARD, deltaTime); break;
+        case Qt::Key_D: pCamera_->ProcessKeyboard(CameraMovement::RIGHT, deltaTime); break;
+        case Qt::Key_A: pCamera_->ProcessKeyboard(CameraMovement::LEFT, deltaTime); break;
+    default:
+        break;
+    }
+
+    update();
+}
+
+void Preview::mouseMoveEvent(QMouseEvent *event)
+{
+
+    static QPoint lastPos(width()/2,height()/2);
+    auto currentPos=event->pos();
+    deltaPos=currentPos-lastPos;
+    lastPos=currentPos;
+
+    pCamera_->ProcessMouseMovement(deltaPos.x(),-deltaPos.y());
+    update();
+}
+
+void Preview::wheelEvent(QWheelEvent *event)
+{
+    pCamera_->ProcessMouseScroll(event->angleDelta().y()/120);
+
+    update();
+}
+
 void Preview::vertexData2VBO() {
     // 初始化调用的，不用添加 makeCurrent
     switch (currentModelType_) {
@@ -488,6 +528,29 @@ void Preview::vertexData2VBO() {
     }
         break;
     case Module::isManyBox3d: // 和isBox3dMVP的顶点数据一致
+    {
+        // 1.把数据放进VBO
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * box3dMVPMat_.verticeLength() , box3dMVPMat_.getVertices(), GL_STATIC_DRAW);
+
+        // 6.配置EBO相关
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_id);
+        unsigned int* indices = box3dMVPMat_.getIndices();
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * box3dMVPMat_.indicesLength(), indices, GL_STATIC_DRAW);
+
+        // 2.解析数据 a_Postion
+        //  GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        // 3.开启VAO管理的第一个属性值 Position 开启location = 0的属性解析
+        glEnableVertexAttribArray(0);
+        // 5.解析数据 a_Texture
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+    }// isManyBox3d
+        break;
+
+
+    case Module::isCameraWSADMouse: // 和isManyBox3d的顶点数据一致
     {
         // 1.把数据放进VBO
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * box3dMVPMat_.verticeLength() , box3dMVPMat_.getVertices(), GL_STATIC_DRAW);
@@ -769,8 +832,40 @@ void Preview::drawModule() {
             glDrawArrays(GL_TRIANGLES,0,36);
         }
 
-    } // isManyBox3d
+    }
         break;
+    case Module::isCameraWSADMouse:  //
+    {
+        shaderProBox3dMVP.bind();
+        // 绑定纹理 0 1，shader中可以使用到0 和 1纹理了
+        textureWall->bind(0);
+        //glActiveTexture(GL_TEXTURE1);
+        textureSmile->bind(1);
+        textureSmall->bind(2);
+        shaderProBox3dMVP.setUniformValue("ratio",0.1f);
+
+        QMatrix4x4 projection;
+        projection.perspective(pCamera_->Zoom,(float)width()/height(),0.1f,100);
+        shaderProBox3dMVP.setUniformValue("projection", projection);
+
+        QMatrix4x4 view; // 默认是单位矩阵
+        view.lookAt(pCamera_->Position, pCamera_->Position + pCamera_->Front, pCamera_->Up);
+        shaderProBox3dMVP.setUniformValue("view", view);
+
+        QMatrix4x4 model;
+        int deg = 0;
+        foreach (auto item, BoxPositions) {
+            model.setToIdentity();
+            model.translate(item);
+            model.rotate(deg, 1.0f, 5.0f, 0.5f);
+            deg += 30;
+            shaderProBox3dMVP.setUniformValue("model", model);
+            glDrawArrays(GL_TRIANGLES,0,36);
+        }
+
+    }
+        break;
+
     default:
         break;
     }

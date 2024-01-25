@@ -9,10 +9,12 @@
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
+#include <QKeyEvent>
 
 #include "vertices.h"
 #include <QVector>
 #include "data_type.h"
+#include "camera.h"
 
 
 // 2.继承相关类
@@ -69,6 +71,12 @@ protected:
     //      b）若需要从paintGL()以外的位置触发重新绘制(e.g. 使用计时器设置场景动画)，则应调用widget的update()函数来安排更新。
     virtual void paintGL();
 
+    void keyPressEvent(QKeyEvent *event);
+
+    void mouseMoveEvent(QMouseEvent *event);
+
+    void wheelEvent(QWheelEvent *event);
+
 signals:
 
 private:
@@ -104,6 +112,10 @@ private:
     TexWrap texWrap_;
     TexFilter texMinFilter_;
     TexFilter texMagFilter_;
+
+    Camera* pCamera_;
+
+    QPoint deltaPos;
 };
 
 #endif // PREVIEW_H
