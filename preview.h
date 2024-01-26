@@ -15,6 +15,7 @@
 #include <QVector>
 #include "data_type.h"
 #include "camera.h"
+#include <QVector3D>
 
 
 // 2.继承相关类
@@ -78,6 +79,9 @@ protected:
     void wheelEvent(QWheelEvent *event);
 
 signals:
+    void sigPosition(QVector3D pos);
+    void sigYawPitch(float yaw, float pitch);
+    void sigFrontRightUp(QVector3D f,QVector3D r, QVector3D u,QVector3D wu);
 
 private:
     Module currentModelType_;

@@ -53,12 +53,44 @@ MainWindow::MainWindow(QWidget *parent)
     u_scale.setY(ui->scale_y_SpinBox->value());
     u_scale.setZ(ui->scale_z_SpinBox->value());
 
-//    ui->Fov_SpinBox->setValue()
     u_proFov = ui->Fov_SpinBox->value();
     u_proNear = ui->near_SpinBox->value();
     u_proFar = ui->Far_SpinBox->value();
     u_proAspectRatio = ui->aspectRatio_SpinBox->value();
 
+
+    // camera value
+//    void sigPosition(QVector3D pos);
+//    void sigYawPitch(float yaw, float pitch);
+//    void sigFrontRightUp(QVector3D f,QVector3D r, QVector3D u,QVector3D wu);
+    connect(ui->PreviewWgt, &Preview::sigPosition, [&](QVector3D cameraPos){
+        ui->cameraPosXSpinBox->setValue(cameraPos.x());
+        ui->cameraPosYSpinBox->setValue(cameraPos.y());
+        ui->cameraPosZSpinBox->setValue(cameraPos.z());
+    });
+
+    connect(ui->PreviewWgt, &Preview::sigYawPitch, [&](float yaw, float pitch){
+        ui->cameraYaw_SpinBox->setValue(yaw);
+        ui->cameraPitch_SpinBox->setValue(pitch);
+    });
+
+    connect(ui->PreviewWgt, &Preview::sigFrontRightUp, [&](QVector3D f,QVector3D r, QVector3D u,QVector3D wu){
+        ui->cameraFrontXSpinBox->setValue(f.x());
+        ui->cameraFrontYSpinBox->setValue(f.y());
+        ui->cameraFrontZSpinBox->setValue(f.z());
+
+        ui->cameraRightXSpinBox->setValue(r.x());
+        ui->cameraRightYSpinBox->setValue(r.y());
+        ui->cameraRightZSpinBox->setValue(r.z());
+
+        ui->cameraUpXSpinBox->setValue(u.x());
+        ui->cameraUpYSpinBox->setValue(u.y());
+        ui->cameraUpZSpinBox->setValue(u.z());
+
+        ui->cameraWorldUpXSpinBox->setValue(wu.x());
+        ui->cameraWorldUpYSpinBox->setValue(wu.y());
+        ui->cameraWorldUpZSpinBox->setValue(wu.z());
+    });
 }
 
 MainWindow::~MainWindow()
@@ -272,7 +304,6 @@ void MainWindow::on_tran_x_SpinBox_valueChanged(double arg1)
     ui->PreviewWgt->set_shaderProTransRotaScale_Uniform(theMat);
 }
 
-
 void MainWindow::on_tran_y_SpinBox_valueChanged(double arg1)
 {
     QMatrix4x4 theMat;
@@ -282,7 +313,6 @@ void MainWindow::on_tran_y_SpinBox_valueChanged(double arg1)
     theMat.scale(u_scale);
     ui->PreviewWgt->set_shaderProTransRotaScale_Uniform(theMat);
 }
-
 
 void MainWindow::on_tran_z_SpinBox_valueChanged(double arg1)
 {

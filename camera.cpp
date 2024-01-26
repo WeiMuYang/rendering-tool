@@ -50,24 +50,34 @@ void Camera::ProcessKeyboard(CameraMovement direction, float deltaTime)
     // deltaTime是刷新间隔
 
     float velocity = MovementSpeed * deltaTime;
-    if (direction == FORWARD)
+    switch (direction) {
+    case FORWARD:
         Position += Front * velocity;
-    if (direction == BACKWARD)
+        break;
+    case BACKWARD:
         Position -= Front * velocity;
-    if (direction == LEFT)
+        break;
+    case LEFT:
         Position -= Right * velocity;
-    if (direction == RIGHT)
+        break;
+    case RIGHT:
         Position += Right * velocity;
+        break;
+    default:
+        break;
+    }
+    emit sigCameraPositionInfo(Position);
 }
 
 // 处理从鼠标输入系统接收的输入。需要x和y方向上的偏移值。
+// 鼠标只是确定方向
 void Camera::ProcessMouseMovement(float xoffset, float yoffset, bool constrainPitch)
 {
     xoffset *= MouseSensitivity;
     yoffset *= MouseSensitivity;
 
-    Yaw   += xoffset;
-    Pitch += yoffset;
+    Yaw   += xoffset; // 偏航
+    Pitch += yoffset; // 俯仰
 
     // 确保当投球超出边界时，屏幕不会翻转
     if (constrainPitch)
@@ -80,6 +90,7 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, bool constrainPi
 
     // 使用更新的Euler角度更新前、右和上矢量
     updateCameraVectors();
+    emit sigCameraYawPitchInfo(Yaw, Pitch);
 }
 
 // 处理从鼠标滚轮事件接收的输入。仅需要在垂直车轮轴上输入
@@ -109,4 +120,7 @@ void Camera::updateCameraVectors()
     Right.normalize();
     Up    = QVector3D::crossProduct(Right, Front);
     Up.normalize();
+
+    emit sigCameraFrontRightUpInfo(Front, Right, Up, WorldUp);
+
 }

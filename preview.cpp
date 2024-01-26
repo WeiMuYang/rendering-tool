@@ -142,6 +142,16 @@ Preview::Preview(QWidget *parent)
     initVertices();
 
     pCamera_ = new Camera(QVector3D(0,0,3.0));
+
+    connect(pCamera_, &Camera::sigCameraPositionInfo, [&](QVector3D pos){
+        emit sigPosition(pos);
+    });
+    connect(pCamera_, &Camera::sigCameraYawPitchInfo, [&](float yaw, float pitch){
+        emit sigYawPitch(yaw, pitch);
+    });
+    connect(pCamera_, &Camera::sigCameraFrontRightUpInfo, [&](QVector3D f, QVector3D r, QVector3D u,QVector3D wu){
+        emit sigFrontRightUp(f, r, u, wu);
+    });
 }
 
 Preview::~Preview()

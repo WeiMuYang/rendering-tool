@@ -22,7 +22,7 @@ class Camera : public QObject
     Q_OBJECT
 public:
     explicit Camera(QObject *parent = nullptr);
-    // constructor with vectors
+    // constructor with vectors    yaw = -90.0f指的是 正对屏幕
     Camera(QVector3D position = QVector3D(0.0f, 0.0f, 0.0f), QVector3D up = QVector3D(0.0f, 1.0f, 0.0f),
            float yaw = -90.0f, float pitch = 0.0f);
     // constructor with scalar values
@@ -43,7 +43,10 @@ public:
     // 根据相机的（更新的）Euler角度计算前矢量
     void updateCameraVectors();
 
-
+signals:
+    void sigCameraPositionInfo(QVector3D value);
+    void sigCameraYawPitchInfo(float yaw, float pitch);
+    void sigCameraFrontRightUpInfo(QVector3D f, QVector3D r, QVector3D u,QVector3D wu);
 
 public:
     // camera Attributes
@@ -56,8 +59,8 @@ public:
     QVector3D Right;     //           Front × Up
     QVector3D WorldUp;   // 始终是： 0.0f, 1.0f, 0.0f
     // euler Angles
-    float Yaw;
-    float Pitch;
+    float Yaw;   // 偏航，鼠标的 x 方向控制 Yaw的角度
+    float Pitch; // 俯仰，鼠标的 y 方向控制 Pitch的角度
     // camera options
     float MovementSpeed;
     float MouseSensitivity;
