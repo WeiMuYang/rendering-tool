@@ -52,6 +52,6 @@ compile_commands.json
 *creator.user*
 
 *_qmlcache.qrc
-Debug/*
-Profile/*
-Release/*
+*/Debug/*
+*/Profile/*
+*/Release/*
