@@ -1,5 +1,5 @@
-#ifndef PHONGLIGHT_H
-#define PHONGLIGHT_H
+#ifndef GOURAUDLIGHT_H
+#define GOURAUDLIGHT_H
 
 #include <QObject>
 #include <QOpenGLShaderProgram>
@@ -8,11 +8,12 @@
 
 #include "../vertices.h"
 
-class PhongLight : public QObject
+class GouraudLight : public QObject
 {
     Q_OBJECT
 public:
-    explicit PhongLight(QObject *parent = nullptr);
+    explicit GouraudLight(QObject *parent = nullptr);
+
     void initShader() ;
     void setShader(QString name, QVector3D value);
 
@@ -24,6 +25,7 @@ public:
     QVector3D objectColor;
     float ambientStrength;
     float specularStrength;
+
 };
 
-#endif // PHONGLIGHT_H
+#endif // GOURAUDLIGHT_H

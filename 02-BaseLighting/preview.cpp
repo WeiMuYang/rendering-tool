@@ -70,6 +70,12 @@ void Preview::setShaderPhongLight_02(QString name, QVector3D value)
     update();
 }
 
+void Preview::setShaderGouraudLight_03(QString name, QVector3D value)
+{
+    gouraudLight.setShader(name, value);
+    update();
+}
+
 void Preview::initializeGL()
 {
     // 1.初始化OpenGL函数，否则OpenGL函数不可调用
@@ -89,6 +95,7 @@ void Preview::initializeGL()
     axisXYZ.initShader();
     colorObj.initShader();
     phongLight.initShader();
+    gouraudLight.initShader();
 }
 
 void Preview::resizeGL(int w, int h)
@@ -228,14 +235,58 @@ void Preview::DrawPhongLight_02() {
     glDrawArrays(GL_TRIANGLES,0,36);
 }
 
+void Preview::DrawGouraudLight_03() {
+    QMatrix4x4 projection;
+    QMatrix4x4 view; // 默认是单位矩阵
+    QMatrix4x4 model;
+
+    if(isTimeUsed) {
+        rotateByTime = m_elapsedTime.elapsed() / 50.0;
+    }
+    projection.perspective(pCamera_->Zoom,(float)width()/height(),0.1,100);
+    view=pCamera_->GetViewMatrix();
+
+    gouraudLight.shader_Shape.bind();
+    gouraudLight.shader_Shape.setUniformValue("projection", projection);
+    gouraudLight.shader_Shape.setUniformValue("view", view);
+    model.rotate(rotateByTime, 1.0f, 5.0f, 0.5f);
+    gouraudLight.lightPos.setX(cos(rotateByTime/50)*2.5);
+    gouraudLight.lightPos.setZ(sin(rotateByTime/50)*2.5);
+    gouraudLight.shader_Shape.setUniformValue("lightPos",gouraudLight.lightPos);
+    gouraudLight.shader_Shape.setUniformValue("model", model);
+    gouraudLight.shader_Shape.setUniformValue("objectColor",gouraudLight.objectColor);
+    gouraudLight.shader_Shape.setUniformValue("lightColor",gouraudLight.lightColor);
+    gouraudLight.shader_Shape.setUniformValue("viewPos", pCamera_->Position);
+    glBindVertexArray(VAO_Shape02);
+    glDrawArrays(GL_TRIANGLES,0,36);
+
+    gouraudLight.shader_Light.bind();
+    gouraudLight.shader_Light.setUniformValue("projection", projection);
+    gouraudLight.shader_Light.setUniformValue("view", view);
+    model.setToIdentity();
+    model.translate(gouraudLight.lightPos);
+    model.rotate(1.0, 1.0f, 5.0f, 0.5f);
+    model.scale(0.2);
+    gouraudLight.shader_Light.setUniformValue("model", model);
+    gouraudLight.shader_Light.setUniformValue("lightColor",gouraudLight.lightColor);
+
+    gouraudLight.shader_Light.setUniformValue("lightPos",gouraudLight.lightPos);
+
+    glBindVertexArray(VAO_Light02);
+    glDrawArrays(GL_TRIANGLES,0,36);
+}
+
 // 开始绘制
 void Preview::drawModule() {
     switch (currentScene_) {
-    case ColorOfObject:
+    case Scene::ColorOfObject:
         DrawColorOfObject_01();
         break;
-    case PhongLight:
+    case Scene::PhongLight:
         DrawPhongLight_02();
+        break;
+    case Scene::GouraudLight:
+        DrawGouraudLight_03();
         break;
     default:
         break;
@@ -365,6 +416,11 @@ void Preview::initPhongLightVAO_02() {
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
     }
+}
+
+void Preview::initGouraudLightVAO_03() {
+    // 使用VAO_02即可
+    initPhongLightVAO_02();
 }
 
 void Preview::setCurrentScene(Scene s)

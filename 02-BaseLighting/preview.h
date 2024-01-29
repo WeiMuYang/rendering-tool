@@ -16,6 +16,7 @@
 #include "data_type.h"
 #include "camera.h"
 
+#include "03-gourand-light/gouraud_light.h"
 #include "02-phong-light/phong_light.h"
 #include "01-color-of-object/color_of_object.h"
 #include "00-axis/axis.h"
@@ -32,6 +33,7 @@ public:
     unsigned int VAO_Axis[3],VBO_Axis[3];
 
     void setCurrentScene(Scene s);
+    void timeStartStop();
 
     // 01
     unsigned int VAO_Shape01,VBO_Shape01,EBO_Shape01;
@@ -44,17 +46,16 @@ public:
     void drawAxis();
     void initTexture();
     void initAxisVAO();
-
-
-
     // 02
     unsigned int VAO_Shape02,VBO_Shape02,EBO_Shape02;
     unsigned int VAO_Light02,VBO_Light02,EBO_Light02;
     void DrawPhongLight_02();
     void initPhongLightVAO_02();
     void setShaderPhongLight_02(QString name, QVector3D value);
-
-    void timeStartStop();
+    // 03
+    void DrawGouraudLight_03();
+    void initGouraudLightVAO_03();
+    void setShaderGouraudLight_03(QString name, QVector3D value);
 public slots:
     void on_timeout();
 protected:
@@ -91,6 +92,7 @@ private:
     class ColorOfObject colorObj;
     Axis axisXYZ;
     class PhongLight phongLight;
+    class GouraudLight gouraudLight;
 };
 
 #endif // PREVIEW_H

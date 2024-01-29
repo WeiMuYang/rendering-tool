@@ -3,7 +3,7 @@
 #include <QString>
 
 enum Scene {
-    ColorOfObject, PhongLight, Texture
+    ColorOfObject, PhongLight, GouraudLight
 };
 
 // 点模式 线框模式 填充模式

@@ -560,6 +560,7 @@
     </property>
     <addaction name="actionColorOfObj"/>
     <addaction name="actionPhongLight"/>
+    <addaction name="actionGouraudLight"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -584,6 +585,11 @@
   <action name="actionTimer">
    <property name="text">
     <string>开始/停止</string>
+   </property>
+  </action>
+  <action name="actionGouraudLight">
+   <property name="text">
+    <string>Gouraud光照模型</string>
    </property>
   </action>
  </widget>

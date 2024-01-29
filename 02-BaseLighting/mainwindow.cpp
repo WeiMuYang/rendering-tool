@@ -66,6 +66,11 @@ void MainWindow::initAction() {
         switchScene(s);
     });
 
+    connect(ui->actionGouraudLight, &QAction::triggered, [this]() {
+        Scene s = Scene::GouraudLight;
+        switchScene(s);
+    });
+
 }
 
 
