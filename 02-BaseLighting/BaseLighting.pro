@@ -9,20 +9,24 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    00-axis/axis.cpp \
+    01-color-of-object/color_of_object.cpp \
+    02-phong-light/phong_light.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
     preview.cpp \
-    shader.cpp \
     texture.cpp \
     vertices.cpp
 
 HEADERS += \
+    00-axis/axis.h \
+    01-color-of-object/color_of_object.h \
+    02-phong-light/phong_light.h \
     camera.h \
     data_type.h \
     mainwindow.h \
     preview.h \
-    shader.h \
     texture.h \
     vertices.h
 
@@ -35,17 +39,18 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    shader/ColorOfObject_light - 副本.frag \
-    shader/ColorOfObject_light - 副本.vert \
-    shader/ColorOfObject_light.frag \
-    shader/ColorOfObject_light.vert \
-    shader/ColorOfObject_shapes - 副本.frag \
-    shader/ColorOfObject_shapes - 副本.vert \
-    shader/ColorOfObject_shapes.frag \
-    shader/ColorOfObject_shapes.vert \
-    shader/axis_X.frag \
-    shader/axis_X.vert \
-    shader/axis_Y.frag \
-    shader/axis_Y.vert \
-    shader/axis_Z.frag \
-    shader/axis_Z.vert
+    00-axis/shader/axis_X.frag \
+    00-axis/shader/axis_X.vert \
+    00-axis/shader/axis_Y.frag \
+    00-axis/shader/axis_Y.vert \
+    00-axis/shader/axis_Z.frag \
+    00-axis/shader/axis_Z.vert \
+    01-color-of-object/shader/ColorOfObject_light.frag \
+    01-color-of-object/shader/ColorOfObject_light.vert \
+    01-color-of-object/shader/ColorOfObject_shapes.frag \
+    01-color-of-object/shader/ColorOfObject_shapes.vert \
+    02-phong-light/shader/light.frag \
+    02-phong-light/shader/light.vert \
+    02-phong-light/shader/shapes.frag \
+    02-phong-light/shader/shapes.vert
+

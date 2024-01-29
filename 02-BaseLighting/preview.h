@@ -9,11 +9,16 @@
 #include <QOpenGLBuffer>
 #include <QKeyEvent>
 #include <QVector3D>
+#include <QTimer>
+#include <QTime>
+#include <QElapsedTimer>
 
 #include "data_type.h"
-#include "vertices.h"
 #include "camera.h"
-#include "shader.h"
+
+#include "02-phong-light/phong_light.h"
+#include "01-color-of-object/color_of_object.h"
+#include "00-axis/axis.h"
 
 
 // 2.继承相关类
@@ -23,34 +28,35 @@ class Preview : public QOpenGLWidget, QOpenGLFunctions_3_3_Core
 public:
     explicit Preview(QWidget *parent = nullptr);
     ~Preview();
-    // 可以绘制多个
-    unsigned int VAO_id[4],VBO_id[4],EBO_id;
-
     // 坐标轴
     unsigned int VAO_Axis[3],VBO_Axis[3];
 
-    void vertexData2VBO();
+    void setCurrentScene(Scene s);
+
+    // 01
+    unsigned int VAO_Shape01,VBO_Shape01,EBO_Shape01;
+    unsigned int VAO_Light01,VBO_Light01,EBO_Light01;
+    void initColorofObjectVAO_01();
+    void DrawColorOfObject_01();
+    void setShaderColorObj_01(QString name, QVector3D value);
+
     void drawModule();
     void drawAxis();
-    void setTexture(Scene module);
-
-    void setDrawMode(DrawMode mode);
-
-    void setWrap(TexWrap texWrap);
-
-    void initVertices();
-
-
-    void initShaderProgram();
-    void axisShaderProgram();
     void initTexture();
-
-    void setModelVAO();
-    void setAxisVAO();
+    void initAxisVAO();
 
 
-    void setMinFilter(TexFilter TexF);
-    void setMagFilter(TexFilter TexF);
+
+    // 02
+    unsigned int VAO_Shape02,VBO_Shape02,EBO_Shape02;
+    unsigned int VAO_Light02,VBO_Light02,EBO_Light02;
+    void DrawPhongLight_02();
+    void initPhongLightVAO_02();
+    void setShaderPhongLight_02(QString name, QVector3D value);
+
+    void timeStartStop();
+public slots:
+    void on_timeout();
 protected:
     // 3.重载三个相关虚函数, 无需调用，会自动的调用执行
     // 1）initializeGL() : 设置OpenGL资源和状态，最先调用且调用一次。
@@ -68,6 +74,7 @@ protected:
 
     void wheelEvent(QWheelEvent *event);
 
+
 signals:
     void sigPosition(QVector3D pos);
     void sigYawPitch(float yaw, float pitch);
@@ -75,20 +82,15 @@ signals:
 
 private:
     Scene currentScene_;
-    // 坐标系
-    Vertices axisX_;
-    Shader shader_axisX_;
-    Vertices axisY_;
-    Shader shader_axisY_;
-    Vertices axisZ_;
-    Shader shader_axisZ_;
-    // -----
-    Vertices box3D_;
-    Shader shader_ColorOfObject_Light_;
-    Shader shader_ColorOfObject_Shapes_;
-
+    QTimer m_timer;
+    QElapsedTimer m_elapsedTime;
+    float rotateByTime;
+    bool isTimeUsed{true};
     Camera* pCamera_;
     QPoint mouseDeltaPos_;
+    class ColorOfObject colorObj;
+    Axis axisXYZ;
+    class PhongLight phongLight;
 };
 
 #endif // PREVIEW_H
