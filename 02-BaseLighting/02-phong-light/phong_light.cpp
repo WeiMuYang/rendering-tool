@@ -1,4 +1,5 @@
 #include "phong_light.h"
+#include <QDebug>
 
 float vertices3DBox2[] = {
     // Position             Normal
@@ -62,6 +63,7 @@ PhongLight::PhongLight(QObject *parent)
     objectColor = {1.0f, 0.5f, 0.3f};
     ambientStrength = 0.1;
     specularStrength = 0.5;
+    shiny = 32;
 
     // vertices
     box3D.setVerticesArr(vertices3DBox2, 216);
@@ -107,11 +109,16 @@ void PhongLight::setShader(QString name , QVector3D value) {
     }
 
     if(name == "specularStrength") {
+        qDebug() << value.x();
         specularStrength = value.x();
     }
 
     if(name == "ambientStrength") {
         ambientStrength = value.x();
+    }
+
+    if(name == "shiny")  {//shiny
+        shiny = value.x();
     }
 }
 

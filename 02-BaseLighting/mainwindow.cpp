@@ -49,6 +49,7 @@ void MainWindow::initSceneData() {
     phongLight_02.objectColor = {1.0f, 0.5f, 0.3f};
     phongLight_02.ambient = 0.1;
     phongLight_02.specular = 0.5;
+    phongLight_02.shiny = 32;
 }
 
 void MainWindow::initAction() {
@@ -69,6 +70,11 @@ void MainWindow::initAction() {
 
     connect(ui->actionGouraudLight, &QAction::triggered, [this]() {
         Scene s = Scene::GouraudLight;
+        switchScene(s);
+    });
+
+    connect(ui->actionMaterial, &QAction::triggered, [this]() {
+        Scene s = Scene::Material;
         switchScene(s);
     });
 
@@ -159,5 +165,12 @@ void MainWindow::on_PhongSpecular_SpinBox_valueChanged(double arg1)
 {
     phongLight_02.specular = arg1;
     ui->PreviewWgt->setShaderPhongLight_02("specularStrength", QVector3D(phongLight_02.specular, 0, 0));
+}
+
+
+void MainWindow::on_shiny_spinBox_valueChanged(int arg1)
+{
+    phongLight_02.shiny = arg1;
+    ui->PreviewWgt->setShaderPhongLight_02("shiny", QVector3D(phongLight_02.shiny, 0, 0));
 }
 

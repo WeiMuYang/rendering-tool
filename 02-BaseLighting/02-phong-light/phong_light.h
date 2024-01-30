@@ -24,6 +24,7 @@ public:
     QVector3D objectColor;
     float ambientStrength;
     float specularStrength;
+    int shiny; // 2 4 8 16 32 64 128
 };
 
 #endif // PHONGLIGHT_H

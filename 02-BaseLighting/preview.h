@@ -16,6 +16,7 @@
 #include "data_type.h"
 #include "camera.h"
 
+#include "04-material/material.h"
 #include "03-gourand-light/gouraud_light.h"
 #include "02-phong-light/phong_light.h"
 #include "01-color-of-object/color_of_object.h"
@@ -56,6 +57,10 @@ public:
     void DrawGouraudLight_03();
     void initGouraudLightVAO_03();
     void setShaderGouraudLight_03(QString name, QVector3D value);
+    // 04
+    void setShaderMaterial_04(QString name, QVector3D value);
+    void DrawMaterial_04();
+    void initMaterialVAO_04();
 public slots:
     void on_timeout();
 protected:
@@ -90,9 +95,10 @@ private:
     Camera* pCamera_;
     QPoint mouseDeltaPos_;
     class ColorOfObject colorObj;
-    Axis axisXYZ;
+    class Axis axisXYZ;
     class PhongLight phongLight;
     class GouraudLight gouraudLight;
+    class Material material;
 };
 
 #endif // PREVIEW_H

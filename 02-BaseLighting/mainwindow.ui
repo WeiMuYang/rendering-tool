@@ -522,6 +522,23 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QLabel" name="label_27">
+              <property name="text">
+               <string>specular-shiny：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="shiny_spinBox">
+              <property name="maximum">
+               <number>1000</number>
+              </property>
+              <property name="value">
+               <number>32</number>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
          </item>
@@ -561,6 +578,7 @@
     <addaction name="actionColorOfObj"/>
     <addaction name="actionPhongLight"/>
     <addaction name="actionGouraudLight"/>
+    <addaction name="actionMaterial"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -593,6 +611,11 @@
   <action name="actionGouraudLight">
    <property name="text">
     <string>Gouraud光照模型</string>
+   </property>
+  </action>
+  <action name="actionMaterial">
+   <property name="text">
+    <string>材质设置</string>
    </property>
   </action>
  </widget>

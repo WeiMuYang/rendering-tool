@@ -21,6 +21,7 @@ struct PhongLight_02
     QVector3D lightColor;
     float ambient;
     float specular;
+    int shiny;
 };
 
 class MainWindow : public QMainWindow
@@ -65,6 +66,8 @@ private slots:
     void on_PhongAmbient_SpinBox_valueChanged(double arg1);
 
     void on_PhongSpecular_SpinBox_valueChanged(double arg1);
+
+    void on_shiny_spinBox_valueChanged(int arg1);
 
 private:
     Ui::MainWindow *ui;

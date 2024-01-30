@@ -22,8 +22,8 @@ void GouraudLight::initShader() {
     shader_Light.bind();
     shader_Light.setUniformValue("lightColor",lightColor);
 
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,"../02-phong-light/shader/shapes.frag");
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,"../02-phong-light/shader/shapes.vert");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,"../03-gourand-light/shader/shapes.frag");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,"../03-gourand-light/shader/shapes.vert");
     success = shader_Shape.link();
     if(!success) {
         qDebug()<<"ERR:"<<shader_Shape.log();

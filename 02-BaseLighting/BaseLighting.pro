@@ -13,6 +13,7 @@ SOURCES += \
     01-color-of-object/color_of_object.cpp \
     02-phong-light/phong_light.cpp \
     03-gourand-light/gouraud_light.cpp \
+    04-material/material.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -25,6 +26,7 @@ HEADERS += \
     01-color-of-object/color_of_object.h \
     02-phong-light/phong_light.h \
     03-gourand-light/gouraud_light.h \
+    04-material/material.h \
     camera.h \
     data_type.h \
     mainwindow.h \
@@ -58,5 +60,9 @@ DISTFILES += \
     03-gourand-light/shader/light.frag \
     03-gourand-light/shader/light.vert \
     03-gourand-light/shader/shapes.frag \
-    03-gourand-light/shader/shapes.vert
+    03-gourand-light/shader/shapes.vert \
+    04-material/shader/light.frag \
+    04-material/shader/light.vert \
+    04-material/shader/shapes.frag \
+    04-material/shader/shapes.vert
 
