@@ -52,6 +52,7 @@ void MainWindow::initSceneData() {
 }
 
 void MainWindow::initAction() {
+    ui->actionTimer->setShortcut(QKeySequence("Space"));
     connect(ui->actionTimer, &QAction::triggered, [this]() {
         ui->PreviewWgt->timeStartStop();
     });

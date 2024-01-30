@@ -133,13 +133,14 @@ void Preview::keyPressEvent(QKeyEvent *event)
 
 void Preview::mouseMoveEvent(QMouseEvent *event)
 {
-    //    static QPoint lastPos(width()/2,height()/2);
-    //    auto currentPos=event->pos();
-    //    mouseDeltaPos_ = currentPos - lastPos;
-    //    lastPos = currentPos;
-
-    //    pCamera_->ProcessMouseMovement(mouseDeltaPos_.x(), -mouseDeltaPos_.y());
-    //    update();
+    static QPoint lastPos(width()/2,height()/2);
+     if(event->buttons() & Qt::RightButton) {
+        auto currentPos = event->pos();
+        mouseDeltaPos_ = currentPos - lastPos;
+        lastPos = currentPos;
+        pCamera_->ProcessMouseMovement(mouseDeltaPos_.x(), -mouseDeltaPos_.y());
+        update();
+     }
 }
 
 void Preview::wheelEvent(QWheelEvent *event)

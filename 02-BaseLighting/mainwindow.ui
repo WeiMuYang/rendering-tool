@@ -586,6 +586,9 @@
    <property name="text">
     <string>开始/停止</string>
    </property>
+   <property name="shortcut">
+    <string>Space</string>
+   </property>
   </action>
   <action name="actionGouraudLight">
    <property name="text">
