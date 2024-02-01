@@ -1,31 +1,29 @@
-#ifndef MATERIAL_H
-#define MATERIAL_H
+#ifndef CYANPLASTIC_H
+#define CYANPLASTIC_H
 
 #include <QObject>
 #include <QOpenGLShaderProgram>
 #include <QVector3D>
 #include <QMatrix4x4>
 
-//#include "../vertices.h"
-
-struct MaterialShapeShader {
+struct CyanPlasticShapeMaterial {
     QVector3D ambient;
     QVector3D diffuse;
     QVector3D specular;
     float shininess;
 };
 
-struct MaterialLightShader {
+struct CyanPlasticLight {
     QVector3D ambient;
     QVector3D diffuse;
     QVector3D specular;
 };
 
-class Material : public QObject
+class CyanPlastic : public QObject
 {
     Q_OBJECT
 public:
-    explicit Material(QObject *parent = nullptr);
+    explicit CyanPlastic(QObject *parent = nullptr);
 
     void initShader() ;
     void setShader(QString name, QVector3D value);
@@ -43,11 +41,11 @@ public:
     QVector3D viewPos;
     QVector3D lightColor;
     QVector3D objectColor;
-    MaterialShapeShader objectMaterial;
-    MaterialLightShader light;
+    CyanPlasticShapeMaterial objectMaterial;
+    CyanPlasticLight light;
 
     void updateShapeShader();
     void updateLightShader();
 };
 
-#endif // MATERIAL_H
+#endif // CYANPLASTIC_H

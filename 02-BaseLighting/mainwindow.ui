@@ -579,6 +579,8 @@
     <addaction name="actionPhongLight"/>
     <addaction name="actionGouraudLight"/>
     <addaction name="actionMaterial"/>
+    <addaction name="actionCyanPlastic"/>
+    <addaction name="actionTexTureLight"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -616,6 +618,16 @@
   <action name="actionMaterial">
    <property name="text">
     <string>材质设置</string>
+   </property>
+  </action>
+  <action name="actionCyanPlastic">
+   <property name="text">
+    <string>青色的塑料</string>
+   </property>
+  </action>
+  <action name="actionTexTureLight">
+   <property name="text">
+    <string>纹理光照</string>
    </property>
   </action>
  </widget>

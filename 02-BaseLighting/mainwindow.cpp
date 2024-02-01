@@ -59,27 +59,31 @@ void MainWindow::initAction() {
     });
 
     connect(ui->actionColorOfObj, &QAction::triggered, [this]() {
-        Scene s = Scene::ColorOfObject;
-        switchScene(s);
+        switchScene(Scene::ColorOfObject);
     });
 
     connect(ui->actionPhongLight, &QAction::triggered, [this]() {
-        Scene s = Scene::PhongLight;
-        switchScene(s);
+        switchScene(Scene::PhongLight);
     });
 
     connect(ui->actionGouraudLight, &QAction::triggered, [this]() {
-        Scene s = Scene::GouraudLight;
-        switchScene(s);
+        switchScene(Scene::GouraudLight);
     });
 
     connect(ui->actionMaterial, &QAction::triggered, [this]() {
-        Scene s = Scene::Material;
-        switchScene(s);
+        switchScene(Scene::Material);
+    });
+
+    connect(ui->actionCyanPlastic, &QAction::triggered, [this]() {
+        switchScene(Scene::CyanPlastic);
+    });
+
+    // TexTureLight
+    connect(ui->actionTexTureLight, &QAction::triggered, [this]() {
+        switchScene(Scene::TexTureLight);
     });
 
 }
-
 
 void MainWindow::on_Light_R_SpinBox_valueChanged(double arg1)
 {

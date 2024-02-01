@@ -16,6 +16,7 @@
 #include "data_type.h"
 #include "camera.h"
 
+#include "05-cyan-plastic/cyan_plastic.h"
 #include "04-material/material.h"
 #include "03-gourand-light/gouraud_light.h"
 #include "02-phong-light/phong_light.h"
@@ -61,6 +62,10 @@ public:
     void setShaderMaterial_04(QString name, QVector3D value);
     void DrawMaterial_04();
     void initMaterialVAO_04();
+
+    void DrawCyanPlastic_05();
+    void initCyanPlastic_05();
+    void setShaderCyanPlastic_05(QString name, QVector3D value);
 public slots:
     void on_timeout();
 protected:
@@ -99,6 +104,7 @@ private:
     class PhongLight phongLight;
     class GouraudLight gouraudLight;
     class Material material;
+    class CyanPlastic cyanPlastic;
 };
 
 #endif // PREVIEW_H

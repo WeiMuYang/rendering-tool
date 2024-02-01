@@ -78,7 +78,13 @@ void Preview::setShaderGouraudLight_03(QString name, QVector3D value)
 
 void Preview::setShaderMaterial_04(QString name, QVector3D value)
 {
-    gouraudLight.setShader(name, value);
+    material.setShader(name, value);
+    update();
+}
+
+void Preview::setShaderCyanPlastic_05(QString name, QVector3D value)
+{
+    cyanPlastic.setShader(name, value);
     update();
 }
 
@@ -92,6 +98,7 @@ void Preview::initializeGL()
     initPhongLightVAO_02();
     initGouraudLightVAO_03();
     initMaterialVAO_04();
+    initCyanPlastic_05();
     // 5.解绑VBO和VAO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -105,6 +112,7 @@ void Preview::initializeGL()
     phongLight.initShader();
     gouraudLight.initShader();
     material.initShader();
+    cyanPlastic.initShader();
 }
 
 void Preview::resizeGL(int w, int h)
@@ -325,6 +333,37 @@ void Preview::DrawMaterial_04() {
     glDrawArrays(GL_TRIANGLES,0,36);
 }
 
+void Preview::DrawCyanPlastic_05() {
+    QMatrix4x4 projection;
+    QMatrix4x4 view; // 默认是单位矩阵
+    QMatrix4x4 model;
+
+    if(isTimeUsed) {
+        rotateByTime = m_elapsedTime.elapsed() / 50.0;
+    }
+    projection.perspective(pCamera_->Zoom,(float)width()/height(),0.1f,100.0f);
+    view = pCamera_->GetViewMatrix();
+    model.rotate(rotateByTime, 1.0f, 5.0f, 0.5f);
+    cyanPlastic.projection = projection;
+    cyanPlastic.view = view;
+    cyanPlastic.model = model;
+    cyanPlastic.viewPos = pCamera_->Position;
+    cyanPlastic.updateShapeShader();
+    glBindVertexArray(VAO_Shape02);
+    glDrawArrays(GL_TRIANGLES,0,36);
+
+    //// Shader Light
+    model.setToIdentity();
+    model.translate(cyanPlastic.lightPos);
+    model.rotate(1.0, 1.0f, 5.0f, 0.5f);
+    model.scale(0.2f);
+    cyanPlastic.model = model;
+    cyanPlastic.updateLightShader();
+
+    glBindVertexArray(VAO_Light02);
+    glDrawArrays(GL_TRIANGLES,0,36);
+}
+
 
 // 开始绘制
 void Preview::drawModule() {
@@ -340,6 +379,9 @@ void Preview::drawModule() {
         break;
     case Scene::Material:
         DrawMaterial_04();
+        break;
+    case Scene::CyanPlastic:
+        DrawCyanPlastic_05();
         break;
     default:
         break;
@@ -477,6 +519,11 @@ void Preview::initGouraudLightVAO_03() {
 }
 
 void Preview::initMaterialVAO_04() {
+    // 使用VAO_02即可
+//    initPhongLightVAO_02();
+}
+
+void Preview::initCyanPlastic_05() {
     // 使用VAO_02即可
 //    initPhongLightVAO_02();
 }

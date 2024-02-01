@@ -14,6 +14,8 @@ SOURCES += \
     02-phong-light/phong_light.cpp \
     03-gourand-light/gouraud_light.cpp \
     04-material/material.cpp \
+    05-cyan-plastic/cyan_plastic.cpp \
+    06-texture-light/texture_light.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -27,6 +29,8 @@ HEADERS += \
     02-phong-light/phong_light.h \
     03-gourand-light/gouraud_light.h \
     04-material/material.h \
+    05-cyan-plastic/cyan_plastic.h \
+    06-texture-light/texture_light.h \
     camera.h \
     data_type.h \
     mainwindow.h \
@@ -64,5 +68,13 @@ DISTFILES += \
     04-material/shader/light.frag \
     04-material/shader/light.vert \
     04-material/shader/shapes.frag \
-    04-material/shader/shapes.vert
+    04-material/shader/shapes.vert \
+    05-cyan-plastic/shader/light.frag \
+    05-cyan-plastic/shader/light.vert \
+    05-cyan-plastic/shader/shapes.frag \
+    05-cyan-plastic/shader/shapes.vert \
+    06-texture-light/shader/light.frag \
+    06-texture-light/shader/light.vert \
+    06-texture-light/shader/shapes.frag \
+    06-texture-light/shader/shapes.vert
 
