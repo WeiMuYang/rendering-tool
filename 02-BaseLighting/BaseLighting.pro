@@ -20,7 +20,6 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     preview.cpp \
-    texture.cpp \
     vertices.cpp
 
 HEADERS += \
@@ -35,11 +34,11 @@ HEADERS += \
     data_type.h \
     mainwindow.h \
     preview.h \
-    texture.h \
     vertices.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    06-texture-light/texturelight.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -73,8 +72,15 @@ DISTFILES += \
     05-cyan-plastic/shader/light.vert \
     05-cyan-plastic/shader/shapes.frag \
     05-cyan-plastic/shader/shapes.vert \
+    06-texture-light/img/awesomeface.png \
+    06-texture-light/img/container2.png \
+    06-texture-light/img/container2_specular.png \
+    06-texture-light/img/lighting_maps_specular_color.png \
+    06-texture-light/img/matrix.jpg \
+    06-texture-light/img/wall.jpg \
     06-texture-light/shader/light.frag \
     06-texture-light/shader/light.vert \
     06-texture-light/shader/shapes.frag \
     06-texture-light/shader/shapes.vert
+
 

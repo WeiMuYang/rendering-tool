@@ -16,6 +16,7 @@
 #include "data_type.h"
 #include "camera.h"
 
+#include "06-texture-light/texture_light.h"
 #include "05-cyan-plastic/cyan_plastic.h"
 #include "04-material/material.h"
 #include "03-gourand-light/gouraud_light.h"
@@ -33,7 +34,8 @@ public:
     ~Preview();
     // 坐标轴
     unsigned int VAO_Axis[3],VBO_Axis[3];
-
+    void drawAxis();
+    void initAxisVAO();
     void setCurrentScene(Scene s);
     void timeStartStop();
 
@@ -44,10 +46,6 @@ public:
     void DrawColorOfObject_01();
     void setShaderColorObj_01(QString name, QVector3D value);
 
-    void drawModule();
-    void drawAxis();
-    void initTexture();
-    void initAxisVAO();
     // 02
     unsigned int VAO_Shape02,VBO_Shape02,EBO_Shape02;
     unsigned int VAO_Light02,VBO_Light02,EBO_Light02;
@@ -62,13 +60,23 @@ public:
     void setShaderMaterial_04(QString name, QVector3D value);
     void DrawMaterial_04();
     void initMaterialVAO_04();
-
+    // 05
     void DrawCyanPlastic_05();
     void initCyanPlastic_05();
     void setShaderCyanPlastic_05(QString name, QVector3D value);
+
+    // 06
+    unsigned int VAO_Shape06,VBO_Shape06;
+    void initTextureLightVAO_06();
+    void DrawTextureLight_06();
+    void setShaderTextureLight_06(QString name, QVector3D value);
+
 public slots:
     void on_timeout();
 protected:
+
+    //////  需要修改的 ////
+    void drawModule();
     // 3.重载三个相关虚函数, 无需调用，会自动的调用执行
     // 1）initializeGL() : 设置OpenGL资源和状态，最先调用且调用一次。
     virtual void initializeGL();
@@ -95,6 +103,7 @@ private:
     Scene currentScene_;
     QTimer m_timer;
     QElapsedTimer m_elapsedTime;
+    QVector3D rotationAxis;
     float rotateByTime;
     bool isTimeUsed{true};
     Camera* pCamera_;
@@ -105,6 +114,7 @@ private:
     class GouraudLight gouraudLight;
     class Material material;
     class CyanPlastic cyanPlastic;
+    class TextureLight textureLight;
 };
 
 #endif // PREVIEW_H

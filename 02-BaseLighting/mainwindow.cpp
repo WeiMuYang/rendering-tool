@@ -47,8 +47,8 @@ void MainWindow::initSceneData() {
     // 02
     phongLight_02.lightColor = {1.0f, 1.0f, 1.0f};
     phongLight_02.objectColor = {1.0f, 0.5f, 0.3f};
-    phongLight_02.ambient = 0.1;
-    phongLight_02.specular = 0.5;
+    phongLight_02.ambient = 0.1f;
+    phongLight_02.specular = 0.5f;
     phongLight_02.shiny = 32;
 }
 
@@ -80,7 +80,8 @@ void MainWindow::initAction() {
 
     // TexTureLight
     connect(ui->actionTexTureLight, &QAction::triggered, [this]() {
-        switchScene(Scene::TexTureLight);
+        switchScene(Scene::TextureLight);
+
     });
 
 }

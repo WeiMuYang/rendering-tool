@@ -12,7 +12,7 @@ Camera::Camera(QObject *parent)
 
 // constructor with vectors
 Camera::Camera(QVector3D position, QVector3D up, float yaw, float pitch)
-    : Front(QVector3D(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
+    : Front(QVector3D(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), fov(ZOOM)
 {
     Position = position;
     WorldUp = up;
@@ -22,7 +22,7 @@ Camera::Camera(QVector3D position, QVector3D up, float yaw, float pitch)
 }
 // constructor with scalar values
 Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch)
-    : Front(QVector3D(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
+    : Front(QVector3D(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), fov(ZOOM)
 {
     Position = QVector3D(posX, posY, posZ);
     WorldUp = QVector3D(upX, upY, upZ);
@@ -96,11 +96,11 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, bool constrainPi
 // 处理从鼠标滚轮事件接收的输入。仅需要在垂直车轮轴上输入
 void Camera::ProcessMouseScroll(float yoffset)
 {
-    Zoom -= (float)yoffset;
-    if (Zoom < 1.0f)
-        Zoom = 1.0f;
-    if (Zoom > 75.0f)
-        Zoom = 75.0f;
+    fov -= (float)yoffset;
+    if (fov < 1.0f)
+        fov = 1.0f;
+    if (fov > 75.0f)
+        fov = 75.0f;
 }
 
 // 根据相机的（更新的）Euler角度计算前矢量

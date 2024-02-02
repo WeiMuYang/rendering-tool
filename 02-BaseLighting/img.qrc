@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>06-texture-light/img/container2.png</file>
+        <file>06-texture-light/img/container2_specular.png</file>
+        <file>06-texture-light/img/lighting_maps_specular_color.png</file>
+        <file>06-texture-light/img/matrix.jpg</file>
+    </qresource>
+</RCC>

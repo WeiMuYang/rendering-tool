@@ -64,7 +64,12 @@ public:
     // camera options
     float MovementSpeed;
     float MouseSensitivity;
-    float Zoom;
+
+    // 相机参数
+    float fov;   // Zoom可以控制
+    float aspectRatio;
+    float nearPlane;
+    float farPlane;
 };
 
 #endif // CAMERA_H

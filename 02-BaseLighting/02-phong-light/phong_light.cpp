@@ -61,8 +61,8 @@ PhongLight::PhongLight(QObject *parent)
     lightPos = {1.2f, 1.0f, 2.0f};
     lightColor = {1.0f, 1.0f, 1.0f};
     objectColor = {1.0f, 0.5f, 0.3f};
-    ambientStrength = 0.1;
-    specularStrength = 0.5;
+    ambientStrength = 0.1f;
+    specularStrength = 0.5f;
     shiny = 32;
 
     // vertices
