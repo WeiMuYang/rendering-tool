@@ -1,8 +1,13 @@
 #include "cyan_plastic.h"
 
-CyanPlastic::CyanPlastic(QObject *parent)
-    : QObject{parent}
+#include "ui_cyan_plastic.h"
+
+CyanPlastic::CyanPlastic(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::CyanPlastic)
 {
+    ui->setupUi(this);
+
     // 颜色
     objectColor = {1.0f, 1.0f, 1.0f};
     lightColor = {1.0f, 1.0f, 1.0f};
@@ -25,6 +30,11 @@ CyanPlastic::CyanPlastic(QObject *parent)
     light.ambient = QVector3D(1,1,1);
     // 光源镜面反射分量
     light.specular = QVector3D(1.0,1.0,1.0);
+}
+
+CyanPlastic::~CyanPlastic()
+{
+    delete ui;
 }
 
 void CyanPlastic::initShader() {

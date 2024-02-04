@@ -15,7 +15,6 @@ Preview::Preview(QWidget *parent)
     pCamera_->nearPlane = 0.1f;
     pCamera_->farPlane = 100.0f;
 
-
     currentScene_ = Scene::ColorOfObject;
 
     rotationAxis = {1.0f, 1.0f, 0.5f};
@@ -59,36 +58,6 @@ void Preview::initAxisVAO() {
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * axisXYZ.axisZ_.verticeLength() , axisXYZ.axisZ_.getVertices(),GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-}
-
-void Preview::setShaderColorObj_01(QString name, QVector3D value)
-{
-    colorObj.setShader(name, value);
-    update();
-}
-
-void Preview::setShaderPhongLight_02(QString name, QVector3D value)
-{
-    phongLight.setShader(name, value);
-    update();
-}
-
-void Preview::setShaderGouraudLight_03(QString name, QVector3D value)
-{
-    gouraudLight.setShader(name, value);
-    update();
-}
-
-void Preview::setShaderMaterial_04(QString name, QVector3D value)
-{
-    material.setShader(name, value);
-    update();
-}
-
-void Preview::setShaderCyanPlastic_05(QString name, QVector3D value)
-{
-    cyanPlastic.setShader(name, value);
-    update();
 }
 
 void Preview::initTextureLightVAO_06()
@@ -155,12 +124,6 @@ void Preview::DrawTextureLight_06()
 
     glBindVertexArray(VAO_Light02);
     glDrawArrays(GL_TRIANGLES,0,36);
-}
-
-void Preview::setShaderTextureLight_06(QString name, QVector3D value)
-{
-    textureLight.setShader(name, value);
-    update();
 }
 
 void Preview::initializeGL()
@@ -260,31 +223,26 @@ void Preview::DrawColorOfObject_01() {
     QMatrix4x4 projection;
     QMatrix4x4 view; // 默认是单位矩阵
     QMatrix4x4 model;
+
+    projection.perspective(pCamera_->fov,(float)width()/height(),0.1f,100.0f);
+    view=pCamera_->GetViewMatrix();
     if(isTimeUsed) {
         rotateByTime = m_elapsedTime.elapsed() / 50.0;
     }
-    projection.perspective(pCamera_->fov,(float)width()/height(),0.1f,100.0f);
-    view=pCamera_->GetViewMatrix();
-
-    colorObj.shader_Shape.bind();
-    colorObj.shader_Shape.setUniformValue("projection", projection);
-    colorObj.shader_Shape.setUniformValue("view", view);
     model.rotate(rotateByTime, rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
-    colorObj.shader_Shape.setUniformValue("model", model);
-    colorObj.shader_Shape.setUniformValue("objectColor",colorObj.objectColor);
-    colorObj.shader_Shape.setUniformValue("lightColor",colorObj.lightColor);
+    colorObj.projection = projection;
+    colorObj.view = view;
+    colorObj.model = model;
+    colorObj.updateShapeShader();
     glBindVertexArray(VAO_Shape01);
     glDrawArrays(GL_TRIANGLES,0,36);
 
-    colorObj.shader_Light.bind();
-    colorObj.shader_Light.setUniformValue("projection", projection);
-    colorObj.shader_Light.setUniformValue("view", view);
     model.setToIdentity();
-    model.translate(colorObj.lightPos);
-    model.rotate(1.0f, rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
+    model.translate(colorObj.u_lightPos);
     model.scale(0.2f);
-    colorObj.shader_Light.setUniformValue("model", model);
-    colorObj.shader_Light.setUniformValue("lightColor",colorObj.lightColor);
+    model.rotate(1.0f, rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
+    colorObj.model = model;
+    colorObj.updateLightShader();
     glBindVertexArray(VAO_Light01);
     glDrawArrays(GL_TRIANGLES,0,36);
 }
@@ -294,41 +252,32 @@ void Preview::DrawPhongLight_02() {
     QMatrix4x4 view; // 默认是单位矩阵
     QMatrix4x4 model;
 
+    projection.perspective(pCamera_->fov,(float)width()/height(),0.1f,100.0f);
+    view=pCamera_->GetViewMatrix();
     if(isTimeUsed) {
         rotateByTime = m_elapsedTime.elapsed() / 50.0;
     }
-    projection.perspective(pCamera_->fov,(float)width()/height(),0.1f,100.0f);
-    view=pCamera_->GetViewMatrix();
-
-    phongLight.shader_Shape.bind();
-    phongLight.shader_Shape.setUniformValue("projection", projection);
-    phongLight.shader_Shape.setUniformValue("view", view);
     model.rotate(rotateByTime, rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
-    phongLight.lightPos.setX(cos(rotateByTime/50)*2.5);
-    phongLight.lightPos.setZ(sin(rotateByTime/50)*2.5);
-    phongLight.shader_Shape.setUniformValue("lightPos",phongLight.lightPos);
-    phongLight.shader_Shape.setUniformValue("model", model);
-    phongLight.shader_Shape.setUniformValue("objectColor",phongLight.objectColor);
-    phongLight.shader_Shape.setUniformValue("lightColor",phongLight.lightColor);
-    phongLight.shader_Shape.setUniformValue("specularStrength",phongLight.specularStrength);
-    phongLight.shader_Shape.setUniformValue("ambientStrength",phongLight.ambientStrength);
-    phongLight.shader_Shape.setUniformValue("shiny",phongLight.shiny);
-    phongLight.shader_Shape.setUniformValue("viewPos", pCamera_->Position);
+    phongLight.projection = projection;
+    phongLight.view = view;
+    phongLight.model = model;
+    phongLight.u_lightPos.setX(cos(rotateByTime/50)*2.5);
+    phongLight.u_lightPos.setZ(sin(rotateByTime/50)*2.5);
+
+    phongLight.u_viewPos = pCamera_->Position;
+    phongLight.updateShapeShader();
+
     glBindVertexArray(VAO_Shape02);
     glDrawArrays(GL_TRIANGLES,0,36);
 
-    phongLight.shader_Light.bind();
-    phongLight.shader_Light.setUniformValue("projection", projection);
-    phongLight.shader_Light.setUniformValue("view", view);
     model.setToIdentity();
-    model.translate(phongLight.lightPos);
+    model.translate(phongLight.u_lightPos);
     model.rotate(1.0f, 1.0f, 5.0f, 0.5f);
     model.scale(0.2f);
+    phongLight.model = model;
     phongLight.shader_Light.setUniformValue("model", model);
-    phongLight.shader_Light.setUniformValue("lightColor",phongLight.lightColor);
-
-    phongLight.shader_Light.setUniformValue("lightPos",phongLight.lightPos);
-
+    phongLight.updateLightShader();
+    phongLight.updateDlg();
     glBindVertexArray(VAO_Light02);
     glDrawArrays(GL_TRIANGLES,0,36);
 }
@@ -450,18 +399,23 @@ void Preview::drawModule() {
         break;
     case Scene::PhongLight:
         DrawPhongLight_02();
+//        phongLight.show();
         break;
     case Scene::GouraudLight:
         DrawGouraudLight_03();
+        gouraudLight.show();
         break;
     case Scene::Material:
         DrawMaterial_04();
+//        material.show();
         break;
     case Scene::CyanPlastic:
         DrawCyanPlastic_05();
+//        cyanPlastic.show();
         break;
     case Scene::TextureLight:
         DrawTextureLight_06();
+//        textureLight.show();
         break;
     default:
         break;
@@ -610,9 +564,30 @@ void Preview::initCyanPlastic_05() {
 
 void Preview::setCurrentScene(Scene s)
 {
+    colorObj.close();
+    phongLight.close();
     currentScene_ = s;
-    if(s == Scene::TextureLight) {
-        textureLight.show();
+    switch (currentScene_) {
+    case Scene::ColorOfObject:
+        colorObj.showWindow();
+        break;
+    case Scene::PhongLight:
+        phongLight.showWindow();
+        break;
+    case Scene::GouraudLight:
+        colorObj.showWindow();
+        break;
+    case Scene::Material:
+        colorObj.showWindow();
+        break;
+    case Scene::CyanPlastic:
+        colorObj.showWindow();
+        break;
+    case Scene::TextureLight:
+        colorObj.showWindow();
+        break;
+    default:
+        break;
     }
 }
 void Preview::on_timeout()

@@ -1,5 +1,5 @@
 #include "texture_light.h"
-#include "ui_texturelight.h"
+#include "ui_texture_light.h"
 
 float vertices3DBox6[] = {
     // positions          // normals          // texture coords
@@ -45,6 +45,7 @@ float vertices3DBox6[] = {
     -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
     -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
  };
+
 
 
 

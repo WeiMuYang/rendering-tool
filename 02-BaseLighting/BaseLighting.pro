@@ -37,8 +37,13 @@ HEADERS += \
     vertices.h
 
 FORMS += \
+    01-color-of-object/color_of_object.ui \
+    02-phong-light/phong_light.ui \
+    03-gourand-light/gouraud_light.ui \
+    05-cyan-plastic/cyan_plastic.ui \
+    06-texture-light/texture_light.ui \
     mainwindow.ui \
-    06-texture-light/texturelight.ui
+    04-material/material.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

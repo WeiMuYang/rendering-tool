@@ -6,6 +6,12 @@
 #include <QVector3D>
 #include <QMatrix4x4>
 
+#include <QDialog>
+
+namespace Ui {
+class Material;
+}
+
 //#include "../vertices.h"
 
 struct MaterialShapeShader {
@@ -21,12 +27,14 @@ struct MaterialLightShader {
     QVector3D specular;
 };
 
-class Material : public QObject
+
+class Material : public QDialog
 {
     Q_OBJECT
-public:
-    explicit Material(QObject *parent = nullptr);
 
+public:
+    explicit Material(QWidget *parent = nullptr);
+    ~Material();
     void initShader() ;
     void setShader(QString name, QVector3D value);
 
@@ -48,6 +56,10 @@ public:
 
     void updateShapeShader();
     void updateLightShader();
+
+private:
+    Ui::Material *ui;
 };
+
 
 #endif // MATERIAL_H

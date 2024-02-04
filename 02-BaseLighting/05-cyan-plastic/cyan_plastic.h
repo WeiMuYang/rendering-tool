@@ -6,6 +6,13 @@
 #include <QVector3D>
 #include <QMatrix4x4>
 
+
+#include <QDialog>
+
+namespace Ui {
+class CyanPlastic;
+}
+
 struct CyanPlasticShapeMaterial {
     QVector3D ambient;
     QVector3D diffuse;
@@ -19,11 +26,14 @@ struct CyanPlasticLight {
     QVector3D specular;
 };
 
-class CyanPlastic : public QObject
+
+class CyanPlastic : public QDialog
 {
     Q_OBJECT
+
 public:
-    explicit CyanPlastic(QObject *parent = nullptr);
+    explicit CyanPlastic(QWidget *parent = nullptr);
+    ~CyanPlastic();
 
     void initShader() ;
     void setShader(QString name, QVector3D value);
@@ -46,6 +56,11 @@ public:
 
     void updateShapeShader();
     void updateLightShader();
+
+private:
+    Ui::CyanPlastic *ui;
 };
+
+
 
 #endif // CYANPLASTIC_H

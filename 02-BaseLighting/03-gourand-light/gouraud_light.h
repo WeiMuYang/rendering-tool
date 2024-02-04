@@ -8,11 +8,19 @@
 
 #include "../vertices.h"
 
-class GouraudLight : public QObject
+#include <QDialog>
+
+namespace Ui {
+class GouraudLight;
+}
+
+class GouraudLight : public QDialog
 {
     Q_OBJECT
+
 public:
-    explicit GouraudLight(QObject *parent = nullptr);
+    explicit GouraudLight(QWidget *parent = nullptr);
+    ~GouraudLight();
 
     void initShader() ;
     void setShader(QString name, QVector3D value);
@@ -26,6 +34,10 @@ public:
     float ambientStrength;
     float specularStrength;
 
+private:
+    Ui::GouraudLight *ui;
 };
+
+
 
 #endif // GOURAUDLIGHT_H

@@ -51,25 +51,20 @@ public:
     unsigned int VAO_Light02,VBO_Light02,EBO_Light02;
     void DrawPhongLight_02();
     void initPhongLightVAO_02();
-    void setShaderPhongLight_02(QString name, QVector3D value);
     // 03
     void DrawGouraudLight_03();
     void initGouraudLightVAO_03();
-    void setShaderGouraudLight_03(QString name, QVector3D value);
     // 04
-    void setShaderMaterial_04(QString name, QVector3D value);
     void DrawMaterial_04();
     void initMaterialVAO_04();
     // 05
     void DrawCyanPlastic_05();
     void initCyanPlastic_05();
-    void setShaderCyanPlastic_05(QString name, QVector3D value);
 
     // 06
     unsigned int VAO_Shape06,VBO_Shape06;
     void initTextureLightVAO_06();
     void DrawTextureLight_06();
-    void setShaderTextureLight_06(QString name, QVector3D value);
 
 public slots:
     void on_timeout();

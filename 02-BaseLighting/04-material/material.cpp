@@ -1,8 +1,13 @@
 #include "material.h"
 
-Material::Material(QObject *parent)
-    : QObject{parent}
+#include "ui_material.h"
+
+Material::Material(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::Material)
 {
+    ui->setupUi(this);
+
     // 颜色
     objectColor = {1.0f, 0.5f, 0.3f};
     lightColor = {1.0f, 1.0f, 1.0f};
@@ -25,6 +30,11 @@ Material::Material(QObject *parent)
     light.ambient = QVector3D(0.2,0.2,0.2);
     // 光源镜面反射分量
     light.specular = QVector3D(1.0,1.0,1.0);
+}
+
+Material::~Material()
+{
+    delete ui;
 }
 
 void Material::initShader() {

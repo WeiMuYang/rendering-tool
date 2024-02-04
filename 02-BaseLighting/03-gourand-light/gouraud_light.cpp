@@ -1,14 +1,23 @@
 #include "gouraud_light.h"
+#include "ui_gouraud_light.h"
 
-GouraudLight::GouraudLight(QObject *parent)
-    : QObject{parent}
+GouraudLight::GouraudLight(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::GouraudLight)
 {
+    ui->setupUi(this);
     lightPos = {1.2f, 1.0f, 2.0f};
     lightColor = {1.0f, 1.0f, 1.0f};
     objectColor = {1.0f, 0.5f, 0.3f};
     ambientStrength = 0.1;
     specularStrength = 0.5;
 }
+
+GouraudLight::~GouraudLight()
+{
+    delete ui;
+}
+
 
 void GouraudLight::initShader() {
     // shader
