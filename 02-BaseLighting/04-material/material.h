@@ -14,14 +14,14 @@ class Material;
 
 //#include "../vertices.h"
 
-struct MaterialShapeShader {
+struct MaterialShape {
     QVector3D ambient;
     QVector3D diffuse;
     QVector3D specular;
     float shininess;
 };
 
-struct MaterialLightShader {
+struct MaterialLight {
     QVector3D ambient;
     QVector3D diffuse;
     QVector3D specular;
@@ -36,7 +36,6 @@ public:
     explicit Material(QWidget *parent = nullptr);
     ~Material();
     void initShader() ;
-    void setShader(QString name, QVector3D value);
 
     QOpenGLShaderProgram shader_Light;
     QOpenGLShaderProgram shader_Shape;
@@ -47,16 +46,21 @@ public:
     QMatrix4x4 model;
 
     // 光照相关
-    QVector3D lightPos;
-    QVector3D viewPos;
-    QVector3D lightColor;
-    QVector3D objectColor;
-    MaterialShapeShader objectMaterial;
-    MaterialLightShader light;
+    QVector3D u_lightColor;
+    QVector3D u_objectColor;
+
+    QVector3D u_lightPos;
+    QVector3D u_viewPos;
+
+    MaterialShape u_object;
+    MaterialLight u_light;
 
     void updateShapeShader();
     void updateLightShader();
 
+    void showWindow();
+    void updateDlg();
+    void initSigSlot();
 private:
     Ui::Material *ui;
 };

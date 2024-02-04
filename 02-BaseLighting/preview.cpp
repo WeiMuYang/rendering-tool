@@ -275,7 +275,6 @@ void Preview::DrawPhongLight_02() {
     model.rotate(1.0f, 1.0f, 5.0f, 0.5f);
     model.scale(0.2f);
     phongLight.model = model;
-    phongLight.shader_Light.setUniformValue("model", model);
     phongLight.updateLightShader();
     phongLight.updateDlg();
     glBindVertexArray(VAO_Light02);
@@ -292,32 +291,26 @@ void Preview::DrawGouraudLight_03() {
     }
     projection.perspective(pCamera_->fov,(float)width()/height(),0.1f,100.0f);
     view = pCamera_->GetViewMatrix();
-
-    gouraudLight.shader_Shape.bind();
-    gouraudLight.shader_Shape.setUniformValue("projection", projection);
-    gouraudLight.shader_Shape.setUniformValue("view", view);
     model.rotate(rotateByTime, rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
-    gouraudLight.lightPos.setX(cos(rotateByTime/50.0)*2.5);
-    gouraudLight.lightPos.setZ(sin(rotateByTime/50.0)*2.5);
-    gouraudLight.shader_Shape.setUniformValue("lightPos",gouraudLight.lightPos);
-    gouraudLight.shader_Shape.setUniformValue("model", model);
-    gouraudLight.shader_Shape.setUniformValue("objectColor",gouraudLight.objectColor);
-    gouraudLight.shader_Shape.setUniformValue("lightColor",gouraudLight.lightColor);
-    gouraudLight.shader_Shape.setUniformValue("viewPos", pCamera_->Position);
+    gouraudLight.projection = projection;
+    gouraudLight.view = view;
+    gouraudLight.model = model;
+    gouraudLight.u_lightPos.setX(cos(rotateByTime/50)*2.5);
+    gouraudLight.u_lightPos.setZ(sin(rotateByTime/50)*2.5);
+    gouraudLight.u_viewPos = pCamera_->Position;
+    gouraudLight.updateShapeShader();
+
     glBindVertexArray(VAO_Shape02);
     glDrawArrays(GL_TRIANGLES,0,36);
 
-    gouraudLight.shader_Light.bind();
-    gouraudLight.shader_Light.setUniformValue("projection", projection);
-    gouraudLight.shader_Light.setUniformValue("view", view);
+
     model.setToIdentity();
-    model.translate(gouraudLight.lightPos);
+    model.translate(gouraudLight.u_lightPos);
     model.rotate(1.0f, 1.0f, 5.0f, 0.5f);
     model.scale(0.2f);
-    gouraudLight.shader_Light.setUniformValue("model", model);
-    gouraudLight.shader_Light.setUniformValue("lightColor",gouraudLight.lightColor);
-
-    gouraudLight.shader_Light.setUniformValue("lightPos",gouraudLight.lightPos);
+    gouraudLight.model = model;
+    gouraudLight.updateLightShader();
+    gouraudLight.updateDlg();
 
     glBindVertexArray(VAO_Light02);
     glDrawArrays(GL_TRIANGLES,0,36);
@@ -337,23 +330,23 @@ void Preview::DrawMaterial_04() {
     material.projection = projection;
     material.view = view;
     material.model = model;
-    material.lightColor.setX(sin(m_elapsedTime.elapsed() / 200 * 2.0f));
-    material.lightColor.setY(sin(m_elapsedTime.elapsed() / 200 * 0.7f));
-    material.lightColor.setZ(sin(m_elapsedTime.elapsed() / 200 * 1.3f));
-    material.light.diffuse = QVector3D(0.5f,0.5f,0.5f);
-    material.light.ambient = material.light.diffuse * QVector3D(0.2f,0.2f,0.2f);
-    material.viewPos = pCamera_->Position;
+
+    material.u_light.ambient = material.u_light.diffuse * QVector3D(0.2f,0.2f,0.2f);
+    material.u_viewPos = pCamera_->Position;
     material.updateShapeShader();
     glBindVertexArray(VAO_Shape02);
     glDrawArrays(GL_TRIANGLES,0,36);
 
     //// Shader Light
+    material.u_lightPos.setX(cos(rotateByTime/50)*2.5);
+    material.u_lightPos.setZ(sin(rotateByTime/50)*2.5);
     model.setToIdentity();
-    model.translate(material.lightPos);
+    model.translate(material.u_lightPos);
     model.rotate(1.0, 1.0f, 5.0f, 0.5f);
     model.scale(0.2f);
     material.model = model;
     material.updateLightShader();
+    material.updateDlg();
 
     glBindVertexArray(VAO_Light02);
     glDrawArrays(GL_TRIANGLES,0,36);
@@ -403,7 +396,7 @@ void Preview::drawModule() {
         break;
     case Scene::GouraudLight:
         DrawGouraudLight_03();
-        gouraudLight.show();
+//        gouraudLight.show();
         break;
     case Scene::Material:
         DrawMaterial_04();
@@ -566,6 +559,10 @@ void Preview::setCurrentScene(Scene s)
 {
     colorObj.close();
     phongLight.close();
+    gouraudLight.close();
+    material.close();
+    cyanPlastic.close();
+    textureLight.close();
     currentScene_ = s;
     switch (currentScene_) {
     case Scene::ColorOfObject:
@@ -575,10 +572,10 @@ void Preview::setCurrentScene(Scene s)
         phongLight.showWindow();
         break;
     case Scene::GouraudLight:
-        colorObj.showWindow();
+        gouraudLight.showWindow();
         break;
     case Scene::Material:
-        colorObj.showWindow();
+        material.showWindow();
         break;
     case Scene::CyanPlastic:
         colorObj.showWindow();
