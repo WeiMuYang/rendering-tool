@@ -172,7 +172,7 @@ void TextureLight::updateShapeShader() {
     // 将纹理信息和纹理编号对应，装入GPU
     texConrainerDiffuse->bind(TextureLighttexID::texConrainerDiffuse06);
     texConrainerSpecular->bind(TextureLighttexID::texConrainerSpecular06);
-    texConrainerSpecularColor->bind(TextureLighttexID::texConrainerSpecular06);
+    texConrainerSpecularColor->bind(TextureLighttexID::texConrainerSpecularColor06);
     texConrainerMat->bind(TextureLighttexID::texConrainerMat06);
 }
 

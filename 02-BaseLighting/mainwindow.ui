@@ -50,6 +50,7 @@
     <addaction name="actionCyanPlastic"/>
     <addaction name="actionTexTureLight"/>
     <addaction name="actionParallelLight"/>
+    <addaction name="actionPointLight"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -102,6 +103,11 @@
   <action name="actionParallelLight">
    <property name="text">
     <string>平行光</string>
+   </property>
+  </action>
+  <action name="actionPointLight">
+   <property name="text">
+    <string>点光源</string>
    </property>
   </action>
  </widget>

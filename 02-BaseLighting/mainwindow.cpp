@@ -56,6 +56,7 @@ void MainWindow::initAction() {
     connectSceneAction(ui->actionCyanPlastic, Scene::CyanPlastic);
     connectSceneAction(ui->actionTexTureLight, Scene::TextureLight);
     connectSceneAction(ui->actionParallelLight, Scene::ParallelLight);
+    connectSceneAction(ui->actionPointLight, Scene::PointLight);
 }
 
 

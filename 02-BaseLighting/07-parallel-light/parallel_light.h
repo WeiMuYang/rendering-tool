@@ -7,7 +7,7 @@
 #include <QMatrix4x4>
 #include <QOpenGLTexture>
 
-static  QVector3D ParallelLightCubePositions[] = {
+static QVector3D ParallelLightCubePositions[] = {
     QVector3D( 0.0f, 0.0f, 0.0f),
     QVector3D( 2.0f, 5.0f, -15.0f),
     QVector3D(-1.5f, -2.2f, -2.5f),
@@ -24,11 +24,11 @@ struct TexShapeMaterial07 {
     // ambient和diffuse的取值一样，因此不用特意的添加ambient的纹理
     unsigned int diffuseTexID;
     unsigned int specularTexID;
-    unsigned int emissionTexID;      // 自发光效果
+
     float shininess;
 };
 
-struct TexLightMaterial07 {
+struct LightMaterial07 {
     QVector3D ambient;
     QVector3D diffuse;
     QVector3D specular;
@@ -77,7 +77,7 @@ public:
     QVector3D u_lightDirection; // 只需要方向即可
     QVector3D u_viewPos;
     TexShapeMaterial07 u_objectTex;
-    TexLightMaterial07 u_lightTex;
+    LightMaterial07 u_light;
 
     void updateShapeShader();
     void updateLightShader();

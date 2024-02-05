@@ -17,6 +17,7 @@ SOURCES += \
     05-cyan-plastic/cyan_plastic.cpp \
     06-texture-light/texture_light.cpp \
     07-parallel-light/parallel_light.cpp \
+    08-point-light/point_light.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -32,6 +33,7 @@ HEADERS += \
     05-cyan-plastic/cyan_plastic.h \
     06-texture-light/texture_light.h \
     07-parallel-light/parallel_light.h \
+    08-point-light/point_light.h \
     camera.h \
     data_type.h \
     mainwindow.h \
@@ -45,6 +47,7 @@ FORMS += \
     05-cyan-plastic/cyan_plastic.ui \
     06-texture-light/texture_light.ui \
     07-parallel-light/parallel_light.ui \
+    08-point-light/point_light.ui \
     mainwindow.ui \
     04-material/material.ui
 

@@ -139,13 +139,13 @@ void Preview::DrawParallelLight_07()
     }
     projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
     view = pCamera_->GetViewMatrix();
-//    model.rotate(rotateByTime, rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
+    //    model.rotate(rotateByTime, rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
     parallelLight.projection = projection;
     parallelLight.view = view;
-//    parallelLight.model = model;
+    //    parallelLight.model = model;
     parallelLight.u_viewPos = pCamera_->Position;
 
-     glBindVertexArray(VAO_Shape06);
+    glBindVertexArray(VAO_Shape06);
     for(unsigned int i = 0; i < 10; i++) {
         QMatrix4x4 model;
         model.translate(ParallelLightCubePositions[i]);
@@ -156,10 +156,6 @@ void Preview::DrawParallelLight_07()
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
-
-
-//    glDrawArrays(GL_TRIANGLES,0,36);
-
     //// Shader Light
     model.setToIdentity();
     model.translate(parallelLight.u_lightDirection);
@@ -167,6 +163,49 @@ void Preview::DrawParallelLight_07()
     model.scale(0.1f);
     parallelLight.model = model;
     parallelLight.updateLightShader();
+
+    glBindVertexArray(VAO_Light02);
+    glDrawArrays(GL_TRIANGLES,0,36);
+}
+
+void Preview::initPointLightVAO_08()
+{
+    // 使用initTextureLightVAO_06();即可
+}
+
+void Preview::DrawPointLight_08()
+{
+    QMatrix4x4 projection;
+    QMatrix4x4 view; // 默认是单位矩阵
+    QMatrix4x4 model;
+
+    if(isTimeUsed) {
+        rotateByTime = m_elapsedTime.elapsed() / 50.0;
+    }
+    projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
+    view = pCamera_->GetViewMatrix();
+    pointLight.projection = projection;
+    pointLight.view = view;
+    pointLight.u_viewPos = pCamera_->Position;
+
+    glBindVertexArray(VAO_Shape06);
+    for(unsigned int i = 0; i < 10; i++) {
+        QMatrix4x4 model;
+        model.translate(ParallelLightCubePositions[i]);
+        float angle = 20.0f * i;
+        model.rotate(angle, QVector3D(1.0f, 0.3f, 0.5f));
+        pointLight.model = model;
+        pointLight.updateShapeShader();
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
+
+    //// Shader Light
+    model.setToIdentity();
+    model.translate(pointLight.u_lightPos);
+    model.rotate(1.0, 1.0f, 5.0f, 0.5f);
+    model.scale(0.1f);
+    pointLight.model = model;
+    pointLight.updateLightShader();
 
     glBindVertexArray(VAO_Light02);
     glDrawArrays(GL_TRIANGLES,0,36);
@@ -185,6 +224,7 @@ void Preview::initializeGL()
     initCyanPlastic_05();
     initTextureLightVAO_06();
     initParallelLightVAO_07();
+    initPointLightVAO_08();
     // 5.解绑VBO和VAO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -192,6 +232,7 @@ void Preview::initializeGL()
     // 2. texture
     textureLight.initTexture();
     parallelLight.initTexture();
+    pointLight.initTexture();
 
     // 3. shader
     axisXYZ.initShader();
@@ -202,6 +243,7 @@ void Preview::initializeGL()
     cyanPlastic.initShader();
     textureLight.initShader();
     parallelLight.initShader();
+    pointLight.initShader();
 }
 
 void Preview::resizeGL(int w, int h)
@@ -240,13 +282,13 @@ void Preview::keyPressEvent(QKeyEvent *event)
 void Preview::mouseMoveEvent(QMouseEvent *event)
 {
     static QPoint lastPos(width()/2,height()/2);
-     if(event->buttons() & Qt::RightButton) {
+    if(event->buttons() & Qt::RightButton) {
         auto currentPos = event->pos();
         mouseDeltaPos_ = currentPos - lastPos;
         lastPos = currentPos;
         pCamera_->ProcessMouseMovement(mouseDeltaPos_.x(), -mouseDeltaPos_.y());
         update();
-     }
+    }
 }
 
 void Preview::wheelEvent(QWheelEvent *event)
@@ -457,6 +499,9 @@ void Preview::drawModule() {
     case Scene::ParallelLight:
         DrawParallelLight_07();
         break;
+    case Scene::PointLight:
+        DrawPointLight_08();
+        break;
     default:
         break;
     }
@@ -589,17 +634,17 @@ void Preview::initPhongLightVAO_02() {
 
 void Preview::initGouraudLightVAO_03() {
     // 使用VAO_02即可
-//    initPhongLightVAO_02();
+    //    initPhongLightVAO_02();
 }
 
 void Preview::initMaterialVAO_04() {
     // 使用VAO_02即可
-//    initPhongLightVAO_02();
+    //    initPhongLightVAO_02();
 }
 
 void Preview::initCyanPlastic_05() {
     // 使用VAO_02即可
-//    initPhongLightVAO_02();
+    //    initPhongLightVAO_02();
 }
 
 void Preview::setCurrentScene(Scene s)
@@ -611,6 +656,7 @@ void Preview::setCurrentScene(Scene s)
     cyanPlastic.close();
     textureLight.close();
     parallelLight.close();
+    pointLight.close();
     currentScene_ = s;
     switch (currentScene_) {
     case Scene::ColorOfObject:
@@ -626,13 +672,16 @@ void Preview::setCurrentScene(Scene s)
         material.showWindow();
         break;
     case Scene::CyanPlastic:
-//        colorObj.showWindow();
+        //        colorObj.showWindow();
         break;
     case Scene::TextureLight:
         textureLight.showWindow();
         break;
     case Scene::ParallelLight:
         parallelLight.showWindow();
+        break;
+    case Scene::PointLight:
+        pointLight.showWindow();
         break;
     default:
         break;

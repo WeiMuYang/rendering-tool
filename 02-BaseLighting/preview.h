@@ -16,6 +16,7 @@
 #include "data_type.h"
 #include "camera.h"
 
+#include "08-point-light/point_light.h"
 #include "07-parallel-light/parallel_light.h"
 #include "06-texture-light/texture_light.h"
 #include "05-cyan-plastic/cyan_plastic.h"
@@ -71,6 +72,10 @@ public:
     void initParallelLightVAO_07();
     void DrawParallelLight_07();
 
+    // 07
+    void initPointLightVAO_08();
+    void DrawPointLight_08();
+
 public slots:
     void on_timeout();
 protected:
@@ -116,6 +121,7 @@ private:
     class CyanPlastic cyanPlastic;
     class TextureLight textureLight;
     class Parallel_Light parallelLight;
+    class PointLight pointLight;
 };
 
 #endif // PREVIEW_H
