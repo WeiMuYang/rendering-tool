@@ -1,64 +1,14 @@
-#include "texture_light.h"
-#include "ui_texture_light.h"
+#include "parallel_light.h"
+#include "ui_parallel_light.h"
 
-float vertices3DBox6[] = {
-    // positions          // normals          // texture coords
-    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
-     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
-     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
-
-    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
-
-    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-
-     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-
-    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
-
-    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
-     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
- };
-
-
-
-
-TextureLight::TextureLight(QWidget *parent) :
+Parallel_Light::Parallel_Light(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::TextureLight)
+    ui(new Ui::Parallel_Light)
 {
     ui->setupUi(this);
-    // vertices
-    box3D.setVerticesArr(vertices3DBox6, 288);
 
-    // 位置
-    u_lightPos ={1.2f, 1.0f, 2.0f};
+    // 位置  改成方向
+    u_lightDirection ={-0.2f, -1.0f, -0.3f};
     u_viewPos = {0.0f,0.0f,5.0f};
 
     // 材质的反射强度
@@ -79,13 +29,12 @@ TextureLight::TextureLight(QWidget *parent) :
     initSigSlot();
 }
 
-TextureLight::~TextureLight()
+Parallel_Light::~Parallel_Light()
 {
     delete ui;
 }
 
-
-void TextureLight::initShader() {
+void Parallel_Light::initShader() {
     // shader
     bool success;
     shader_Light.addShaderFromSourceFile(QOpenGLShader::Fragment,"../06-texture-light/shader/light.frag");
@@ -105,7 +54,7 @@ void TextureLight::initShader() {
     updateShapeShader();
 }
 
-void TextureLight::initTexture()
+void Parallel_Light::initTexture()
 {
     // 按照编号 0 1 2 ... 放到CPU
     // TODO: 编号应该是整个在OpenGl中的所有的texture，所以需要看下之前有没有贴图初始化，如果有的话，编号对应会顺延
@@ -115,43 +64,14 @@ void TextureLight::initTexture()
     texConrainerMat = new QOpenGLTexture(QImage("../06-texture-light/img/matrix.jpg").mirrored());
 }
 
-void TextureLight::setShader(QString name , QVector3D value) {
-    if(name == "material.specularTex") {
-        if(u_objectTex.specularTexID == 1) {
-            u_objectTex.specularTexID = 2;
-        }else{
-            u_objectTex.specularTexID = 1;
-        }
-    }
-    if(name == "material.shininess") {
-        u_objectTex.shininess = value.x();
-    }
 
-    // 光源的颜色
-    if(name == "lightColor") {
-        u_lightColor = value;
-    }
-    if(name == "lightPos") {
-        u_lightPos = value;
-    }
-    if(name == "light.ambient") {
-        u_lightTex.ambient = value;
-    }
-    if(name == "light.diffuse") {
-        u_lightTex.diffuse = value;
-    }
-    if(name == "light.specular") {
-        u_lightTex.specular = value;
-    }
-}
-
-void TextureLight::updateShapeShader() {
+void Parallel_Light::updateShapeShader() {
     shader_Shape.bind();
 
     // viewPos
     shader_Shape.setUniformValue("viewPos", u_viewPos);
     // lightPos
-    shader_Shape.setUniformValue("lightPos", u_lightPos);
+    shader_Shape.setUniformValue("lightDirection", u_lightDirection);
     // color
     shader_Shape.setUniformValue("lightColor", u_lightColor);
     // material
@@ -170,13 +90,13 @@ void TextureLight::updateShapeShader() {
     shader_Shape.setUniformValue("model", model);
 
     // 将纹理信息和纹理编号对应，装入GPU
-    texConrainerDiffuse->bind(TextureLighttexID::texConrainerDiffuse06);
-    texConrainerSpecular->bind(TextureLighttexID::texConrainerSpecular06);
-    texConrainerSpecularColor->bind(TextureLighttexID::texConrainerSpecular06);
-    texConrainerMat->bind(TextureLighttexID::texConrainerMat06);
+    texConrainerDiffuse->bind(ParallelLightTexID::texConrainerDiffuse07);
+    texConrainerSpecular->bind(ParallelLightTexID::texConrainerSpecular07);
+    texConrainerSpecularColor->bind(ParallelLightTexID::texConrainerSpecular07);
+    texConrainerMat->bind(ParallelLightTexID::texConrainerMat07);
 }
 
-void TextureLight::updateLightShader()
+void Parallel_Light::updateLightShader()
 {
     shader_Light.bind();
     shader_Light.setUniformValue("lightColor", u_lightColor);
@@ -186,13 +106,13 @@ void TextureLight::updateLightShader()
     shader_Light.setUniformValue("model", model);
 }
 
-void TextureLight::showWindow()
+void Parallel_Light::showWindow()
 {
     show();
     updateDlg();
 }
 
-void TextureLight::updateDlg()
+void Parallel_Light::updateDlg()
 {
     auto setVec3toUi = [&](QDoubleSpinBox* spinBox_X,QDoubleSpinBox* spinBox_Y,QDoubleSpinBox* spinBox_Z, QVector3D value){
         spinBox_X->setValue(value.x());
@@ -200,7 +120,7 @@ void TextureLight::updateDlg()
         spinBox_Z->setValue(value.z());
     };
 
-    setVec3toUi(ui->Pos_X_SpinBox, ui->Pos_Y_SpinBox, ui->Pos_Z_SpinBox, u_lightPos);
+    setVec3toUi(ui->Pos_X_SpinBox, ui->Pos_Y_SpinBox, ui->Pos_Z_SpinBox, u_lightDirection);
     setVec3toUi(ui->Light_X_SpinBox, ui->Light_Y_SpinBox, ui->Light_Z_SpinBox, u_lightColor);
     ui->objShiny_spinBox->setValue(u_objectTex.shininess);
 
@@ -214,7 +134,7 @@ void TextureLight::updateDlg()
     setVec3toUi(ui->ligSp_X_SpinBox, ui->ligSp_Y_SpinBox, ui->ligSp_Z_SpinBox, u_lightTex.specular);
 }
 
-void TextureLight::initSigSlot()
+void Parallel_Light::initSigSlot()
 {
     auto connectVec3 = [&](QDoubleSpinBox* spinBox_X, QDoubleSpinBox* spinBox_Y,QDoubleSpinBox* spinBox_Z,QVector3D& vec3Obj) {
         QObject::connect(spinBox_X, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [&](double arg){
@@ -232,14 +152,14 @@ void TextureLight::initSigSlot()
         u_objectTex.shininess = arg;
     });
 
-    connectVec3(ui->Pos_X_SpinBox, ui->Pos_Y_SpinBox,ui->Pos_Z_SpinBox, u_lightPos);
+    connectVec3(ui->Pos_X_SpinBox, ui->Pos_Y_SpinBox,ui->Pos_Z_SpinBox, u_lightDirection);
     connectVec3(ui->Light_X_SpinBox, ui->Light_Y_SpinBox,ui->Light_Z_SpinBox, u_lightColor);
 
     QObject::connect(ui->objDi_comboBox, &QComboBox::currentTextChanged, this, [&](QString name) {
         if(name == "无") {
             u_objectTex.diffuseTexID = 100; // 无效ID
         }else{
-            u_objectTex.diffuseTexID = TextureLighttexID::texConrainerDiffuse06;
+            u_objectTex.diffuseTexID = ParallelLightTexID::texConrainerDiffuse07;
         }
     });
 
@@ -247,9 +167,9 @@ void TextureLight::initSigSlot()
         if(name == "无") {
             u_objectTex.specularTexID = 100; // 无效ID
         }else if (name == "container2_specular"){
-            u_objectTex.specularTexID = TextureLighttexID::texConrainerSpecular06;
+            u_objectTex.specularTexID = ParallelLightTexID::texConrainerSpecular07;
         }else {
-            u_objectTex.specularTexID = TextureLighttexID::texConrainerSpecularColor06;
+            u_objectTex.specularTexID = ParallelLightTexID::texConrainerSpecularColor07;
         }
     });
 
@@ -257,7 +177,7 @@ void TextureLight::initSigSlot()
         if(name == "无") {
             u_objectTex.emissionTexID = 100; // 无效ID
         }else{
-            u_objectTex.emissionTexID = TextureLighttexID::texConrainerMat06;
+            u_objectTex.emissionTexID = ParallelLightTexID::texConrainerMat07;
         }
     });
 
@@ -265,3 +185,4 @@ void TextureLight::initSigSlot()
     connectVec3(ui->ligDi_X_SpinBox, ui->ligDi_Y_SpinBox,ui->ligDi_Z_SpinBox, u_lightTex.diffuse);
     connectVec3(ui->ligSp_X_SpinBox, ui->ligSp_Y_SpinBox,ui->ligSp_Z_SpinBox, u_lightTex.specular);
 }
+

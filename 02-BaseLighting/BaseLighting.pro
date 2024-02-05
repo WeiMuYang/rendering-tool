@@ -16,6 +16,7 @@ SOURCES += \
     04-material/material.cpp \
     05-cyan-plastic/cyan_plastic.cpp \
     06-texture-light/texture_light.cpp \
+    07-parallel-light/parallel_light.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -30,6 +31,7 @@ HEADERS += \
     04-material/material.h \
     05-cyan-plastic/cyan_plastic.h \
     06-texture-light/texture_light.h \
+    07-parallel-light/parallel_light.h \
     camera.h \
     data_type.h \
     mainwindow.h \
@@ -42,6 +44,7 @@ FORMS += \
     03-gourand-light/gouraud_light.ui \
     05-cyan-plastic/cyan_plastic.ui \
     06-texture-light/texture_light.ui \
+    07-parallel-light/parallel_light.ui \
     mainwindow.ui \
     04-material/material.ui
 
@@ -86,6 +89,26 @@ DISTFILES += \
     06-texture-light/shader/light.frag \
     06-texture-light/shader/light.vert \
     06-texture-light/shader/shapes.frag \
-    06-texture-light/shader/shapes.vert
+    06-texture-light/shader/shapes.vert \
+    07-parallel-light/img/awesomeface.png \
+    07-parallel-light/img/container2.png \
+    07-parallel-light/img/container2_specular.png \
+    07-parallel-light/img/lighting_maps_specular_color.png \
+    07-parallel-light/img/matrix.jpg \
+    07-parallel-light/img/wall.jpg \
+    07-parallel-light/shader/light.frag \
+    07-parallel-light/shader/light.vert \
+    07-parallel-light/shader/shapes.frag \
+    07-parallel-light/shader/shapes.vert \
+    08-point-light/img/awesomeface.png \
+    08-point-light/img/container2.png \
+    08-point-light/img/container2_specular.png \
+    08-point-light/img/lighting_maps_specular_color.png \
+    08-point-light/img/matrix.jpg \
+    08-point-light/img/wall.jpg \
+    08-point-light/shader/light.frag \
+    08-point-light/shader/light.vert \
+    08-point-light/shader/shapes.frag \
+    08-point-light/shader/shapes.vert
 
 

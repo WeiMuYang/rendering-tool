@@ -105,36 +105,24 @@ void Material::showWindow()
 
 void Material::updateDlg()
 {
-    auto setDataUi = [&](QDoubleSpinBox* spinBox_X,QDoubleSpinBox* spinBox_Y,QDoubleSpinBox* spinBox_Z, QVector3D value){
+    auto setVec3toUi = [&](QDoubleSpinBox* spinBox_X,QDoubleSpinBox* spinBox_Y,QDoubleSpinBox* spinBox_Z, QVector3D value){
         spinBox_X->setValue(value.x());
         spinBox_Y->setValue(value.y());
         spinBox_Z->setValue(value.z());
     };
 
-    setDataUi(ui->Pos_X_SpinBox, ui->Pos_Y_SpinBox, ui->Pos_Z_SpinBox, u_lightPos);
-//    ui->Pos_X_SpinBox->setValue(u_lightPos.x());
-//    ui->Pos_Y_SpinBox->setValue(u_lightPos.y());
-//    ui->Pos_Z_SpinBox->setValue(u_lightPos.z());
-
-    setDataUi(ui->Light_X_SpinBox, ui->Light_Y_SpinBox, ui->Light_Z_SpinBox, u_lightColor);
-//    ui->Light_X_SpinBox->setValue(u_lightColor.x());
-//    ui->Light_Y_SpinBox->setValue(u_lightColor.y());
-//    ui->Light_Z_SpinBox->setValue(u_lightColor.z());
-
-    setDataUi(ui->Obj_X_SpinBox, ui->Obj_Y_SpinBox, ui->Obj_Z_SpinBox, u_objectColor);
-//    ui->Obj_X_SpinBox->setValue(u_objectColor.x());
-//    ui->Obj_Y_SpinBox->setValue(u_objectColor.y());
-//    ui->Obj_Z_SpinBox->setValue(u_objectColor.z());
-
+    setVec3toUi(ui->Pos_X_SpinBox, ui->Pos_Y_SpinBox, ui->Pos_Z_SpinBox, u_lightPos);
+    setVec3toUi(ui->Light_X_SpinBox, ui->Light_Y_SpinBox, ui->Light_Z_SpinBox, u_lightColor);
+    setVec3toUi(ui->Obj_X_SpinBox, ui->Obj_Y_SpinBox, ui->Obj_Z_SpinBox, u_objectColor);
     ui->objShiny_spinBox->setValue(u_object.shininess);
 
-    setDataUi(ui->objAm_X_SpinBox, ui->objAm_Y_SpinBox, ui->objAm_Z_SpinBox, u_object.ambient);
-    setDataUi(ui->objDi_X_SpinBox, ui->objDi_Y_SpinBox, ui->objDi_Z_SpinBox, u_object.diffuse);
-    setDataUi(ui->objSp_X_SpinBox, ui->objSp_Y_SpinBox, ui->objSp_Z_SpinBox, u_object.specular);
+    setVec3toUi(ui->objAm_X_SpinBox, ui->objAm_Y_SpinBox, ui->objAm_Z_SpinBox, u_object.ambient);
+    setVec3toUi(ui->objDi_X_SpinBox, ui->objDi_Y_SpinBox, ui->objDi_Z_SpinBox, u_object.diffuse);
+    setVec3toUi(ui->objSp_X_SpinBox, ui->objSp_Y_SpinBox, ui->objSp_Z_SpinBox, u_object.specular);
 
-    setDataUi(ui->ligAm_X_SpinBox, ui->ligAm_Y_SpinBox, ui->ligAm_Z_SpinBox, u_light.ambient);
-    setDataUi(ui->ligDi_X_SpinBox, ui->ligDi_Y_SpinBox, ui->ligDi_Z_SpinBox, u_light.diffuse);
-    setDataUi(ui->ligSp_X_SpinBox, ui->ligSp_Y_SpinBox, ui->ligSp_Z_SpinBox, u_light.specular);
+    setVec3toUi(ui->ligAm_X_SpinBox, ui->ligAm_Y_SpinBox, ui->ligAm_Z_SpinBox, u_light.ambient);
+    setVec3toUi(ui->ligDi_X_SpinBox, ui->ligDi_Y_SpinBox, ui->ligDi_Z_SpinBox, u_light.diffuse);
+    setVec3toUi(ui->ligSp_X_SpinBox, ui->ligSp_Y_SpinBox, ui->ligSp_Z_SpinBox, u_light.specular);
 }
 
 void Material::initSigSlot()

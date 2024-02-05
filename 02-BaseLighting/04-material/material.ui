@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>808</width>
-    <height>309</height>
+    <width>1148</width>
+    <height>515</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,7 +23,7 @@
       </size>
      </property>
      <property name="title">
-      <string>Gouraud光照模型</string>
+      <string>Phong光照模型</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
@@ -298,7 +298,7 @@
       </size>
      </property>
      <property name="title">
-      <string>材质：环境光、漫反射和镜面反射</string>
+      <string/>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
@@ -839,7 +839,7 @@
         <item>
          <widget class="QLabel" name="label_43">
           <property name="text">
-           <string>                                    </string>
+           <string/>
           </property>
          </widget>
         </item>

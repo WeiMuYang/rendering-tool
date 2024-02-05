@@ -1,6 +1,5 @@
 #include "preview.h"
 
-
 Preview::Preview(QWidget *parent)
     : QOpenGLWidget{parent}
 {
@@ -106,8 +105,7 @@ void Preview::DrawTextureLight_06()
     textureLight.projection = projection;
     textureLight.view = view;
     textureLight.model = model;
-    // TODO: 是不是可以去掉?
-    textureLight.viewPos = pCamera_->Position;
+    textureLight.u_viewPos = pCamera_->Position;
 
     textureLight.updateShapeShader();
     glBindVertexArray(VAO_Shape06);
@@ -115,12 +113,60 @@ void Preview::DrawTextureLight_06()
 
     //// Shader Light
     model.setToIdentity();
-    model.translate(textureLight.lightPos);
+    model.translate(textureLight.u_lightPos);
     model.rotate(1.0, 1.0f, 5.0f, 0.5f);
     model.scale(0.2f);
     textureLight.model = model;
-    textureLight.lightColor = {1.0f,1.0f,1.0f};
     textureLight.updateLightShader();
+
+    glBindVertexArray(VAO_Light02);
+    glDrawArrays(GL_TRIANGLES,0,36);
+}
+
+void Preview::initParallelLightVAO_07()
+{
+    // 使用initTextureLightVAO_06();即可
+}
+
+void Preview::DrawParallelLight_07()
+{
+    QMatrix4x4 projection;
+    QMatrix4x4 view; // 默认是单位矩阵
+    QMatrix4x4 model;
+
+    if(isTimeUsed) {
+        rotateByTime = m_elapsedTime.elapsed() / 50.0;
+    }
+    projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
+    view = pCamera_->GetViewMatrix();
+//    model.rotate(rotateByTime, rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
+    parallelLight.projection = projection;
+    parallelLight.view = view;
+//    parallelLight.model = model;
+    parallelLight.u_viewPos = pCamera_->Position;
+
+     glBindVertexArray(VAO_Shape06);
+    for(unsigned int i = 0; i < 10; i++) {
+        QMatrix4x4 model;
+        model.translate(ParallelLightCubePositions[i]);
+        float angle = 20.0f * i;
+        model.rotate(angle, QVector3D(1.0f, 0.3f, 0.5f));
+        parallelLight.model = model;
+        parallelLight.updateShapeShader();
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
+
+
+
+//    glDrawArrays(GL_TRIANGLES,0,36);
+
+    //// Shader Light
+    model.setToIdentity();
+    model.translate(parallelLight.u_lightDirection);
+    model.rotate(1.0, 1.0f, 5.0f, 0.5f);
+    model.scale(0.1f);
+    parallelLight.model = model;
+    parallelLight.updateLightShader();
 
     glBindVertexArray(VAO_Light02);
     glDrawArrays(GL_TRIANGLES,0,36);
@@ -138,12 +184,14 @@ void Preview::initializeGL()
     initMaterialVAO_04();
     initCyanPlastic_05();
     initTextureLightVAO_06();
+    initParallelLightVAO_07();
     // 5.解绑VBO和VAO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
     // 2. texture
     textureLight.initTexture();
+    parallelLight.initTexture();
 
     // 3. shader
     axisXYZ.initShader();
@@ -153,6 +201,7 @@ void Preview::initializeGL()
     material.initShader();
     cyanPlastic.initShader();
     textureLight.initShader();
+    parallelLight.initShader();
 }
 
 void Preview::resizeGL(int w, int h)
@@ -392,23 +441,21 @@ void Preview::drawModule() {
         break;
     case Scene::PhongLight:
         DrawPhongLight_02();
-//        phongLight.show();
         break;
     case Scene::GouraudLight:
         DrawGouraudLight_03();
-//        gouraudLight.show();
         break;
     case Scene::Material:
         DrawMaterial_04();
-//        material.show();
         break;
     case Scene::CyanPlastic:
         DrawCyanPlastic_05();
-//        cyanPlastic.show();
         break;
     case Scene::TextureLight:
         DrawTextureLight_06();
-//        textureLight.show();
+        break;
+    case Scene::ParallelLight:
+        DrawParallelLight_07();
         break;
     default:
         break;
@@ -563,6 +610,7 @@ void Preview::setCurrentScene(Scene s)
     material.close();
     cyanPlastic.close();
     textureLight.close();
+    parallelLight.close();
     currentScene_ = s;
     switch (currentScene_) {
     case Scene::ColorOfObject:
@@ -578,10 +626,13 @@ void Preview::setCurrentScene(Scene s)
         material.showWindow();
         break;
     case Scene::CyanPlastic:
-        colorObj.showWindow();
+//        colorObj.showWindow();
         break;
     case Scene::TextureLight:
-        colorObj.showWindow();
+        textureLight.showWindow();
+        break;
+    case Scene::ParallelLight:
+        parallelLight.showWindow();
         break;
     default:
         break;
