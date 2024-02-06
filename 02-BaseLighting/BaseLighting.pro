@@ -18,6 +18,7 @@ SOURCES += \
     06-texture-light/texture_light.cpp \
     07-parallel-light/parallel_light.cpp \
     08-point-light/point_light.cpp \
+    09-spot-light/spot_light.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -34,6 +35,7 @@ HEADERS += \
     06-texture-light/texture_light.h \
     07-parallel-light/parallel_light.h \
     08-point-light/point_light.h \
+    09-spot-light/spot_light.h \
     camera.h \
     data_type.h \
     mainwindow.h \
@@ -48,6 +50,7 @@ FORMS += \
     06-texture-light/texture_light.ui \
     07-parallel-light/parallel_light.ui \
     08-point-light/point_light.ui \
+    09-spot-light/spot_light.ui \
     mainwindow.ui \
     04-material/material.ui
 
@@ -112,6 +115,13 @@ DISTFILES += \
     08-point-light/shader/light.frag \
     08-point-light/shader/light.vert \
     08-point-light/shader/shapes.frag \
-    08-point-light/shader/shapes.vert
+    08-point-light/shader/shapes.vert \
+    09-spot-light/img/container2.png \
+    09-spot-light/img/container2_specular.png \
+    09-spot-light/img/lighting_maps_specular_color.png \
+    09-spot-light/shader/light.frag \
+    09-spot-light/shader/light.vert \
+    09-spot-light/shader/shapes.frag \
+    09-spot-light/shader/shapes.vert
 
 

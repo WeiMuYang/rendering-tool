@@ -1,5 +1,5 @@
-#ifndef POINT_LIGHT_H
-#define POINT_LIGHT_H
+#ifndef SPOT_LIGHT_H
+#define SPOT_LIGHT_H
 
 #include <QDialog>
 #include <QOpenGLShaderProgram>
@@ -8,40 +8,47 @@
 #include <QOpenGLTexture>
 
 namespace Ui {
-class PointLight;
+class SpotLight;
 }
 
-struct TexShapeMaterial08 {
+struct TexShapeMaterial09 {
     // ambient和diffuse的取值一样，因此不用特意的添加ambient的纹理
     unsigned int diffuseTexID;
     unsigned int specularTexID;
     float shininess;
 };
 
-struct LightMaterial08 {
+struct LightMaterial09 {
     QVector3D ambient;
     QVector3D diffuse;
     QVector3D specular;
 
+    // 计算光源衰减
     float constant;
     float linear;
     float quadratic;
+
+    QVector3D position;
+    // 聚光灯方向
+    QVector3D direction;
+    // 投射的外围的角度
+    float cutOff;
 };
 
-enum PointLightTexID08{
-    texConrainerDiffuse08 = 0,
-    texConrainerSpecular08 = 1,
-    texConrainerSpecularColor08 = 2,
-    texConrainerMat08 = 3
+enum PointLightTexID09{
+    texConrainerDiffuse09 = 0,
+    texConrainerSpecular09 = 1,
+    texConrainerSpecularColor09 = 2,
 };
 
-class PointLight : public QDialog
+
+class SpotLight : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit PointLight(QWidget *parent = nullptr);
-    ~PointLight();
+    explicit SpotLight(QWidget *parent = nullptr);
+    ~SpotLight();
 
     void initShader() ;
     void initTexture() ;
@@ -61,10 +68,9 @@ public:
     QMatrix4x4 model;
 
     // 光照相关
-    QVector3D u_lightPos; // 只需要方向即可
     QVector3D u_viewPos;
-    TexShapeMaterial08 u_objectTex;
-    LightMaterial08 u_light;
+    TexShapeMaterial09 u_objectTex;
+    LightMaterial09 u_light;
 
     void updateShapeShader();
     void updateLightShader();
@@ -72,9 +78,10 @@ public:
     void showWindow();
     void updateDlg();
     void initSigSlot();
+    float angle2RadiansCos(float deg);
 
 private:
-    Ui::PointLight *ui;
+    Ui::SpotLight *ui;
 };
 
-#endif // POINT_LIGHT_H
+#endif // SPOT_LIGHT_H

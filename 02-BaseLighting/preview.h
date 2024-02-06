@@ -16,6 +16,7 @@
 #include "data_type.h"
 #include "camera.h"
 
+#include "09-spot-light/spot_light.h"
 #include "08-point-light/point_light.h"
 #include "07-parallel-light/parallel_light.h"
 #include "06-texture-light/texture_light.h"
@@ -72,9 +73,13 @@ public:
     void initParallelLightVAO_07();
     void DrawParallelLight_07();
 
-    // 07
+    // 08
     void initPointLightVAO_08();
     void DrawPointLight_08();
+
+    // 09
+    void initSpotLightVAO_09();
+    void DrawSpotLight_09();
 
 public slots:
     void on_timeout();
@@ -122,6 +127,7 @@ private:
     class TextureLight textureLight;
     class Parallel_Light parallelLight;
     class PointLight pointLight;
+    class SpotLight spotLight;
 };
 
 #endif // PREVIEW_H
