@@ -1,9 +1,9 @@
-#include "spot_light.h"
-#include "ui_spot_light.h"
+#include "spot_light_smooth.h"
+#include "ui_spotlightsmooth.h"
 
-SpotLight::SpotLight(QWidget *parent) :
+SpotLightSmooth::SpotLightSmooth(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::SpotLight)
+    ui(new Ui::SpotLightSmooth)
 {
     ui->setupUi(this);
     // 视角的位置
@@ -30,28 +30,29 @@ SpotLight::SpotLight(QWidget *parent) :
     u_light.direction = {0.0f, 0.0f, -1.0f};
     u_light.position = {0.0f, 0.0f, 1.0f};
     u_light.cutOff = 12.5f;
+    u_light.outerCutOff = 17.5f;
 
     initSigSlot();
 }
 
-SpotLight::~SpotLight()
+SpotLightSmooth::~SpotLightSmooth()
 {
     delete ui;
 }
 
-void SpotLight::initShader() {
+void SpotLightSmooth::initShader() {
     // shader
     bool success;
-    shader_Light.addShaderFromSourceFile(QOpenGLShader::Fragment,"../09-spot-light/shader/light.frag");
-    shader_Light.addShaderFromSourceFile(QOpenGLShader::Vertex,"../09-spot-light/shader/light.vert");
+    shader_Light.addShaderFromSourceFile(QOpenGLShader::Fragment,"../10-spot-light-smooth/shader/light.frag");
+    shader_Light.addShaderFromSourceFile(QOpenGLShader::Vertex,"../10-spot-light-smooth/shader/light.vert");
     success = shader_Light.link();
     if(!success) {
         qDebug()<<"ERR:"<<shader_Light.log();
     }
     updateLightShader();
 
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,"../09-spot-light/shader/shapes.frag");
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,"../09-spot-light/shader/shapes.vert");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,"../10-spot-light-smooth/shader/shapes.frag");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,"../10-spot-light-smooth/shader/shapes.vert");
     success = shader_Shape.link();
     if(!success) {
         qDebug() << "ERR:" << shader_Shape.log();
@@ -59,16 +60,16 @@ void SpotLight::initShader() {
     updateShapeShader();
 }
 
-void SpotLight::initTexture()
+void SpotLightSmooth::initTexture()
 {
     // 按照编号 0 1 2 ... 放到CPU
     // TODO: 编号应该是整个在OpenGl中的所有的texture，所以需要看下之前有没有贴图初始化，如果有的话，编号对应会顺延
-    texConrainerDiffuse = new QOpenGLTexture(QImage("../09-spot-light/img/container2.png").mirrored());
-    texConrainerSpecular = new QOpenGLTexture(QImage("../09-spot-light/img/container2_specular.png").mirrored());
+    texConrainerDiffuse = new QOpenGLTexture(QImage("../10-spot-light-smooth/img/container2.png").mirrored());
+    texConrainerSpecular = new QOpenGLTexture(QImage("../10-spot-light-smooth/img/container2_specular.png").mirrored());
 }
 
 
-void SpotLight::updateShapeShader() {
+void SpotLightSmooth::updateShapeShader() {
     shader_Shape.bind();
 
     // viewPos
@@ -91,6 +92,7 @@ void SpotLight::updateShapeShader() {
     shader_Shape.setUniformValue("light.position", u_light.position);
     shader_Shape.setUniformValue("light.direction", u_light.direction);
     shader_Shape.setUniformValue("light.cutOff", angle2RadiansCos(u_light.cutOff));
+    shader_Shape.setUniformValue("light.outerCutOff", angle2RadiansCos(u_light.outerCutOff));
 
     // MVP
     shader_Shape.setUniformValue("projection", projection);
@@ -98,11 +100,11 @@ void SpotLight::updateShapeShader() {
     shader_Shape.setUniformValue("model", model);
 
     // 将纹理信息和纹理编号对应，装入GPU
-    texConrainerDiffuse->bind(PointLightTexID09::texConrainerDiffuse09);
-    texConrainerSpecular->bind(PointLightTexID09::texConrainerSpecular09);
+    texConrainerDiffuse->bind(PointLightTexID10::texConrainerDiffuse10);
+    texConrainerSpecular->bind(PointLightTexID10::texConrainerSpecular10);
 }
 
-void SpotLight::updateLightShader()
+void SpotLightSmooth::updateLightShader()
 {
     shader_Light.bind();
     shader_Light.setUniformValue("lightColor", u_lightColor);
@@ -112,13 +114,13 @@ void SpotLight::updateLightShader()
     shader_Light.setUniformValue("model", model);
 }
 
-void SpotLight::showWindow()
+void SpotLightSmooth::showWindow()
 {
     show();
     updateDlg();
 }
 
-void SpotLight::updateDlg()
+void SpotLightSmooth::updateDlg()
 {
     auto setVec3toUi = [&](QDoubleSpinBox* spinBox_X,QDoubleSpinBox* spinBox_Y,QDoubleSpinBox* spinBox_Z, QVector3D value){
         spinBox_X->setValue(value.x());
@@ -141,9 +143,10 @@ void SpotLight::updateDlg()
     ui->ligLin_SpinBox->setValue(u_light.linear);
     ui->ligQua_SpinBox->setValue(u_light.quadratic);
     ui->cutOff_SpinBox->setValue(u_light.cutOff);
+    ui->outerCutOff_SpinBox->setValue(u_light.outerCutOff);
 }
 
-void SpotLight::initSigSlot()
+void SpotLightSmooth::initSigSlot()
 {
     auto connectVec3 = [&](QDoubleSpinBox* spinBox_X, QDoubleSpinBox* spinBox_Y,QDoubleSpinBox* spinBox_Z,QVector3D& vec3Obj) {
         QObject::connect(spinBox_X, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [&](double arg){
@@ -168,7 +171,7 @@ void SpotLight::initSigSlot()
         if(name == "无") {
             u_objectTex.diffuseTexID = 100; // 无效ID
         }else{
-            u_objectTex.diffuseTexID = PointLightTexID09::texConrainerDiffuse09;
+            u_objectTex.diffuseTexID = PointLightTexID10::texConrainerDiffuse10;
         }
     });
 
@@ -176,9 +179,9 @@ void SpotLight::initSigSlot()
         if(name == "无") {
             u_objectTex.specularTexID = 100; // 无效ID
         }else if (name == "container2_specular"){
-            u_objectTex.specularTexID = PointLightTexID09::texConrainerSpecular09;
+            u_objectTex.specularTexID = PointLightTexID10::texConrainerSpecular10;
         }else {
-            u_objectTex.specularTexID = PointLightTexID09::texConrainerSpecularColor09;
+            u_objectTex.specularTexID = PointLightTexID10::texConrainerSpecularColor10;
         }
     });
 
@@ -201,9 +204,13 @@ void SpotLight::initSigSlot()
     QObject::connect(ui->cutOff_SpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [&](double arg){
         u_light.cutOff = arg;
     });
+
+    QObject::connect(ui->outerCutOff_SpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [&](double arg){
+        u_light.outerCutOff = arg;
+    });
 }
 
-float SpotLight::angle2RadiansCos(float deg)
+float SpotLightSmooth::angle2RadiansCos(float deg)
 {
     const double PI = 3.1415926;
     return cos(deg * PI/180);

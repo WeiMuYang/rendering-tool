@@ -16,6 +16,7 @@
 #include "data_type.h"
 #include "camera.h"
 
+#include "10-spot-light-smooth/spot_light_smooth.h"
 #include "09-spot-light/spot_light.h"
 #include "08-point-light/point_light.h"
 #include "07-parallel-light/parallel_light.h"
@@ -81,6 +82,10 @@ public:
     void initSpotLightVAO_09();
     void DrawSpotLight_09();
 
+    // 10
+    void initSpotLightSmoothVAO_10();
+    void DrawSpotLightSmooth_10();
+
 public slots:
     void on_timeout();
 protected:
@@ -128,6 +133,7 @@ private:
     class Parallel_Light parallelLight;
     class PointLight pointLight;
     class SpotLight spotLight;
+    class SpotLightSmooth spotLightSmooth;
 };
 
 #endif // PREVIEW_H

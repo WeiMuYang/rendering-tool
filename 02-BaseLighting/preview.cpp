@@ -254,6 +254,49 @@ void Preview::DrawSpotLight_09()
     glDrawArrays(GL_TRIANGLES,0,36);
 }
 
+void Preview::initSpotLightSmoothVAO_10()
+{
+    // 使用initTextureLightVAO_06();即可
+}
+
+void Preview::DrawSpotLightSmooth_10()
+{
+    QMatrix4x4 projection;
+    QMatrix4x4 view; // 默认是单位矩阵
+    QMatrix4x4 model;
+
+    if(isTimeUsed) {
+        rotateByTime = m_elapsedTime.elapsed() / 50.0;
+    }
+    projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
+    view = pCamera_->GetViewMatrix();
+    spotLightSmooth.projection = projection;
+    spotLightSmooth.view = view;
+    spotLightSmooth.u_viewPos = pCamera_->Position;
+
+    glBindVertexArray(VAO_Shape06);
+    for(unsigned int i = 0; i < 10; i++) {
+        QMatrix4x4 model;
+        model.translate(ParallelLightCubePositions[i]);
+        float angle = 20.0f * i;
+        model.rotate(angle, QVector3D(1.0f, 0.3f, 0.5f));
+        spotLightSmooth.model = model;
+        spotLightSmooth.updateShapeShader();
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
+
+    //// Shader Light
+    model.setToIdentity();
+    model.translate(spotLightSmooth.u_light.position);
+    model.rotate(1.0, 1.0f, 5.0f, 0.5f);
+    model.scale(0.1f);
+    spotLightSmooth.model = model;
+    spotLightSmooth.updateLightShader();
+
+    glBindVertexArray(VAO_Light02);
+    glDrawArrays(GL_TRIANGLES,0,36);
+}
+
 void Preview::initializeGL()
 {
     // 1.初始化OpenGL函数，否则OpenGL函数不可调用
@@ -269,6 +312,7 @@ void Preview::initializeGL()
     initParallelLightVAO_07();
     initPointLightVAO_08();
     initSpotLightVAO_09();
+    initSpotLightSmoothVAO_10();
     // 5.解绑VBO和VAO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -278,6 +322,7 @@ void Preview::initializeGL()
     parallelLight.initTexture();
     pointLight.initTexture();
     spotLight.initTexture();
+    spotLightSmooth.initTexture();
 
     // 3. shader
     axisXYZ.initShader();
@@ -290,6 +335,7 @@ void Preview::initializeGL()
     parallelLight.initShader();
     pointLight.initShader();
     spotLight.initShader();
+    spotLightSmooth.initShader();
 }
 
 void Preview::resizeGL(int w, int h)
@@ -551,6 +597,9 @@ void Preview::drawModule() {
     case Scene::SpotLight:
         DrawSpotLight_09();
         break;
+    case Scene::SpotLightSmooth:
+        DrawSpotLightSmooth_10();
+        break;
     default:
         break;
     }
@@ -707,6 +756,7 @@ void Preview::setCurrentScene(Scene s)
     parallelLight.close();
     pointLight.close();
     spotLight.close();
+    spotLightSmooth.close();
     currentScene_ = s;
     switch (currentScene_) {
     case Scene::ColorOfObject:
@@ -735,6 +785,9 @@ void Preview::setCurrentScene(Scene s)
         break;
     case Scene::SpotLight:
         spotLight.showWindow();
+        break;
+    case Scene::SpotLightSmooth:
+        spotLightSmooth.showWindow();
         break;
     default:
         break;

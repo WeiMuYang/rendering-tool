@@ -58,6 +58,7 @@ void MainWindow::initAction() {
     connectSceneAction(ui->actionParallelLight, Scene::ParallelLight);
     connectSceneAction(ui->actionPointLight, Scene::PointLight);
     connectSceneAction(ui->actionSpotLight, Scene::SpotLight);
+    connectSceneAction(ui->actionSpotLightSmooth, Scene::SpotLightSmooth);
 }
 
 

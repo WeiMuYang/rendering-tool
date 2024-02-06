@@ -52,6 +52,7 @@
     <addaction name="actionParallelLight"/>
     <addaction name="actionPointLight"/>
     <addaction name="actionSpotLight"/>
+    <addaction name="actionSpotLightSmooth"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -114,6 +115,11 @@
   <action name="actionSpotLight">
    <property name="text">
     <string>聚光灯</string>
+   </property>
+  </action>
+  <action name="actionSpotLightSmooth">
+   <property name="text">
+    <string>聚光灯+边缘平滑</string>
    </property>
   </action>
  </widget>
