@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1280</width>
+    <height>991</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout_3">
+    <item>
+     <widget class="Preview" name="PreviewWgt" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1280</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>场景</string>
+    </property>
+    <addaction name="actionColorOfObj"/>
+    <addaction name="actionPhongLight"/>
+    <addaction name="actionGouraudLight"/>
+    <addaction name="actionMaterial"/>
+    <addaction name="actionCyanPlastic"/>
+    <addaction name="actionTexTureLight"/>
+    <addaction name="actionParallelLight"/>
+    <addaction name="actionPointLight"/>
+    <addaction name="actionSpotLight"/>
+    <addaction name="actionSpotLightSmooth"/>
+    <addaction name="actionMultLight"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>定时器</string>
+    </property>
+    <addaction name="actionTimer"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionColorOfObj">
+   <property name="text">
+    <string>物体颜色</string>
+   </property>
+  </action>
+  <action name="actionPhongLight">
+   <property name="text">
+    <string>Phong光照模型</string>
+   </property>
+  </action>
+  <action name="actionTimer">
+   <property name="text">
+    <string>开始/停止</string>
+   </property>
+   <property name="shortcut">
+    <string>Space</string>
+   </property>
+  </action>
+  <action name="actionGouraudLight">
+   <property name="text">
+    <string>Gouraud光照模型</string>
+   </property>
+  </action>
+  <action name="actionMaterial">
+   <property name="text">
+    <string>材质设置</string>
+   </property>
+  </action>
+  <action name="actionCyanPlastic">
+   <property name="text">
+    <string>青色的塑料</string>
+   </property>
+  </action>
+  <action name="actionTexTureLight">
+   <property name="text">
+    <string>纹理光照</string>
+   </property>
+  </action>
+  <action name="actionParallelLight">
+   <property name="text">
+    <string>平行光</string>
+   </property>
+  </action>
+  <action name="actionPointLight">
+   <property name="text">
+    <string>点光源</string>
+   </property>
+  </action>
+  <action name="actionSpotLight">
+   <property name="text">
+    <string>聚光灯</string>
+   </property>
+  </action>
+  <action name="actionSpotLightSmooth">
+   <property name="text">
+    <string>聚光灯+边缘平滑</string>
+   </property>
+  </action>
+  <action name="actionMultLight">
+   <property name="text">
+    <string>多光源</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Preview</class>
+   <extends>QWidget</extends>
+   <header location="global">preview.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
