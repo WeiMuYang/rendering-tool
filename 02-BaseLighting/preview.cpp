@@ -297,6 +297,70 @@ void Preview::DrawSpotLightSmooth_10()
     glDrawArrays(GL_TRIANGLES,0,36);
 }
 
+void Preview::initMultLightVAO_11()
+{
+    // 使用initTextureLightVAO_06();即可
+}
+
+void Preview::DrawMultLight_11()
+{
+    QMatrix4x4 projection;
+    QMatrix4x4 view; // 默认是单位矩阵
+    QMatrix4x4 model;
+
+    if(isTimeUsed) {
+        rotateByTime = m_elapsedTime.elapsed() / 50.0;
+    }
+    projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
+    view = pCamera_->GetViewMatrix();
+    multLight.projection = projection;
+    multLight.view = view;
+    multLight.u_viewPos = pCamera_->Position;
+
+    glBindVertexArray(VAO_Shape06);
+    for(unsigned int i = 0; i < 10; i++) {
+        QMatrix4x4 model;
+        model.translate(ParallelLightCubePositions[i]);
+        float angle = 20.0f * i;
+        model.rotate(angle, QVector3D(1.0f, 0.3f, 0.5f));
+        multLight.model = model;
+        multLight.updateShapeShader();
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
+
+    //// Shader Light
+    for(int i = 0;i < 2;i++){
+        model.setToIdentity();
+        model.translate(multLight.u_spotLight[i].position);
+        model.rotate(1.0, 1.0f, 5.0f, 0.5f);
+        model.scale(0.1f);
+        multLight.model = model;
+        multLight.u_lightColor = multLight.u_spotLight[i].color;
+        multLight.updateLightShader();
+        glBindVertexArray(VAO_Light02);
+        glDrawArrays(GL_TRIANGLES,0,36);
+
+        model.setToIdentity();
+        model.rotate(1.0, 1.0f, 5.0f, 0.5f);
+        model.scale(0.1f);
+        multLight.model = model;
+        multLight.u_lightColor = multLight.u_parallelLight[i].color;
+        multLight.updateLightShader();
+        glBindVertexArray(VAO_Light02);
+        glDrawArrays(GL_TRIANGLES,0,36);
+
+        model.setToIdentity();
+        model.translate(multLight.u_pointLight[i].position);
+        model.rotate(1.0, 1.0f, 5.0f, 0.5f);
+        model.scale(0.1f);
+        multLight.model = model;
+        multLight.u_lightColor = multLight.u_pointLight[i].color;
+        multLight.updateLightShader();
+        glBindVertexArray(VAO_Light02);
+        glDrawArrays(GL_TRIANGLES,0,36);
+    }
+}
+
 void Preview::initializeGL()
 {
     // 1.初始化OpenGL函数，否则OpenGL函数不可调用
@@ -313,6 +377,7 @@ void Preview::initializeGL()
     initPointLightVAO_08();
     initSpotLightVAO_09();
     initSpotLightSmoothVAO_10();
+    initMultLightVAO_11();
     // 5.解绑VBO和VAO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -323,6 +388,7 @@ void Preview::initializeGL()
     pointLight.initTexture();
     spotLight.initTexture();
     spotLightSmooth.initTexture();
+    multLight.initTexture();
 
     // 3. shader
     axisXYZ.initShader();
@@ -336,6 +402,7 @@ void Preview::initializeGL()
     pointLight.initShader();
     spotLight.initShader();
     spotLightSmooth.initShader();
+    multLight.initShader();
 }
 
 void Preview::resizeGL(int w, int h)
@@ -600,6 +667,9 @@ void Preview::drawModule() {
     case Scene::SpotLightSmooth:
         DrawSpotLightSmooth_10();
         break;
+    case Scene::MultLight:
+        DrawMultLight_11();
+        break;
     default:
         break;
     }
@@ -757,6 +827,7 @@ void Preview::setCurrentScene(Scene s)
     pointLight.close();
     spotLight.close();
     spotLightSmooth.close();
+    multLight.close();
     currentScene_ = s;
     switch (currentScene_) {
     case Scene::ColorOfObject:
@@ -788,6 +859,9 @@ void Preview::setCurrentScene(Scene s)
         break;
     case Scene::SpotLightSmooth:
         spotLightSmooth.showWindow();
+        break;
+    case Scene::MultLight:
+        multLight.showWindow();
         break;
     default:
         break;

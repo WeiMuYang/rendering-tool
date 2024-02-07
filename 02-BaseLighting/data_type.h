@@ -4,7 +4,7 @@
 
 enum Scene {
     ColorOfObject, PhongLight, GouraudLight, Material, CyanPlastic, TextureLight,
-    ParallelLight, PointLight, SpotLight, SpotLightSmooth
+    ParallelLight, PointLight, SpotLight, SpotLightSmooth, MultLight
 };
 
 // 点模式 线框模式 填充模式

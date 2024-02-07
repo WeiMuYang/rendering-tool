@@ -53,6 +53,7 @@
     <addaction name="actionPointLight"/>
     <addaction name="actionSpotLight"/>
     <addaction name="actionSpotLightSmooth"/>
+    <addaction name="actionMultLight"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -120,6 +121,11 @@
   <action name="actionSpotLightSmooth">
    <property name="text">
     <string>聚光灯+边缘平滑</string>
+   </property>
+  </action>
+  <action name="actionMultLight">
+   <property name="text">
+    <string>多光源</string>
    </property>
   </action>
  </widget>

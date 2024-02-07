@@ -20,6 +20,7 @@ SOURCES += \
     08-point-light/point_light.cpp \
     09-spot-light/spot_light.cpp \
     10-spot-light-smooth/spot_light_smooth.cpp \
+    11-mult-light/mult_light.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -38,6 +39,7 @@ HEADERS += \
     08-point-light/point_light.h \
     09-spot-light/spot_light.h \
     10-spot-light-smooth/spot_light_smooth.h \
+    11-mult-light/mult_light.h \
     camera.h \
     data_type.h \
     mainwindow.h \
@@ -54,6 +56,7 @@ FORMS += \
     08-point-light/point_light.ui \
     09-spot-light/spot_light.ui \
     10-spot-light-smooth/spotlightsmooth.ui \
+    11-mult-light/mult_light.ui \
     mainwindow.ui \
     04-material/material.ui
 
@@ -132,6 +135,13 @@ DISTFILES += \
     10-spot-light-smooth/shader/light.frag \
     10-spot-light-smooth/shader/light.vert \
     10-spot-light-smooth/shader/shapes.frag \
-    10-spot-light-smooth/shader/shapes.vert
+    10-spot-light-smooth/shader/shapes.vert \
+    11-mult-light/img/container2.png \
+    11-mult-light/img/container2_specular.png \
+    11-mult-light/img/lighting_maps_specular_color.png \
+    11-mult-light/shader/light.frag \
+    11-mult-light/shader/light.vert \
+    11-mult-light/shader/shapes.frag \
+    11-mult-light/shader/shapes.vert
 
 
