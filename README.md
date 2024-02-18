@@ -8,3 +8,15 @@
 
 参考链接：https://zhuanlan.zhihu.com/p/517924720
 
+Assimp:  [The Assimp 5.3.0 Minor-Release](https://github.com/assimp/assimp/releases/tag/v5.3.0)   
+
+```c++
+// include\assimp\types.h
+注释掉:
+//#ifdef ASSIMP_USE_HUNTER
+//#   include <utf8.h>
+//#else
+//#   include "../contrib/utf8cpp/source/utf8.h"
+//#endif
+```
+

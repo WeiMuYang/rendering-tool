@@ -47,10 +47,12 @@ void Mesh::Draw(QOpenGLShaderProgram &shader)
         m_glFuns->glActiveTexture(GL_TEXTURE0 + i);
         string number;
         string name = textures[i].type;
-        if(name == "texture_diffuse")
+        if(name == "texture_diffuse") {
             number = std::to_string(diffuseNr++);
-        else if(name == "texture_specular")
+        }
+        else if(name == "texture_specular"){
             number = std::to_string(specularNr++);
+        }
 
         shader.setUniformValue(("material." + name + number).c_str(), i);
         m_glFuns->glBindTexture(GL_TEXTURE_2D, textures[i].id);

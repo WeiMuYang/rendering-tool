@@ -217,7 +217,6 @@ void Preview::drawModule() {
     }
 }
 
-
 void Preview::setCurrentScene(Scene s)
 {
     currentScene_ = s;

@@ -15,6 +15,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     mesh.cpp \
+    model.cpp \
     preview.cpp
 
 HEADERS += \
@@ -24,6 +25,7 @@ HEADERS += \
     data_type.h \
     mainwindow.h \
     mesh.h \
+    model.h \
     preview.h
 
 FORMS += \
@@ -49,3 +51,9 @@ DISTFILES += \
     01-box-3d/shader/shapes.vert
 
 
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/ -lassimp-vc142-mt
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/ -lassimp-vc142-mtd
+
+INCLUDEPATH += $$PWD/include
+DEPENDPATH += $$PWD/include

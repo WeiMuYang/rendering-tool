@@ -124,9 +124,9 @@ void Box3D::updateShapeShader() {
     shader_Shape.setUniformValue("view", view);
     shader_Shape.setUniformValue("model", model);
 
-    // 将纹理信息和纹理编号对应，装入GPU
-    texConrainerDiffuse->bind(0);
-    texConrainerSpecular->bind(1);
+//    // 将纹理信息和纹理编号对应，装入GPU
+//    texConrainerDiffuse->bind(0);
+//    texConrainerSpecular->bind(1);
 }
 
 void Box3D::updateLightShader()
