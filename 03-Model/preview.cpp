@@ -14,7 +14,7 @@ Preview::Preview(QWidget *parent)
     pCamera_->nearPlane = 0.1f;
     pCamera_->farPlane = 100.0f;
 
-    currentScene_ = Scene::ColorOfObject;
+    currentScene_ = Scene::Box3D;
 
     rotationAxis = {1.0f, 1.0f, 0.5f};
 
@@ -35,26 +35,38 @@ Preview::~Preview()
 
 
 void Preview::initAxisVAO() {
+    float verticesAxisX1[] = {
+        1.0f, 0.0f, 0.0f,   // x+1
+        -1.0f, 0.0f, 0.0f,  // x-1
+    };
+    float verticesAxisY1[] = {
+        0.0f, 1.0f, 0.0f,   // y+1
+        0.0f, -1.0f, 0.0f,  // y-1
+    };
+    float verticesAxisZ1[] = {
+        0.0f, 0.0f, 1.0f,   // z+1
+        0.0f, 0.0f, -1.0f,  // z-1
+    };
     glGenVertexArrays(3, VAO_Axis);
     glGenBuffers(3, VBO_Axis);
     // 绘制坐标轴 X
     glBindVertexArray(VAO_Axis[0]);
     glBindBuffer(GL_ARRAY_BUFFER, VBO_Axis[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * axisXYZ.axisX_.verticeLength() , axisXYZ.axisX_.getVertices(),GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 , verticesAxisX1,GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     // 绘制坐标轴 Y
     glBindVertexArray(VAO_Axis[1]);
     glBindBuffer(GL_ARRAY_BUFFER, VBO_Axis[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * axisXYZ.axisY_.verticeLength() , axisXYZ.axisY_.getVertices(),GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 , verticesAxisY1 ,GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     // 绘制坐标轴 Z
     glBindVertexArray(VAO_Axis[2]);
     glBindBuffer(GL_ARRAY_BUFFER, VBO_Axis[2]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * axisXYZ.axisZ_.verticeLength() , axisXYZ.axisZ_.getVertices(),GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER,  sizeof(float) * 6 , verticesAxisZ1 ,GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 }
@@ -66,16 +78,17 @@ void Preview::initializeGL()
     initializeOpenGLFunctions();
     // 2.
     initAxisVAO();
+
     // 5.解绑VBO和VAO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-
     // 2. texture
-
-
+    box3D.initTexture();
     // 3. shader
     axisXYZ.initShader();
+    box3D.initShader();
 
+    m_mesh = processMesh();
 }
 
 void Preview::resizeGL(int w, int h)
@@ -87,7 +100,6 @@ void Preview::resizeGL(int w, int h)
 
 void Preview::paintGL()
 {
-    //    initializeOpenGLFunctions(); // 执行后，下面的函数才有执行的意义
     // 设置窗口颜色，背景颜色
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     // 打开深度测试，否则立方体形状无法显示立体
@@ -95,6 +107,35 @@ void Preview::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     drawAxis();
     drawModule();
+}
+
+void Preview::DrawBox3D_01()
+{
+    QMatrix4x4 projection;
+    QMatrix4x4 view; // 默认是单位矩阵
+    QMatrix4x4 model;
+
+    if(isTimeUsed) {
+        rotateByTime = m_elapsedTime.elapsed() / 50.0;
+    }
+    projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
+    view = pCamera_->GetViewMatrix();
+    model.rotate(rotateByTime, rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
+    box3D.projection = projection;
+    box3D.view = view;
+    box3D.model = model;
+    box3D.u_viewPos = pCamera_->Position;
+    box3D.updateShapeShader();
+    m_mesh->Draw(box3D.shader_Shape);
+
+    //// Shader Light
+    model.setToIdentity();
+    model.translate(box3D.u_lightPos);
+    model.rotate(1.0, 1.0f, 5.0f, 0.5f);
+    model.scale(0.2f);
+    box3D.model = model;
+    box3D.updateLightShader();
+    m_mesh->Draw(box3D.shader_Light);
 }
 
 void Preview::keyPressEvent(QKeyEvent *event)
@@ -126,8 +167,28 @@ void Preview::mouseMoveEvent(QMouseEvent *event)
 void Preview::wheelEvent(QWheelEvent *event)
 {
     pCamera_->ProcessMouseScroll(event->angleDelta().y()/120);
-
     update();
+}
+
+Mesh *Preview::processMesh()
+{
+    vector<Vertex> _vertices(36);
+    vector<unsigned int> _indices;
+    vector<Texture> _textures;
+    std::memcpy(&_vertices[0], box3D.vertices.data(), box3D.vertices.size() * sizeof(float));
+    for(int i = 0; i < 36;i++){
+        _indices.push_back(i);
+    }
+
+    Texture tex;
+    tex.id= box3D.texConrainerDiffuse->textureId();
+    tex.type = "texture_diffuse";
+    _textures.push_back(tex);
+    tex.id= box3D.texConrainerSpecular->textureId();
+    tex.type = "texture_specular";
+    _textures.push_back(tex);
+    return new Mesh(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>()
+                    ,_vertices,_indices,_textures);
 }
 
 void Preview::drawAxis() {
@@ -147,30 +208,26 @@ void Preview::drawAxis() {
 
 // 开始绘制
 void Preview::drawModule() {
-//    switch (currentScene_) {
-
-//    case Scene::MultLight:
-//        DrawMultLight_11();
-//        break;
-//    default:
-//        break;
-//    }
+    switch (currentScene_) {
+    case Scene::Box3D:
+        DrawBox3D_01();
+        break;
+    default:
+        break;
+    }
 }
-
-
 
 
 void Preview::setCurrentScene(Scene s)
 {
-//    colorObj.close();
     currentScene_ = s;
-//    switch (currentScene_) {
-//    case Scene::ColorOfObject:
-//        colorObj.showWindow();
-//        break;
-//    default:
-//        break;
-//    }
+    switch (currentScene_) {
+    case Scene::Box3D:
+        ;
+        break;
+    default:
+        break;
+    }
 }
 void Preview::on_timeout()
 {

@@ -344,7 +344,7 @@ void Preview::DrawMultLight_11()
         model.rotate(1.0, 1.0f, 5.0f, 0.5f);
         model.scale(0.1f);
         multLight.model = model;
-        multLight.u_lightColor = multLight.u_parallelLight[i].color;
+//        multLight.u_lightColor = multLight.u_lightColor;
         multLight.updateLightShader();
         glBindVertexArray(VAO_Light02);
         glDrawArrays(GL_TRIANGLES,0,36);

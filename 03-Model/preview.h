@@ -15,8 +15,10 @@
 
 #include "data_type.h"
 #include "camera.h"
+#include "mesh.h"
 
 #include "00-axis/axis.h"
+#include "01-box-3d/box3d.h"
 
 
 // 2.继承相关类
@@ -35,6 +37,7 @@ public:
 
 
 
+    void DrawBox3D_01();
 public slots:
     void on_timeout();
 protected:
@@ -74,6 +77,10 @@ private:
     QPoint mouseDeltaPos_;
 
     class Axis axisXYZ;
+
+    class Box3D box3D;
+    Mesh* m_mesh;
+    Mesh* processMesh();
 
 };
 

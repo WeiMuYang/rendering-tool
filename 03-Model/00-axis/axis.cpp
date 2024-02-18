@@ -19,9 +19,6 @@ Axis::Axis(QObject *parent)
     : QObject{parent}
 {
     // 坐标轴
-    axisX_.setVerticesArr(verticesAxisX1, 6);
-    axisY_.setVerticesArr(verticesAxisY1, 6);
-    axisZ_.setVerticesArr(verticesAxisZ1, 6);
 }
 
 void Axis::initShader()

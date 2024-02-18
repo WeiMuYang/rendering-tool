@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QOpenGLShaderProgram>
 
-#include "../vertices.h"
 
 class Axis : public QObject
 {
@@ -17,13 +16,10 @@ signals:
 
 public:
     // 坐标系
-    Vertices axisX_;
     QOpenGLShaderProgram shader_axisX;
 
-    Vertices axisY_;
     QOpenGLShaderProgram shader_axisY;
 
-    Vertices axisZ_;
     QOpenGLShaderProgram shader_axisZ;
 };
 

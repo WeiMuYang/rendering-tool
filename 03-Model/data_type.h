@@ -3,8 +3,7 @@
 #include <QString>
 
 enum Scene {
-    ColorOfObject, PhongLight, GouraudLight, Material, CyanPlastic, TextureLight,
-    ParallelLight, PointLight, SpotLight, SpotLightSmooth, MultLight
+    Box3D
 };
 
 // 点模式 线框模式 填充模式

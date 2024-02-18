@@ -10,19 +10,21 @@ CONFIG += c++17
 
 SOURCES += \
     00-axis/axis.cpp \
+    01-box-3d/box3d.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
-    preview.cpp \
-    vertices.cpp
+    mesh.cpp \
+    preview.cpp
 
 HEADERS += \
     00-axis/axis.h \
+    01-box-3d/box3d.h \
     camera.h \
     data_type.h \
     mainwindow.h \
-    preview.h \
-    vertices.h
+    mesh.h \
+    preview.h
 
 FORMS += \
     mainwindow.ui \
@@ -39,5 +41,11 @@ DISTFILES += \
     00-axis/shader/axis_Y.vert \
     00-axis/shader/axis_Z.frag \
     00-axis/shader/axis_Z.vert \
+    01-box-3d/img/container2.png \
+    01-box-3d/img/container2_specular.png \
+    01-box-3d/shader/light.frag \
+    01-box-3d/shader/light.vert \
+    01-box-3d/shader/shapes.frag \
+    01-box-3d/shader/shapes.vert
 
 

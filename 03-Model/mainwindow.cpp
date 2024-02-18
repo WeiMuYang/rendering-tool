@@ -31,17 +31,8 @@ void MainWindow::initAction() {
         ui->PreviewWgt->timeStartStop();
     });
 
-    connectSceneAction(ui->actionColorOfObj, Scene::ColorOfObject);
-    connectSceneAction(ui->actionPhongLight, Scene::PhongLight);
-    connectSceneAction(ui->actionGouraudLight, Scene::GouraudLight);
-    connectSceneAction(ui->actionMaterial, Scene::Material);
-    connectSceneAction(ui->actionCyanPlastic, Scene::CyanPlastic);
-    connectSceneAction(ui->actionTexTureLight, Scene::TextureLight);
-    connectSceneAction(ui->actionParallelLight, Scene::ParallelLight);
-    connectSceneAction(ui->actionPointLight, Scene::PointLight);
-    connectSceneAction(ui->actionSpotLight, Scene::SpotLight);
-    connectSceneAction(ui->actionSpotLightSmooth, Scene::SpotLightSmooth);
-    connectSceneAction(ui->actionMultLight, Scene::MultLight);
+    connectSceneAction(ui->actionBox3D, Scene::Box3D);
+
 }
 
 

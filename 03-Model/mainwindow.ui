@@ -43,17 +43,7 @@
     <property name="title">
      <string>场景</string>
     </property>
-    <addaction name="actionColorOfObj"/>
-    <addaction name="actionPhongLight"/>
-    <addaction name="actionGouraudLight"/>
-    <addaction name="actionMaterial"/>
-    <addaction name="actionCyanPlastic"/>
-    <addaction name="actionTexTureLight"/>
-    <addaction name="actionParallelLight"/>
-    <addaction name="actionPointLight"/>
-    <addaction name="actionSpotLight"/>
-    <addaction name="actionSpotLightSmooth"/>
-    <addaction name="actionMultLight"/>
+    <addaction name="actionBox3D"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -65,16 +55,6 @@
    <addaction name="menu_2"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionColorOfObj">
-   <property name="text">
-    <string>物体颜色</string>
-   </property>
-  </action>
-  <action name="actionPhongLight">
-   <property name="text">
-    <string>Phong光照模型</string>
-   </property>
-  </action>
   <action name="actionTimer">
    <property name="text">
     <string>开始/停止</string>
@@ -83,49 +63,9 @@
     <string>Space</string>
    </property>
   </action>
-  <action name="actionGouraudLight">
+  <action name="actionBox3D">
    <property name="text">
-    <string>Gouraud光照模型</string>
-   </property>
-  </action>
-  <action name="actionMaterial">
-   <property name="text">
-    <string>材质设置</string>
-   </property>
-  </action>
-  <action name="actionCyanPlastic">
-   <property name="text">
-    <string>青色的塑料</string>
-   </property>
-  </action>
-  <action name="actionTexTureLight">
-   <property name="text">
-    <string>纹理光照</string>
-   </property>
-  </action>
-  <action name="actionParallelLight">
-   <property name="text">
-    <string>平行光</string>
-   </property>
-  </action>
-  <action name="actionPointLight">
-   <property name="text">
-    <string>点光源</string>
-   </property>
-  </action>
-  <action name="actionSpotLight">
-   <property name="text">
-    <string>聚光灯</string>
-   </property>
-  </action>
-  <action name="actionSpotLightSmooth">
-   <property name="text">
-    <string>聚光灯+边缘平滑</string>
-   </property>
-  </action>
-  <action name="actionMultLight">
-   <property name="text">
-    <string>多光源</string>
+    <string>箱子</string>
    </property>
   </action>
  </widget>

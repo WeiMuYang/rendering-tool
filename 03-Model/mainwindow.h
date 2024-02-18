@@ -9,20 +9,6 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-struct ObjectOfColor_01
-{
-    QVector3D objectColor;
-    QVector3D lightColor;
-};
-
-struct PhongLight_02
-{
-    QVector3D objectColor;
-    QVector3D lightColor;
-    float ambient;
-    float specular;
-    int shiny;
-};
 
 class MainWindow : public QMainWindow
 {
@@ -39,8 +25,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    ObjectOfColor_01  objectOfColor_01;
-    PhongLight_02 phongLight_02;
+//    ObjectOfColor_01  objectOfColor_01;
+//    PhongLight_02 phongLight_02;
 
 };
 #endif // MAINWINDOW_H
