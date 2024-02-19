@@ -6,9 +6,15 @@
 
 可以显示：人物，模型，相机参数，以及在各个坐标系中的值。 
 
-参考链接：https://zhuanlan.zhihu.com/p/517924720
+参考链接：https://zhuanlan.zhihu.com/p/517924720  
+
+## 2 Assimp
 
 Assimp:  [The Assimp 5.3.0 Minor-Release](https://github.com/assimp/assimp/releases/tag/v5.3.0)   
+
+### 2.1 编译报错 
+
+方法一：
 
 ```c++
 // include\assimp\types.h
@@ -20,3 +26,6 @@ Assimp:  [The Assimp 5.3.0 Minor-Release](https://github.com/assimp/assimp/relea
 //#endif
 ```
 
+方法二：
+
+添加contrib到include目录下
