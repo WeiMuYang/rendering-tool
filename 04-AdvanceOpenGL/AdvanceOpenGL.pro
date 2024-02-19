@@ -10,8 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     00-axis/axis.cpp \
-    01-box-3d/box3d.cpp \
-    02-load-model/model_shader_texture.cpp \
+    01-depth-testing/depth_testing.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -21,8 +20,7 @@ SOURCES += \
 
 HEADERS += \
     00-axis/axis.h \
-    01-box-3d/box3d.h \
-    02-load-model/model_shader_texture.h \
+    01-depth-testing/depth_testing.h \
     camera.h \
     data_type.h \
     mainwindow.h \
@@ -31,6 +29,7 @@ HEADERS += \
     preview.h
 
 FORMS += \
+    01-depth-testing/depth_testing.ui \
     mainwindow.ui \
 
 # Default rules for deployment.
@@ -45,16 +44,13 @@ DISTFILES += \
     00-axis/shader/axis_Y.vert \
     00-axis/shader/axis_Z.frag \
     00-axis/shader/axis_Z.vert \
-    01-box-3d/img/container2.png \
-    01-box-3d/img/container2_specular.png \
-    01-box-3d/shader/light.frag \
-    01-box-3d/shader/light.vert \
-    01-box-3d/shader/shapes.frag \
-    01-box-3d/shader/shapes.vert \
-    02-load-model/shader/light.frag \
-    02-load-model/shader/light.vert \
-    02-load-model/shader/shapes.frag \
-    02-load-model/shader/shapes.vert
+    01-depth-testing/img/container2.png \
+    01-depth-testing/img/container2_specular.png \
+    01-depth-testing/shader/light.frag \
+    01-depth-testing/shader/light.vert \
+    01-depth-testing/shader/shapes.frag \
+    01-depth-testing/shader/shapes.vert
+
 
 
 
