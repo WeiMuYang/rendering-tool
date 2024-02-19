@@ -1,3 +1,6 @@
+#ifndef MESH_H
+#define MESH_H
+
 #include <QOpenGLShaderProgram>
 #include <QOpenGLFunctions_3_3_Core>
 #include <string>
@@ -32,3 +35,5 @@ private:
     // 获取初始后的OpenGL函数指针
     QOpenGLFunctions_3_3_Core *m_glFuns;
 };
+
+#endif // DATA_TYPE_H

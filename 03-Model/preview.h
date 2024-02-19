@@ -16,9 +16,11 @@
 #include "data_type.h"
 #include "camera.h"
 #include "mesh.h"
+#include "model.h"
 
 #include "00-axis/axis.h"
 #include "01-box-3d/box3d.h"
+#include "02-load-model/model_shader_texture.h"
 
 
 // 2.继承相关类
@@ -35,9 +37,10 @@ public:
     void setCurrentScene(Scene s);
     void timeStartStop();
 
-
-
     void DrawBox3D_01();
+    void loadModel(string path);
+    QVector3D cameraPosInit(float maxY, float minY);
+    void DrawModel_02();
 public slots:
     void on_timeout();
 protected:
@@ -81,6 +84,9 @@ private:
     class Box3D box3D;
     Mesh* m_mesh;
     Mesh* processMesh();
+
+    class ModelShaderTexture modelShaderTex;
+    Model* m_model = NULL;
 
 };
 

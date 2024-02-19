@@ -11,6 +11,7 @@ CONFIG += c++17
 SOURCES += \
     00-axis/axis.cpp \
     01-box-3d/box3d.cpp \
+    02-load-model/model_shader_texture.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -21,6 +22,7 @@ SOURCES += \
 HEADERS += \
     00-axis/axis.h \
     01-box-3d/box3d.h \
+    02-load-model/model_shader_texture.h \
     camera.h \
     data_type.h \
     mainwindow.h \
@@ -48,7 +50,11 @@ DISTFILES += \
     01-box-3d/shader/light.frag \
     01-box-3d/shader/light.vert \
     01-box-3d/shader/shapes.frag \
-    01-box-3d/shader/shapes.vert
+    01-box-3d/shader/shapes.vert \
+    02-load-model/shader/light.frag \
+    02-load-model/shader/light.vert \
+    02-load-model/shader/shapes.frag \
+    02-load-model/shader/shapes.vert
 
 
 

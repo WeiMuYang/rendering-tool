@@ -44,6 +44,7 @@
      <string>场景</string>
     </property>
     <addaction name="actionBox3D"/>
+    <addaction name="actionLoadModel"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -66,6 +67,11 @@
   <action name="actionBox3D">
    <property name="text">
     <string>箱子</string>
+   </property>
+  </action>
+  <action name="actionLoadModel">
+   <property name="text">
+    <string>加载模型</string>
    </property>
   </action>
  </widget>

@@ -1,5 +1,7 @@
 #include "preview.h"
 
+QVector3D viewInitPos(0.0,0.0,5.0);
+
 Preview::Preview(QWidget *parent)
     : QOpenGLWidget{parent}
 {
@@ -8,7 +10,7 @@ Preview::Preview(QWidget *parent)
     // 获取鼠标事件
     setMouseTracking(true);
     // 初始化镜头位置
-    pCamera_ = new Camera(QVector3D(0,0,5.0));
+    pCamera_ = new Camera(viewInitPos);
     pCamera_->fov = 45.0f;
     pCamera_->aspectRatio = (float)width()/height();
     pCamera_->nearPlane = 0.1f;
@@ -84,9 +86,11 @@ void Preview::initializeGL()
     glBindVertexArray(0);
     // 2. texture
     box3D.initTexture();
+    modelShaderTex.initTexture();
     // 3. shader
     axisXYZ.initShader();
     box3D.initShader();
+    modelShaderTex.initShader();
 
     m_mesh = processMesh();
 }
@@ -100,6 +104,7 @@ void Preview::resizeGL(int w, int h)
 
 void Preview::paintGL()
 {
+
     // 设置窗口颜色，背景颜色
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     // 打开深度测试，否则立方体形状无法显示立体
@@ -136,6 +141,24 @@ void Preview::DrawBox3D_01()
     box3D.model = model;
     box3D.updateLightShader();
     m_mesh->Draw(box3D.shader_Light);
+}
+
+void Preview::DrawModel_02() {
+    QMatrix4x4 model;
+    QMatrix4x4 view;
+    QMatrix4x4 projection;
+    if(isTimeUsed) {
+        rotateByTime = m_elapsedTime.elapsed() / 50.0;
+    }
+    projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
+    view = pCamera_->GetViewMatrix();
+    model.rotate(rotateByTime, rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
+    modelShaderTex.projection = projection;
+    modelShaderTex.view = view;
+    modelShaderTex.model = model;
+    modelShaderTex.u_viewPos = pCamera_->Position;
+    modelShaderTex.updateShapeShader();
+    m_model->Draw(modelShaderTex.shader_Shape);
 }
 
 void Preview::keyPressEvent(QKeyEvent *event)
@@ -204,13 +227,17 @@ void Preview::drawAxis() {
 }
 
 
-
-
 // 开始绘制
 void Preview::drawModule() {
     switch (currentScene_) {
     case Scene::Box3D:
         DrawBox3D_01();
+        break;
+    case Scene::LoadModel:
+        if(m_model==NULL) {
+            return;
+        }
+        DrawModel_02();
         break;
     default:
         break;
@@ -224,6 +251,9 @@ void Preview::setCurrentScene(Scene s)
     case Scene::Box3D:
         ;
         break;
+    case Scene::LoadModel:
+        ;
+        break;
     default:
         break;
     }
@@ -235,5 +265,30 @@ void Preview::on_timeout()
 
 void Preview::timeStartStop() {
     isTimeUsed = !isTimeUsed;
+}
+
+void Preview::loadModel(string path)
+{
+    if(m_model !=NULL)
+        delete m_model;
+
+    m_model=NULL;
+    makeCurrent();
+    m_model = new Model(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>()
+                        ,path.c_str());
+    pCamera_->Position = cameraPosInit(m_model->m_maxY,m_model->m_minY);
+    doneCurrent();
+}
+
+QVector3D Preview::cameraPosInit(float maxY, float minY)
+{
+    QVector3D temp={0,0,0};
+    float height=maxY-minY;
+    temp.setZ(1.5*height);
+    if(minY>=0) {
+        temp.setY(height/2.0);
+    }
+    viewInitPos=temp;
+    return temp;
 }
 

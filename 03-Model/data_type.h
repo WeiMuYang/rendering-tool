@@ -3,7 +3,7 @@
 #include <QString>
 
 enum Scene {
-    Box3D
+    Box3D, LoadModel
 };
 
 // 点模式 线框模式 填充模式

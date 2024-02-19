@@ -47,17 +47,16 @@ void Mesh::Draw(QOpenGLShaderProgram &shader)
         m_glFuns->glActiveTexture(GL_TEXTURE0 + i);
         string number;
         string name = textures[i].type;
-        if(name == "texture_diffuse") {
+        if(name == "texture_diffuse")
             number = std::to_string(diffuseNr++);
-        }
-        else if(name == "texture_specular"){
+        else if(name == "texture_specular")
             number = std::to_string(specularNr++);
-        }
 
         shader.setUniformValue(("material." + name + number).c_str(), i);
         m_glFuns->glBindTexture(GL_TEXTURE_2D, textures[i].id);
 
     }
     m_glFuns->glBindVertexArray(VAO);
-    m_glFuns->glDrawArrays(GL_TRIANGLES, 0, 36);
+    //m_glFuns->glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+    m_glFuns->glDrawElements(GL_TRIANGLES,indices.size(),GL_UNSIGNED_INT,0);
 }
