@@ -152,7 +152,7 @@ void Preview::DrawModel_02() {
     }
     projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
     view = pCamera_->GetViewMatrix();
-    model.rotate(rotateByTime, rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
+    model.rotate(rotateByTime, 0.0f, 1.0f, 0.0f);
     modelShaderTex.projection = projection;
     modelShaderTex.view = view;
     modelShaderTex.model = model;
