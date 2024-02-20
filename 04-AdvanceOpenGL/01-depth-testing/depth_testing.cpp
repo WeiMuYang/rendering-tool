@@ -68,11 +68,13 @@ DepthTesting::DepthTesting(QWidget *parent) :
     for (int i = 0; i < size; i++) {
         cubeVertices.push_back(cubeVertices_01[i]);
     }
+    cubeVerCount = 36;
 
     size = sizeof(planeVertices_01) / sizeof(float);
     for (int i = 0; i < size; i++) {
         planeVertices.push_back(planeVertices_01[i]);
     }
+    planeVerCount = 6;
 
     // 位置
     u_lightPos ={1.2f, 1.0f, 2.0f};
@@ -91,8 +93,6 @@ DepthTesting::DepthTesting(QWidget *parent) :
     // 光源镜面反射分量
     u_lightTex.specular = QVector3D(1.0f, 1.0f, 1.0f);
     u_lightTex.direction = {-0.2f, -1.0f, -0.3f};
-
-
 }
 
 DepthTesting::~DepthTesting()
@@ -122,10 +122,24 @@ void DepthTesting::initShader() {
 
 void DepthTesting::initTexture()
 {
+    cubeTextures.clear();
+    planeTextures.clear();
     // 按照编号 0 1 2 ... 放到CPU
     // TODO: 编号应该是整个在OpenGl中的所有的texture，所以需要看下之前有没有贴图初始化，如果有的话，编号对应会顺延
     texConrainerDiffuse = new QOpenGLTexture(QImage("../01-depth-testing/img/container2.png").mirrored());
-    texConrainerSpecular = new QOpenGLTexture(QImage("../01-depth-testing/img/container2_specular.png").mirrored());
+    texConrainerSpecular = new QOpenGLTexture(QImage("../01-depth-testing/img/matrix.jpg").mirrored());
+
+    Texture tex;
+    tex.path = "../01-depth-testing/img/container2.png";
+    tex.id = texConrainerDiffuse->textureId();
+    tex.type = "texture_diffuse";
+    cubeTextures.push_back(tex);
+
+
+    tex.path = "../01-depth-testing/img/matrix.jpg";
+    tex.id = texConrainerSpecular->textureId();
+    tex.type = "texture_diffuse";
+    planeTextures.push_back(tex);
 }
 
 void DepthTesting::updateShapeShader() {

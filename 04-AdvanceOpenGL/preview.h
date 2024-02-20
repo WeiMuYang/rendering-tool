@@ -19,6 +19,7 @@
 #include "model.h"
 
 #include "00-axis/axis.h"
+#include "01-depth-testing/depth_testing.h"
 
 // 2.继承相关类
 class Preview : public QOpenGLWidget, QOpenGLFunctions_3_3_Core
@@ -33,11 +34,12 @@ public:
     void initAxisVAO();
     void setCurrentScene(Scene s);
     void timeStartStop();
+    Mesh* processMesh(std::vector<float> vertices,int sizeOfVer, vector<Texture> textures);
 
-    void DrawBox3D_01();
     void loadModel(string path);
     QVector3D cameraPosInit(float maxY, float minY);
-    void DrawModel_02();
+
+    void DrawDepthTesting_01();
 public slots:
     void on_timeout();
 protected:
@@ -77,10 +79,11 @@ private:
     QPoint mouseDeltaPos_;
 
     class Axis axisXYZ;
+    class DepthTesting depthTesting;
 
+    Mesh * m_CubeMesh;
+    Mesh * m_PlaneMesh;
 
-    Mesh* m_mesh;
-//    Mesh* processMesh();
 
     Model* m_model = NULL;
 

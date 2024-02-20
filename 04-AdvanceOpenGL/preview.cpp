@@ -85,12 +85,14 @@ void Preview::initializeGL()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     // 2. texture
+    depthTesting.initTexture();
 
     // 3. shader
     axisXYZ.initShader();
+    depthTesting.initShader();
 
-
-//    m_mesh = processMesh();
+    m_CubeMesh = processMesh(depthTesting.cubeVertices, depthTesting.cubeVerCount, depthTesting.cubeTextures);
+    m_PlaneMesh = processMesh(depthTesting.planeVertices, depthTesting.planeVerCount, depthTesting.planeTextures);
 }
 
 void Preview::resizeGL(int w, int h)
@@ -107,7 +109,9 @@ void Preview::paintGL()
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     // 打开深度测试，否则立方体形状无法显示立体
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     drawAxis();
     drawModule();
 }
@@ -158,19 +162,34 @@ void Preview::drawAxis() {
     glDrawArrays(GL_LINES, 0, 2);
 }
 
+void Preview::DrawDepthTesting_01(){
+    QMatrix4x4 projection;
+    QMatrix4x4 view; // 默认是单位矩阵
+    QMatrix4x4 model;
+
+    projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
+    view = pCamera_->GetViewMatrix();
+    depthTesting.projection = projection;
+    depthTesting.view = view;
+    depthTesting.u_viewPos = pCamera_->Position;
+    depthTesting.updateShapeShader();
+    m_CubeMesh->Draw(depthTesting.shader_Shape);
+    m_PlaneMesh->Draw(depthTesting.shader_Shape);
+}
+
 
 // 开始绘制
 void Preview::drawModule() {
     switch (currentScene_) {
     case Scene::DepthTesting:
-//        DrawBox3D_01();
+        DrawDepthTesting_01();
         break;
-//    case Scene::LoadModel:
-//        if(m_model==NULL) {
-//            return;
-//        }
-//        DrawModel_02();
-//        break;
+        //    case Scene::LoadModel:
+        //        if(m_model==NULL) {
+        //            return;
+        //        }
+        //        DrawModel_02();
+        //        break;
     default:
         break;
     }
@@ -179,16 +198,16 @@ void Preview::drawModule() {
 void Preview::setCurrentScene(Scene s)
 {
     currentScene_ = s;
-//    switch (currentScene_) {
-//    case Scene::DepthTesting:
-//        ;
-//        break;
-//    case Scene::LoadModel:
-//        ;
-//        break;
-//    default:
-//        break;
-//    }
+    //    switch (currentScene_) {
+    //    case Scene::DepthTesting:
+    //        ;
+    //        break;
+    //    case Scene::LoadModel:
+    //        ;
+    //        break;
+    //    default:
+    //        break;
+    //    }
 }
 void Preview::on_timeout()
 {
@@ -222,5 +241,26 @@ QVector3D Preview::cameraPosInit(float maxY, float minY)
     }
     viewInitPos=temp;
     return temp;
+}
+
+Mesh *Preview::processMesh(std::vector<float> vertices,int size, vector<Texture> textures)
+{
+    vector<Vertex> _vertices;
+    vector<unsigned int> _indices;
+    //    std::memcpy(&_vertices[0], vertices.data(), vertices.size() * sizeof(float));  没有Normal数据，需要手动添加
+
+    for(int i = 0; i < size;i++){
+        Vertex vert;
+        vert.Position[0]=vertices.at(i*5+0);
+        vert.Position[1]=vertices.at(i*5+1);
+        vert.Position[2]=vertices.at(i*5+2);
+        vert.TexCoords[0]=vertices.at(i*5+3);
+        vert.TexCoords[1]=vertices.at(i*5+4);
+        _vertices.push_back(vert);
+        _indices.push_back(i);
+    }
+
+    return new Mesh(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>()
+                    ,_vertices,_indices,textures);
 }
 

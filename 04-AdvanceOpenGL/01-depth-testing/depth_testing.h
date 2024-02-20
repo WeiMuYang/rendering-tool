@@ -8,6 +8,8 @@
 #include <QMatrix4x4>
 #include <QOpenGLTexture>
 
+#include "mesh.h"
+
 
 
 struct Box3DShapeMaterial {
@@ -37,7 +39,11 @@ public:
     ~DepthTesting();
 
     std::vector<float> cubeVertices;
+    unsigned int cubeVerCount;
+    std::vector<Texture> cubeTextures;
     std::vector<float> planeVertices;
+    unsigned int planeVerCount;
+    std::vector<Texture> planeTextures;
 
     void initShader() ;
     void initTexture() ;
