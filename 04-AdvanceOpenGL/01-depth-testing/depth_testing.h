@@ -10,6 +10,8 @@
 
 #include "mesh.h"
 
+#include "../data_type.h"
+
 
 
 struct Box3DShapeMaterial {
@@ -49,7 +51,6 @@ public:
     void initTexture() ;
     void setShader(QString name, QVector3D value);
 
-    QOpenGLShaderProgram shader_Light;
     QOpenGLShaderProgram shader_Shape;
 
     QOpenGLTexture* texConrainerDiffuse;
@@ -75,6 +76,9 @@ public:
     void showWindow();
     void updateDlg();
     void initSigSlot();
+
+signals:
+    void sigChangeDepthTest(DepthTestType type);
 
 private:
     Ui::DepthTesting *ui;

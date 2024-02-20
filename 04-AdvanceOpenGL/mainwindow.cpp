@@ -9,6 +9,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     resize(QSize(1400, 800));
+
+    ui->PreviewWgt->setCurrentScene(Scene::DepthTestingScene);
     // 不用给preview创建对象，因为是采用提升的方式创建的PreviewWgt
     // 只需要通过ui->PreviewWgt，就可以找到Preview的属性成员
     initAction();
@@ -31,8 +33,8 @@ void MainWindow::initAction() {
     connect(ui->actionTimer, &QAction::triggered,this , [this]() {
         ui->PreviewWgt->timeStartStop();
     });
-    connectSceneAction(ui->actionDepthTesting, Scene::DepthTesting);
-    connectSceneAction(ui->actionMousePicking, Scene::MousePicking);
+    connectSceneAction(ui->actionDepthTesting, Scene::DepthTestingScene);
+    connectSceneAction(ui->actionMousePicking, Scene::MousePickingScene);
 
     connect(ui->actionLoadModel, &QAction::triggered, this, [this]() {
         QString path = QFileDialog::getOpenFileName(this,"选择模型文件","",

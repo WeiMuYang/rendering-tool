@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>480</width>
-    <height>206</height>
+    <width>622</width>
+    <height>189</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>深度测试类型</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -31,36 +31,7 @@
      <property name="title">
       <string>深度测试</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,0">
-      <item>
-       <widget class="QGroupBox" name="colorUniformBox_10">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="title">
-         <string>深度测试开启：</string>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_12" stretch="0">
-         <item>
-          <widget class="QComboBox" name="objDi_comboBox">
-           <item>
-            <property name="text">
-             <string>无</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>container2</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
+     <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0">
       <item>
        <widget class="QGroupBox" name="colorUniformBox_18">
         <property name="minimumSize">
@@ -74,44 +45,50 @@
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_13" stretch="0">
          <item>
-          <widget class="QComboBox" name="objDi_comboBox_2">
+          <widget class="QComboBox" name="depthTestingType_comboBox">
            <item>
             <property name="text">
-             <string>无</string>
+             <string>NEVER</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>container2</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="colorUniformBox_19">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="title">
-         <string>深度测试精度：</string>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_21" stretch="0">
-         <item>
-          <widget class="QComboBox" name="objDi_comboBox_3">
-           <item>
-            <property name="text">
-             <string>无</string>
+             <string>LESS</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>container2</string>
+             <string>EQUAL</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>LEQUAL</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>GREATER</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>NOTEQUAL</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>GEQUAL</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>ALWAYS</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>NONE</string>
             </property>
            </item>
           </widget>

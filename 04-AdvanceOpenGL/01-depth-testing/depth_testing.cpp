@@ -93,6 +93,8 @@ DepthTesting::DepthTesting(QWidget *parent) :
     // 光源镜面反射分量
     u_lightTex.specular = QVector3D(1.0f, 1.0f, 1.0f);
     u_lightTex.direction = {-0.2f, -1.0f, -0.3f};
+
+    initSigSlot();
 }
 
 DepthTesting::~DepthTesting()
@@ -103,13 +105,6 @@ DepthTesting::~DepthTesting()
 void DepthTesting::initShader() {
     // shader
     bool success;
-    shader_Light.addShaderFromSourceFile(QOpenGLShader::Fragment,"../01-depth-testing/shader/light.frag");
-    shader_Light.addShaderFromSourceFile(QOpenGLShader::Vertex,"../01-depth-testing/shader/light.vert");
-    success = shader_Light.link();
-    if(!success) {
-        qDebug()<<"ERR:"<<shader_Light.log();
-    }
-    updateLightShader();
 
     shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,"../01-depth-testing/shader/shapes.frag");
     shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,"../01-depth-testing/shader/shapes.vert");
@@ -171,15 +166,6 @@ void DepthTesting::updateShapeShader() {
     //    texConrainerSpecular->bind(1);
 }
 
-void DepthTesting::updateLightShader()
-{
-    shader_Light.bind();
-    shader_Light.setUniformValue("lightColor", u_lightColor);
-
-    shader_Light.setUniformValue("projection", projection);
-    shader_Light.setUniformValue("view", view);
-    shader_Light.setUniformValue("model", model);
-}
 void DepthTesting::showWindow()
 {
     show();
@@ -188,90 +174,30 @@ void DepthTesting::showWindow()
 
 void DepthTesting::updateDlg()
 {
-    auto setVec3toUi = [&](QDoubleSpinBox* spinBox_X,QDoubleSpinBox* spinBox_Y,QDoubleSpinBox* spinBox_Z, QVector3D value){
-        spinBox_X->setValue(value.x());
-        spinBox_Y->setValue(value.y());
-        spinBox_Z->setValue(value.z());
-    };
-
-//    setVec3toUi(ui->Pos_X_SpinBox, ui->Pos_Y_SpinBox, ui->Pos_Z_SpinBox, u_light.position);
-//    setVec3toUi(ui->Light_X_SpinBox, ui->Light_Y_SpinBox, ui->Light_Z_SpinBox, u_lightColor);
-//    setVec3toUi(ui->ligAm_X_SpinBox, ui->ligAm_Y_SpinBox, ui->ligAm_Z_SpinBox, u_light.ambient);
-//    setVec3toUi(ui->ligDi_X_SpinBox, ui->ligDi_Y_SpinBox, ui->ligDi_Z_SpinBox, u_light.diffuse);
-//    setVec3toUi(ui->ligSp_X_SpinBox, ui->ligSp_Y_SpinBox, ui->ligSp_Z_SpinBox, u_light.specular);
-//    setVec3toUi(ui->Dir_X_SpinBox, ui->Dir_Y_SpinBox, ui->Dir_Z_SpinBox, u_light.direction);
-
-//    ui->objShiny_spinBox->setValue(u_objectTex.shininess);
-//    ui->objDi_comboBox->setCurrentIndex(1);
-//    ui->objSp_comboBox->setCurrentIndex(1);
-
-//    ui->ligCon_SpinBox->setValue(u_light.constant);
-//    ui->ligLin_SpinBox->setValue(u_light.linear);
-//    ui->ligQua_SpinBox->setValue(u_light.quadratic);
-//    ui->cutOff_SpinBox->setValue(u_light.cutOff);
-//    ui->outerCutOff_SpinBox->setValue(u_light.outerCutOff);
+    ui->depthTestingType_comboBox->setCurrentIndex(1);
 }
 
 void DepthTesting::initSigSlot()
 {
-    auto connectVec3 = [&](QDoubleSpinBox* spinBox_X, QDoubleSpinBox* spinBox_Y,QDoubleSpinBox* spinBox_Z,QVector3D& vec3Obj) {
-        QObject::connect(spinBox_X, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [&](double arg){
-            vec3Obj.setX(arg);
-        });
-        QObject::connect(spinBox_Y, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [&](double arg){
-            vec3Obj.setY(arg);
-        });
-        QObject::connect(spinBox_Z, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [&](double arg){
-            vec3Obj.setZ(arg);
-        });
-    };
-
-//    QObject::connect(ui->objShiny_spinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, [&](int arg){
-//        u_objectTex.shininess = arg;
-//    });
-
-//    connectVec3(ui->Pos_X_SpinBox, ui->Pos_Y_SpinBox,ui->Pos_Z_SpinBox, u_light.position);
-//    connectVec3(ui->Light_X_SpinBox, ui->Light_Y_SpinBox,ui->Light_Z_SpinBox, u_lightColor);
-
-//    QObject::connect(ui->objDi_comboBox, &QComboBox::currentTextChanged, this, [&](QString name) {
-//        if(name == "无") {
-//            u_objectTex.diffuseTexID = 100; // 无效ID
-//        }else{
-//            u_objectTex.diffuseTexID = PointLightTexID10::texConrainerDiffuse10;
-//        }
-//    });
-
-//    QObject::connect(ui->objSp_comboBox, &QComboBox::currentTextChanged, this, [&](QString name) {
-//        if(name == "无") {
-//            u_objectTex.specularTexID = 100; // 无效ID
-//        }else if (name == "container2_specular"){
-//            u_objectTex.specularTexID = PointLightTexID10::texConrainerSpecular10;
-//        }else {
-//            u_objectTex.specularTexID = PointLightTexID10::texConrainerSpecularColor10;
-//        }
-//    });
-
-
-//    connectVec3(ui->ligAm_X_SpinBox, ui->ligAm_Y_SpinBox,ui->ligAm_Z_SpinBox, u_light.ambient);
-//    connectVec3(ui->ligDi_X_SpinBox, ui->ligDi_Y_SpinBox,ui->ligDi_Z_SpinBox, u_light.diffuse);
-//    connectVec3(ui->ligSp_X_SpinBox, ui->ligSp_Y_SpinBox,ui->ligSp_Z_SpinBox, u_light.specular);
-//    connectVec3(ui->Dir_X_SpinBox, ui->Dir_Y_SpinBox,ui->Dir_Z_SpinBox, u_light.direction);
-
-//    QObject::connect(ui->ligCon_SpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [&](double arg){
-//        u_light.constant = arg;
-//    });
-//    QObject::connect(ui->ligLin_SpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [&](double arg){
-//        u_light.linear = arg;
-//    });
-//    QObject::connect(ui->ligQua_SpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [&](double arg){
-//        u_light.quadratic = arg;
-//    });
-
-//    QObject::connect(ui->cutOff_SpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [&](double arg){
-//        u_light.cutOff = arg;
-//    });
-
-//    QObject::connect(ui->outerCutOff_SpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [&](double arg){
-//        u_light.outerCutOff = arg;
-//    });
+    QObject::connect(ui->depthTestingType_comboBox, &QComboBox::currentTextChanged, this, [&](QString name) {
+        // NEVER, LESS, EQUAL, LEQUAL, GREATER, NOTEQUAL, GEQUAL, ALWAYS
+        if(name == "NEVER") {
+            emit sigChangeDepthTest(DepthTestType::NEVER);
+        }else if(name == "LESS"){
+            emit sigChangeDepthTest(DepthTestType::LESS);
+        }else if(name == "EQUAL"){
+            emit sigChangeDepthTest(DepthTestType::EQUAL);
+        }else if(name == "LEQUAL"){
+            emit sigChangeDepthTest(DepthTestType::LEQUAL);
+        }else if(name == "GREATER"){
+            emit sigChangeDepthTest(DepthTestType::GREATER);
+        }else if(name == "NOTEQUAL"){
+            emit sigChangeDepthTest(DepthTestType::NOTEQUAL);
+        }else if(name == "GEQUAL"){
+            emit sigChangeDepthTest(DepthTestType::GEQUAL);
+        }else if(name == "NONE") {
+            emit sigChangeDepthTest(DepthTestType::None);
+        }else
+            emit sigChangeDepthTest(DepthTestType::ALWAYS);
+    });
 }

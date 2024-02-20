@@ -16,13 +16,16 @@ Preview::Preview(QWidget *parent)
     pCamera_->nearPlane = 0.1f;
     pCamera_->farPlane = 100.0f;
 
-    currentScene_ = Scene::DepthTesting;
+    currentScene_ = Scene::DepthTestingScene;
+    currentDepthTesting_ = DepthTestType::LESS;
 
     rotationAxis = {1.0f, 1.0f, 0.5f};
 
     connect(&m_timer,SIGNAL(timeout()),this,SLOT(on_timeout()));
     m_timer.start(50);
     m_elapsedTime.start();
+
+    connect(&depthTesting, &DepthTesting::sigChangeDepthTest, this, &Preview::setDepthTestingSlot);
 }
 
 Preview::~Preview()
@@ -102,15 +105,68 @@ void Preview::resizeGL(int w, int h)
     Q_UNUSED(h)
 }
 
+void Preview::DepthTesting(DepthTestType depthType) {
+
+    switch (depthType) {
+    case DepthTestType::None:
+        glClear(GL_COLOR_BUFFER_BIT);
+        break;
+    case DepthTestType::LESS:
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        break;
+    case DepthTestType::ALWAYS:
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_ALWAYS);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        break;
+    case DepthTestType::EQUAL:
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_EQUAL);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        break;
+    case DepthTestType::GEQUAL:
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_GEQUAL);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        break;
+    case DepthTestType::GREATER:
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_GREATER);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        break;
+    case DepthTestType::LEQUAL:
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        break;
+    case DepthTestType::NEVER:
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_NEVER);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        break;
+    case DepthTestType::NOTEQUAL:
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_NOTEQUAL);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        break;
+    default:
+        break;
+    }
+}
+
+void Preview::setDepthTestingSlot(DepthTestType type) {
+    currentDepthTesting_ = type;
+    update();
+}
+
 void Preview::paintGL()
 {
-
     // 设置窗口颜色，背景颜色
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     // 打开深度测试，否则立方体形状无法显示立体
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    DepthTesting(currentDepthTesting_);
 
     drawAxis();
     drawModule();
@@ -181,7 +237,7 @@ void Preview::DrawDepthTesting_01(){
 // 开始绘制
 void Preview::drawModule() {
     switch (currentScene_) {
-    case Scene::DepthTesting:
+    case Scene::DepthTestingScene:
         DrawDepthTesting_01();
         break;
         //    case Scene::LoadModel:
@@ -198,16 +254,16 @@ void Preview::drawModule() {
 void Preview::setCurrentScene(Scene s)
 {
     currentScene_ = s;
-    //    switch (currentScene_) {
-    //    case Scene::DepthTesting:
-    //        ;
-    //        break;
-    //    case Scene::LoadModel:
-    //        ;
-    //        break;
-    //    default:
-    //        break;
-    //    }
+        switch (currentScene_) {
+        case Scene::DepthTestingScene:
+            depthTesting.showWindow();
+            break;
+        case Scene::MousePickingScene:
+            ;
+            break;
+        default:
+            break;
+        }
 }
 void Preview::on_timeout()
 {

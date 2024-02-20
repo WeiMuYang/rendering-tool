@@ -40,8 +40,10 @@ public:
     QVector3D cameraPosInit(float maxY, float minY);
 
     void DrawDepthTesting_01();
+    void DepthTesting(DepthTestType depthType);
 public slots:
     void on_timeout();
+    void setDepthTestingSlot(DepthTestType type);
 protected:
 
     //////  需要修改的 ////
@@ -70,6 +72,7 @@ signals:
 
 private:
     Scene currentScene_;
+    DepthTestType currentDepthTesting_;
     QTimer m_timer;
     QElapsedTimer m_elapsedTime;
     QVector3D rotationAxis;

@@ -46,6 +46,7 @@ DISTFILES += \
     00-axis/shader/axis_Z.vert \
     01-depth-testing/img/container2.png \
     01-depth-testing/img/container2_specular.png \
+    01-depth-testing/img/matrix.jpg \
     01-depth-testing/shader/light.frag \
     01-depth-testing/shader/light.vert \
     01-depth-testing/shader/shapes.frag \
