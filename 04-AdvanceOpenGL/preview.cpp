@@ -93,6 +93,7 @@ void Preview::initializeGL()
     // 3. shader
     axisXYZ.initShader();
     depthTesting.initShader();
+    depthTestingPrecise.initShader();
 
     m_CubeMesh = processMesh(depthTesting.cubeVertices, depthTesting.cubeVerCount, depthTesting.cubeTextures);
     m_PlaneMesh = processMesh(depthTesting.planeVertices, depthTesting.planeVerCount, depthTesting.planeTextures);
@@ -154,6 +155,21 @@ void Preview::DepthTesting(DepthTestType depthType) {
     default:
         break;
     }
+}
+
+void Preview::DrawDepthTestingPrecise_02()
+{
+    QMatrix4x4 projection;
+    QMatrix4x4 view; // 默认是单位矩阵
+    QMatrix4x4 model;
+
+    projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
+    view = pCamera_->GetViewMatrix();
+    depthTestingPrecise.projection = projection;
+    depthTestingPrecise.view = view;
+    depthTestingPrecise.updateShapeShader();
+    m_CubeMesh->Draw(*depthTestingPrecise.current_Shader_Shape);
+    m_PlaneMesh->Draw(*depthTestingPrecise.current_Shader_Shape);
 }
 
 void Preview::setDepthTestingSlot(DepthTestType type) {
@@ -240,12 +256,9 @@ void Preview::drawModule() {
     case Scene::DepthTestingScene:
         DrawDepthTesting_01();
         break;
-        //    case Scene::LoadModel:
-        //        if(m_model==NULL) {
-        //            return;
-        //        }
-        //        DrawModel_02();
-        //        break;
+    case Scene::DepthTestingPreciseScene:
+        DrawDepthTestingPrecise_02();
+        break;
     default:
         break;
     }
@@ -254,16 +267,21 @@ void Preview::drawModule() {
 void Preview::setCurrentScene(Scene s)
 {
     currentScene_ = s;
-        switch (currentScene_) {
-        case Scene::DepthTestingScene:
-            depthTesting.showWindow();
-            break;
-        case Scene::MousePickingScene:
-            ;
-            break;
-        default:
-            break;
-        }
+    depthTesting.close();
+    depthTestingPrecise.close();
+    switch (currentScene_) {
+    case Scene::DepthTestingScene:
+        depthTesting.showWindow();
+        break;
+    case Scene::DepthTestingPreciseScene:
+        depthTestingPrecise.showWindow();
+        break;
+    case Scene::MousePickingScene:
+        ;
+        break;
+    default:
+        break;
+    }
 }
 void Preview::on_timeout()
 {

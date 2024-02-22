@@ -20,6 +20,7 @@
 
 #include "00-axis/axis.h"
 #include "01-depth-testing/depth_testing.h"
+#include "02-depth-testing-precise/depth_testing_precise.h"
 
 // 2.继承相关类
 class Preview : public QOpenGLWidget, QOpenGLFunctions_3_3_Core
@@ -41,6 +42,8 @@ public:
 
     void DrawDepthTesting_01();
     void DepthTesting(DepthTestType depthType);
+
+    void DrawDepthTestingPrecise_02();
 public slots:
     void on_timeout();
     void setDepthTestingSlot(DepthTestType type);
@@ -83,6 +86,7 @@ private:
 
     class Axis axisXYZ;
     class DepthTesting depthTesting;
+    class DepthTestingPrecise depthTestingPrecise;
 
     Mesh * m_CubeMesh;
     Mesh * m_PlaneMesh;

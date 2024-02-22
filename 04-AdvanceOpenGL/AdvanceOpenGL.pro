@@ -11,6 +11,7 @@ CONFIG += c++17
 SOURCES += \
     00-axis/axis.cpp \
     01-depth-testing/depth_testing.cpp \
+    02-depth-testing-precise/depth_testing_precise.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -21,6 +22,7 @@ SOURCES += \
 HEADERS += \
     00-axis/axis.h \
     01-depth-testing/depth_testing.h \
+    02-depth-testing-precise/depth_testing_precise.h \
     camera.h \
     data_type.h \
     mainwindow.h \
@@ -30,6 +32,7 @@ HEADERS += \
 
 FORMS += \
     01-depth-testing/depth_testing.ui \
+    02-depth-testing-precise/depth_testing_precise.ui \
     mainwindow.ui \
 
 # Default rules for deployment.
@@ -50,7 +53,11 @@ DISTFILES += \
     01-depth-testing/shader/light.frag \
     01-depth-testing/shader/light.vert \
     01-depth-testing/shader/shapes.frag \
-    01-depth-testing/shader/shapes.vert
+    01-depth-testing/shader/shapes.vert \
+    02-depth-testing-precise/shader/shapes-linear.frag \
+    02-depth-testing-precise/shader/shapes-linear.vert \
+    02-depth-testing-precise/shader/shapes-not-linear.frag \
+    02-depth-testing-precise/shader/shapes-not-linear.vert
 
 
 

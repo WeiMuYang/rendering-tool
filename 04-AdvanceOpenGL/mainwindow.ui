@@ -33,7 +33,7 @@
      <x>0</x>
      <y>0</y>
      <width>1280</width>
-     <height>17</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -44,6 +44,7 @@
      <string>场景</string>
     </property>
     <addaction name="actionDepthTesting"/>
+    <addaction name="actiondepthTestingPrecise"/>
     <addaction name="actionMousePicking"/>
    </widget>
    <widget class="QMenu" name="menu_2">
@@ -87,6 +88,11 @@
   <action name="actionLoadModel">
    <property name="text">
     <string>模型加载</string>
+   </property>
+  </action>
+  <action name="actiondepthTestingPrecise">
+   <property name="text">
+    <string>深度测试精度</string>
    </property>
   </action>
  </widget>

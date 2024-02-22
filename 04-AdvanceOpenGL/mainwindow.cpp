@@ -34,6 +34,7 @@ void MainWindow::initAction() {
         ui->PreviewWgt->timeStartStop();
     });
     connectSceneAction(ui->actionDepthTesting, Scene::DepthTestingScene);
+    connectSceneAction(ui->actiondepthTestingPrecise, Scene::DepthTestingPreciseScene);
     connectSceneAction(ui->actionMousePicking, Scene::MousePickingScene);
 
     connect(ui->actionLoadModel, &QAction::triggered, this, [this]() {
