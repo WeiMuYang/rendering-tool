@@ -54,3 +54,5 @@ compile_commands.json
 */Debug/*
 */Profile/*
 */Release/*
+
+*/.vscode/*

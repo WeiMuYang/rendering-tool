@@ -89,11 +89,13 @@ void Preview::initializeGL()
     glBindVertexArray(0);
     // 2. texture
     depthTesting.initTexture();
+    mousePicking.initTexture();
 
     // 3. shader
     axisXYZ.initShader();
     depthTesting.initShader();
     depthTestingPrecise.initShader();
+    mousePicking.initShader();
 
     m_CubeMesh = processMesh(depthTesting.cubeVertices, depthTesting.cubeVerCount, depthTesting.cubeTextures);
     m_PlaneMesh = processMesh(depthTesting.planeVertices, depthTesting.planeVerCount, depthTesting.planeTextures);
@@ -172,9 +174,82 @@ void Preview::DrawDepthTestingPrecise_02()
     m_PlaneMesh->Draw(*depthTestingPrecise.current_Shader_Shape);
 }
 
+void Preview::DrawMousePicking_03() {
+    QMatrix4x4 projection;
+    QMatrix4x4 view; // 默认是单位矩阵
+    QMatrix4x4 model;
+
+    projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
+    view = pCamera_->GetViewMatrix();
+    mousePicking.projection = projection;
+    mousePicking.view = view;
+    mousePicking.u_viewPos = pCamera_->Position;
+    mousePicking.updateShapeShader();
+    m_CubeMesh->Draw(mousePicking.shader_Shape);
+    m_PlaneMesh->Draw(mousePicking.shader_Shape);
+}
+
 void Preview::setDepthTestingSlot(DepthTestType type) {
     currentDepthTesting_ = type;
     update();
+}
+
+void Preview::mousePressEvent(QMouseEvent *event)
+{
+    makeCurrent();
+    if(event->buttons()&Qt::LeftButton){
+
+        worldPosFromViewPort(event->pos().x(),
+                                                    event->pos().y());
+    }
+    doneCurrent();
+}
+
+// 鼠标点击像素对应的世界坐标
+QVector4D Preview::worldPosFromViewPort(int posX, int posY)
+{
+    PickingPixelData pickingPixelData;
+    float winZ;
+    // 获取深度值 winZ
+    glReadPixels(
+                posX,
+                this->height()-posY
+                ,1,1
+                ,GL_DEPTH_COMPONENT,GL_FLOAT
+                ,&winZ);
+    // 标准化到 -1,1  NDC坐标
+    float x = (2.0f*posX)/this->width()-1.0f;
+    float y = 1.0f-(2.0f*posY)/this->height();
+    float z = winZ * 2.0 - 1.0f;
+
+    // w：眼睛到单击点的距离，通过像素的深度值可以求得
+    float w = (2.0 * pCamera_->nearPlane * pCamera_->farPlane) / (pCamera_->farPlane + pCamera_->nearPlane - z * (pCamera_->farPlane - pCamera_->nearPlane));
+    //float w= _near*_far/(_near*winZ-_far*winZ+_far);
+    QVector4D wolrdPostion(x,y,z,1);
+
+    pickingPixelData.MousePressPos.setX(posX);
+    pickingPixelData.MousePressPos.setY(posY);
+    pickingPixelData.PixelZ = winZ;
+    pickingPixelData.PixelW = w;
+
+    // 乘以w获得 裁剪空间中的值
+    wolrdPostion = w * wolrdPostion;
+
+    pickingPixelData.ClipPos = wolrdPostion;
+
+    QMatrix4x4 projection;
+    QMatrix4x4 view;
+    projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
+    view = pCamera_->GetViewMatrix();
+
+    QVector4D worldPosition = view.inverted() * projection.inverted() * wolrdPostion;
+
+    pickingPixelData.WorldPos = worldPosition;
+
+    mousePicking.pickingPixelData = pickingPixelData;
+    mousePicking.updateDlg();
+    // 回到 视口坐标  →   世界坐标
+    return worldPosition;
 }
 
 void Preview::paintGL()
@@ -259,6 +334,9 @@ void Preview::drawModule() {
     case Scene::DepthTestingPreciseScene:
         DrawDepthTestingPrecise_02();
         break;
+    case Scene::MousePickingScene:
+        DrawMousePicking_03();
+        break;
     default:
         break;
     }
@@ -269,6 +347,7 @@ void Preview::setCurrentScene(Scene s)
     currentScene_ = s;
     depthTesting.close();
     depthTestingPrecise.close();
+    mousePicking.close();
     switch (currentScene_) {
     case Scene::DepthTestingScene:
         depthTesting.showWindow();
@@ -277,7 +356,7 @@ void Preview::setCurrentScene(Scene s)
         depthTestingPrecise.showWindow();
         break;
     case Scene::MousePickingScene:
-        ;
+        mousePicking.showWindow();
         break;
     default:
         break;

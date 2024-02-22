@@ -21,6 +21,7 @@
 #include "00-axis/axis.h"
 #include "01-depth-testing/depth_testing.h"
 #include "02-depth-testing-precise/depth_testing_precise.h"
+#include "03-mouse-picking/mouse_picking.h"
 
 // 2.继承相关类
 class Preview : public QOpenGLWidget, QOpenGLFunctions_3_3_Core
@@ -44,6 +45,10 @@ public:
     void DepthTesting(DepthTestType depthType);
 
     void DrawDepthTestingPrecise_02();
+
+
+    QVector4D worldPosFromViewPort(int posX, int posY);
+    void DrawMousePicking_03();
 public slots:
     void on_timeout();
     void setDepthTestingSlot(DepthTestType type);
@@ -67,6 +72,8 @@ protected:
 
     void wheelEvent(QWheelEvent *event);
 
+    void mousePressEvent(QMouseEvent *event);
+
 
 signals:
     void sigPosition(QVector3D pos);
@@ -87,10 +94,10 @@ private:
     class Axis axisXYZ;
     class DepthTesting depthTesting;
     class DepthTestingPrecise depthTestingPrecise;
+    class MousePicking mousePicking;
 
     Mesh * m_CubeMesh;
     Mesh * m_PlaneMesh;
-
 
     Model* m_model = NULL;
 

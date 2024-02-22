@@ -12,6 +12,7 @@ SOURCES += \
     00-axis/axis.cpp \
     01-depth-testing/depth_testing.cpp \
     02-depth-testing-precise/depth_testing_precise.cpp \
+    03-mouse-picking/mouse_picking.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -23,6 +24,7 @@ HEADERS += \
     00-axis/axis.h \
     01-depth-testing/depth_testing.h \
     02-depth-testing-precise/depth_testing_precise.h \
+    03-mouse-picking/mouse_picking.h \
     camera.h \
     data_type.h \
     mainwindow.h \
@@ -33,6 +35,7 @@ HEADERS += \
 FORMS += \
     01-depth-testing/depth_testing.ui \
     02-depth-testing-precise/depth_testing_precise.ui \
+    03-mouse-picking/mouse_picking.ui \
     mainwindow.ui \
 
 # Default rules for deployment.
@@ -57,7 +60,11 @@ DISTFILES += \
     02-depth-testing-precise/shader/shapes-linear.frag \
     02-depth-testing-precise/shader/shapes-linear.vert \
     02-depth-testing-precise/shader/shapes-not-linear.frag \
-    02-depth-testing-precise/shader/shapes-not-linear.vert
+    02-depth-testing-precise/shader/shapes-not-linear.vert \
+    03-mouse-picking/img/container2.png \
+    03-mouse-picking/img/matrix.jpg \
+    03-mouse-picking/shader/shapes.frag \
+    03-mouse-picking/shader/shapes.vert
 
 
 
