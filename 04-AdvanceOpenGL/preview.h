@@ -22,6 +22,17 @@
 #include "01-depth-testing/depth_testing.h"
 #include "02-depth-testing-precise/depth_testing_precise.h"
 #include "03-mouse-picking/mouse_picking.h"
+#include "04-load-models/load_models.h"
+
+struct ModelInfo{
+    Model *model;
+    QVector3D worldPos;
+    float pitch;
+    float yaw;
+    float roll;
+    bool isSelected;
+    QString name;
+};
 
 // 2.继承相关类
 class Preview : public QOpenGLWidget, QOpenGLFunctions_3_3_Core
@@ -49,6 +60,8 @@ public:
 
     QVector4D worldPosFromViewPort(int posX, int posY);
     void DrawMousePicking_03();
+
+    void DrawLoadModels();
 public slots:
     void on_timeout();
     void setDepthTestingSlot(DepthTestType type);
@@ -95,7 +108,9 @@ private:
     class DepthTesting depthTesting;
     class DepthTestingPrecise depthTestingPrecise;
     class MousePicking mousePicking;
-
+    class LoadModels loadModels;
+    // name ,  model
+    QMap<QString, ModelInfo> m_Models;
     Mesh * m_CubeMesh;
     Mesh * m_PlaneMesh;
 

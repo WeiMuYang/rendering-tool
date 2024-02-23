@@ -13,6 +13,7 @@ SOURCES += \
     01-depth-testing/depth_testing.cpp \
     02-depth-testing-precise/depth_testing_precise.cpp \
     03-mouse-picking/mouse_picking.cpp \
+    04-load-models/load_models.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -25,6 +26,7 @@ HEADERS += \
     01-depth-testing/depth_testing.h \
     02-depth-testing-precise/depth_testing_precise.h \
     03-mouse-picking/mouse_picking.h \
+    04-load-models/load_models.h \
     camera.h \
     data_type.h \
     mainwindow.h \
@@ -64,7 +66,9 @@ DISTFILES += \
     03-mouse-picking/img/container2.png \
     03-mouse-picking/img/matrix.jpg \
     03-mouse-picking/shader/shapes.frag \
-    03-mouse-picking/shader/shapes.vert
+    03-mouse-picking/shader/shapes.vert \
+    04-load-models/shader/shapes.frag \
+    04-load-models/shader/shapes.vert
 
 
 

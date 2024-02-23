@@ -96,6 +96,7 @@ void Preview::initializeGL()
     depthTesting.initShader();
     depthTestingPrecise.initShader();
     mousePicking.initShader();
+    loadModels.initShader();
 
     m_CubeMesh = processMesh(depthTesting.cubeVertices, depthTesting.cubeVerCount, depthTesting.cubeTextures);
     m_PlaneMesh = processMesh(depthTesting.planeVertices, depthTesting.planeVerCount, depthTesting.planeTextures);
@@ -187,6 +188,31 @@ void Preview::DrawMousePicking_03() {
     mousePicking.updateShapeShader();
     m_CubeMesh->Draw(mousePicking.shader_Shape);
     m_PlaneMesh->Draw(mousePicking.shader_Shape);
+}
+
+
+void Preview::DrawLoadModels() {
+    QMatrix4x4 projection;
+    QMatrix4x4 view; // 默认是单位矩阵
+    QMatrix4x4 model;
+
+    projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
+    view = pCamera_->GetViewMatrix();
+    loadModels.projection = projection;
+    loadModels.view = view;
+    loadModels.u_viewPos = pCamera_->Position;
+
+    foreach(auto modelInfo, m_Models){
+        model.setToIdentity();
+        model.translate(modelInfo.worldPos);
+        model.rotate(modelInfo.pitch,QVector3D(1.0,0.0,0.0));
+        model.rotate(modelInfo.yaw,QVector3D(0.0,1.0,0.0));
+        model.rotate(modelInfo.roll,QVector3D(0.0,0.0,1.0));
+        loadModels.model = model;
+        loadModels.updateShapeShader();
+        // 所有的模型都只用这一套shader即可
+        modelInfo.model->Draw(loadModels.shader_Shape);
+    }
 }
 
 void Preview::setDepthTestingSlot(DepthTestType type) {
@@ -340,6 +366,7 @@ void Preview::drawModule() {
     default:
         break;
     }
+    DrawLoadModels();
 }
 
 void Preview::setCurrentScene(Scene s)
@@ -373,14 +400,13 @@ void Preview::timeStartStop() {
 
 void Preview::loadModel(string path)
 {
-    if(m_model !=NULL)
-        delete m_model;
-
-    m_model=NULL;
+    static int i = 0;
     makeCurrent();
-    m_model = new Model(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>()
-                        ,path.c_str());
-    pCamera_->Position = cameraPosInit(m_model->m_maxY,m_model->m_minY);
+    Model * _model = new Model(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>()
+                             ,path.c_str());
+    pCamera_->Position = cameraPosInit(_model->m_maxY ,_model->m_minY);
+    m_Models["模型" + QString::number(i++)]=
+            ModelInfo{_model,QVector3D(0,0,0),0.0,0.0,0.0,false,"模型"};
     doneCurrent();
 }
 
