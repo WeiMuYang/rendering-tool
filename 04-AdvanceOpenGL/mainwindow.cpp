@@ -36,10 +36,21 @@ void MainWindow::initAction() {
     connectSceneAction(ui->actionDepthTesting, Scene::DepthTestingScene);
     connectSceneAction(ui->actiondepthTestingPrecise, Scene::DepthTestingPreciseScene);
     connectSceneAction(ui->actionMousePicking, Scene::MousePickingScene);
+    connectSceneAction(ui->actionModels, Scene::ModelsScene);
 
     connect(ui->actionLoadModel, &QAction::triggered, this, [this]() {
         QString path = QFileDialog::getOpenFileName(this,"选择模型文件","",
                                                   "OBJ (*.obj);;FBX(*.fbx);;ALL FILES( *.* ) ");
         ui->PreviewWgt->loadModel(path.toStdString());
+    });
+
+
+    connect(ui->PreviewWgt, &Preview::mousePickingPos,this,[this](QVector3D pos) {
+        ui->statusbar->setStyleSheet("font: 14pt ");
+        ui->statusbar->showMessage(" 世界坐标:    X:"
+                                   +QString::number(pos.x(),'f', 2)
+                                   +" Y:"+QString::number(pos.y(),'f', 2)
+                                   +" Z:"+QString::number(pos.z(),'f', 2)
+                                   );
     });
 }

@@ -90,6 +90,7 @@ void Preview::initializeGL()
     // 2. texture
     depthTesting.initTexture();
     mousePicking.initTexture();
+    loadModels.initTexture();
 
     // 3. shader
     axisXYZ.initShader();
@@ -202,6 +203,13 @@ void Preview::DrawLoadModels() {
     loadModels.view = view;
     loadModels.u_viewPos = pCamera_->Position;
 
+
+    depthTesting.projection = projection;
+    depthTesting.view = view;
+    depthTesting.updateShapeShader();
+    m_PlaneMesh->textures[0] = loadModels.texPlane; // 修改Plane原来的纹理图片
+    m_PlaneMesh->Draw(depthTesting.shader_Shape);
+
     foreach(auto modelInfo, m_Models){
         model.setToIdentity();
         model.translate(modelInfo.worldPos);
@@ -222,11 +230,22 @@ void Preview::setDepthTestingSlot(DepthTestType type) {
 
 void Preview::mousePressEvent(QMouseEvent *event)
 {
+    bool hasSelected=false;
     makeCurrent();
     if(event->buttons()&Qt::LeftButton){
-
-        worldPosFromViewPort(event->pos().x(),
-                                                    event->pos().y());
+        QVector4D worldPosition = worldPosFromViewPort(event->pos().x(), event->pos().y());
+        emit mousePickingPos(QVector3D(worldPosition));
+        // 判断选取模型
+        for(QMap<QString, ModelInfo>::iterator iter=m_Models.begin();iter != m_Models.end();iter++){
+            ModelInfo* modelInfo = &iter.value();
+            float r = (modelInfo->model->m_maxY - modelInfo->model->m_minY) / 2; // 选取球体半径
+            if(modelInfo->worldPos.distanceToPoint(QVector3D(worldPosition)) < r && !hasSelected){
+                modelInfo->isSelected = true;
+                hasSelected = true;
+            } else {
+                modelInfo->isSelected = false;
+            }
+        }
     }
     doneCurrent();
 }
@@ -316,6 +335,23 @@ void Preview::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
+void Preview::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event);
+    if(m_modelMoving){
+        //再次双击取消移动
+        m_modelMoving = false;
+    }else
+        foreach(auto modelInfo, m_Models) {
+            //双击启动移动
+            if(modelInfo.isSelected) {
+                m_modelMoving=true;
+            }
+            qDebug()<<modelInfo.name<<modelInfo.isSelected;
+        }
+}
+
+
 void Preview::wheelEvent(QWheelEvent *event)
 {
     pCamera_->ProcessMouseScroll(event->angleDelta().y()/120);
@@ -363,10 +399,13 @@ void Preview::drawModule() {
     case Scene::MousePickingScene:
         DrawMousePicking_03();
         break;
+    case Scene::ModelsScene:
+        DrawLoadModels();
+        break;
     default:
         break;
     }
-    DrawLoadModels();
+
 }
 
 void Preview::setCurrentScene(Scene s)
@@ -403,10 +442,10 @@ void Preview::loadModel(string path)
     static int i = 0;
     makeCurrent();
     Model * _model = new Model(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>()
-                             ,path.c_str());
+                               ,path.c_str());
     pCamera_->Position = cameraPosInit(_model->m_maxY ,_model->m_minY);
     m_Models["模型" + QString::number(i++)]=
-            ModelInfo{_model,QVector3D(0,0,0),0.0,0.0,0.0,false,"模型"};
+            ModelInfo{_model,QVector3D(0,0 - _model->m_minY, 0),0.0,0.0,0.0,false,"模型"};
     doneCurrent();
 }
 

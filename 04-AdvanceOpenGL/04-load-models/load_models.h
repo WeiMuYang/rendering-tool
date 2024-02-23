@@ -2,6 +2,7 @@
 #define LOADMODELS_H
 
 #include <QObject>
+#include <QOpenGLTexture>
 #include "../01-depth-testing/depth_testing.h"
 
 class LoadModels : public QObject
@@ -10,10 +11,11 @@ class LoadModels : public QObject
 public:
     explicit LoadModels(QObject *parent = nullptr);
 
-    void initShader() ;
-
+    void initShader();
 
     QOpenGLShaderProgram shader_Shape;
+
+    Texture texPlane;
 
     // 光线的颜色
     QVector3D u_lightColor;
@@ -31,6 +33,7 @@ public:
 
     void updateShapeShader();
 
+    void initTexture();
 };
 
 #endif // LOADMODELS_H

@@ -65,6 +65,8 @@ public:
 public slots:
     void on_timeout();
     void setDepthTestingSlot(DepthTestType type);
+signals:
+    void mousePickingPos(QVector3D wolrdpos);
 protected:
 
     //////  需要修改的 ////
@@ -87,6 +89,8 @@ protected:
 
     void mousePressEvent(QMouseEvent *event);
 
+    void mouseDoubleClickEvent(QMouseEvent *event);
+
 
 signals:
     void sigPosition(QVector3D pos);
@@ -103,6 +107,7 @@ private:
     bool isTimeUsed{true};
     Camera* pCamera_;
     QPoint mouseDeltaPos_;
+    bool m_modelMoving;
 
     class Axis axisXYZ;
     class DepthTesting depthTesting;

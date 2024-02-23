@@ -67,6 +67,7 @@ DISTFILES += \
     03-mouse-picking/img/matrix.jpg \
     03-mouse-picking/shader/shapes.frag \
     03-mouse-picking/shader/shapes.vert \
+    04-load-models/img/wall.jpg \
     04-load-models/shader/shapes.frag \
     04-load-models/shader/shapes.vert
 

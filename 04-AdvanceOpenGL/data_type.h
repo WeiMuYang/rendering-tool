@@ -3,7 +3,7 @@
 #include <QString>
 
 enum Scene {
-    DepthTestingScene, DepthTestingPreciseScene, MousePickingScene
+    DepthTestingScene, DepthTestingPreciseScene, MousePickingScene, ModelsScene
 };
 
 

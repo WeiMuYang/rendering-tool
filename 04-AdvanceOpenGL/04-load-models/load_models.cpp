@@ -23,6 +23,17 @@ LoadModels::LoadModels(QObject *parent)
 
 }
 
+void LoadModels::initTexture()
+{
+    // 按照编号 0 1 2 ... 放到CPU
+    // TODO: 编号应该是整个在OpenGl中的所有的texture，所以需要看下之前有没有贴图初始化，如果有的话，编号对应会顺延
+    QOpenGLTexture *OpenGLtexPlane = new QOpenGLTexture(QImage("../04-load-models/img/wall.jpg").mirrored());
+
+    texPlane.path = "../04-load-models/img/wall.jpg";
+    texPlane.id = OpenGLtexPlane->textureId();
+    texPlane.type = "texture_diffuse";
+}
+
 void LoadModels::initShader() {
     // shader
     bool success;
