@@ -94,12 +94,14 @@ void Preview::initializeGL()
     mousePicking.initTexture();
     loadModels.initTexture();
 
+
     // 3. shader
     axisXYZ.initShader();
     depthTesting.initShader();
     depthTestingPrecise.initShader();
     mousePicking.initShader();
     loadModels.initShader();
+    stencilOutLine.initShader();
 
     m_CubeMesh = processMesh(depthTesting.cubeVertices, depthTesting.cubeVerCount, depthTesting.cubeTextures);
     m_PlaneMesh = processMesh(depthTesting.planeVertices, depthTesting.planeVerCount, depthTesting.planeTextures);
@@ -194,7 +196,7 @@ void Preview::DrawMousePicking_03() {
 }
 
 
-void Preview::DrawLoadModels() {
+void Preview::DrawLoadModelsControl_04() {
     QMatrix4x4 projection;
     QMatrix4x4 view; // 默认是单位矩阵
     QMatrix4x4 model;
@@ -226,6 +228,68 @@ void Preview::DrawLoadModels() {
         loadModels.updateShapeShader();
         // 所有的模型都只用这一套shader即可
         modelInfo.model->Draw(loadModels.shader_Shape);
+    }
+}
+
+void Preview::DrawStencilOutLineControl_05() {
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    glStencilMask(0x00);
+
+    QMatrix4x4 projection;
+    QMatrix4x4 view; // 默认是单位矩阵
+    QMatrix4x4 model;
+
+    projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
+    view = pCamera_->GetViewMatrix();
+    depthTesting.projection = projection;
+    depthTesting.view = view;
+    depthTesting.u_viewPos = pCamera_->Position;
+
+    depthTesting.projection = projection;
+    depthTesting.view = view;
+
+    depthTesting.updateShapeShader();
+    m_PlaneMesh->textures[0] = loadModels.texPlane; // 修改Plane原来的纹理图片
+    m_PlaneMesh->Draw(depthTesting.shader_Shape);
+
+    stencilOutLine.projection = projection;
+    stencilOutLine.view = view;
+    stencilOutLine.u_viewPos = pCamera_->Position;
+    foreach(auto modelInfo, m_Models){
+        model.setToIdentity();
+        model.translate(modelInfo.worldPos);
+        model.rotate(modelInfo.pitch,QVector3D(1.0,0.0,0.0));
+        model.rotate(modelInfo.yaw,QVector3D(0.0,1.0,0.0));
+        model.rotate(modelInfo.roll,QVector3D(0.0,0.0,1.0));
+        stencilOutLine.model = model;
+        stencilOutLine.model = model;
+glStencilFunc(GL_ALWAYS, 1, 0xFF);
+glStencilMask(0xFF);
+        stencilOutLine.updateShapeShader();
+        // 所有的模型都只用这一套shader即可
+        modelInfo.model->Draw(stencilOutLine.shader_Shape);
+        stencilOutLine.shader_Shape.release();
+
+        if(modelInfo.isSelected==false)
+            continue;
+glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+glStencilMask(0x00);
+float height=modelInfo.model->m_maxY-modelInfo.model->m_minY;
+float width=modelInfo.model->m_maxX-modelInfo.model->m_minX;
+        if(modelInfo.model->m_minY>=0)
+            model.translate(0.0f,height/2,0.0f);
+        model.scale(1.1f,1.0+0.1*(width/height));
+        if(modelInfo.model->m_minY>=0)
+            model.translate(0.0f,-height/2,0.0f);
+
+        stencilOutLine.model = model;
+        stencilOutLine.updateOutLineShader();
+        modelInfo.model->Draw(stencilOutLine.shader_Outline);
+        stencilOutLine.shader_Outline.release();
+glStencilMask(0xFF);
+glStencilFunc(GL_ALWAYS, 1, 0xFF);
     }
 }
 
@@ -432,8 +496,11 @@ void Preview::drawModule() {
     case Scene::MousePickingScene:
         DrawMousePicking_03();
         break;
-    case Scene::ModelsScene:
-        DrawLoadModels();
+    case Scene::ModelsControlScene:
+        DrawLoadModelsControl_04();
+        break;
+    case Scene::StencilOutLineScene:
+        DrawStencilOutLineControl_05();
         break;
     default:
         break;

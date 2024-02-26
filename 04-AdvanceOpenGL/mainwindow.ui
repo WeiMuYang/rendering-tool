@@ -47,6 +47,7 @@
     <addaction name="actiondepthTestingPrecise"/>
     <addaction name="actionMousePicking"/>
     <addaction name="actionModels"/>
+    <addaction name="actionStencilOutLine"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -98,7 +99,12 @@
   </action>
   <action name="actionModels">
    <property name="text">
-    <string>模型场景</string>
+    <string>模型场景+旋转位移</string>
+   </property>
+  </action>
+  <action name="actionStencilOutLine">
+   <property name="text">
+    <string>模板测试(边框)</string>
    </property>
   </action>
  </widget>

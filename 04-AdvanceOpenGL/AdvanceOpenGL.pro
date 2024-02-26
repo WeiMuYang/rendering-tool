@@ -14,6 +14,7 @@ SOURCES += \
     02-depth-testing-precise/depth_testing_precise.cpp \
     03-mouse-picking/mouse_picking.cpp \
     04-load-models/load_models.cpp \
+    05-stencil-outline/stencil_outline.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -27,6 +28,7 @@ HEADERS += \
     02-depth-testing-precise/depth_testing_precise.h \
     03-mouse-picking/mouse_picking.h \
     04-load-models/load_models.h \
+    05-stencil-outline/stencil_outline.h \
     camera.h \
     data_type.h \
     mainwindow.h \
@@ -69,7 +71,10 @@ DISTFILES += \
     03-mouse-picking/shader/shapes.vert \
     04-load-models/img/wall.jpg \
     04-load-models/shader/shapes.frag \
-    04-load-models/shader/shapes.vert
+    04-load-models/shader/shapes.vert \
+    05-stencil-outline/shader/shapes.frag \
+    05-stencil-outline/shader/shapes.vert \
+    05-stencil-outline/shader/singleColor.frag
 
 
 

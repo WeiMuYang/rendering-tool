@@ -36,7 +36,9 @@ void MainWindow::initAction() {
     connectSceneAction(ui->actionDepthTesting, Scene::DepthTestingScene);
     connectSceneAction(ui->actiondepthTestingPrecise, Scene::DepthTestingPreciseScene);
     connectSceneAction(ui->actionMousePicking, Scene::MousePickingScene);
-    connectSceneAction(ui->actionModels, Scene::ModelsScene);
+    connectSceneAction(ui->actionModels, Scene::ModelsControlScene);
+    connectSceneAction(ui->actionStencilOutLine, Scene::StencilOutLineScene);
+
 
     connect(ui->actionLoadModel, &QAction::triggered, this, [this]() {
         QString path = QFileDialog::getOpenFileName(this,"选择模型文件","",
