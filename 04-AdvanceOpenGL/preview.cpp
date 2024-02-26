@@ -1,6 +1,8 @@
 #include "preview.h"
 
-QVector3D viewInitPos(0.0,0.0,5.0);
+QVector3D viewInitPos(0.0f,0.0f,6.0f);
+
+QPoint lastPos;
 
 Preview::Preview(QWidget *parent)
     : QOpenGLWidget{parent}
@@ -199,17 +201,21 @@ void Preview::DrawLoadModels() {
 
     projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
     view = pCamera_->GetViewMatrix();
-    loadModels.projection = projection;
-    loadModels.view = view;
-    loadModels.u_viewPos = pCamera_->Position;
-
+    depthTesting.projection = projection;
+    depthTesting.view = view;
+    depthTesting.u_viewPos = pCamera_->Position;
 
     depthTesting.projection = projection;
     depthTesting.view = view;
+
+
     depthTesting.updateShapeShader();
     m_PlaneMesh->textures[0] = loadModels.texPlane; // 修改Plane原来的纹理图片
     m_PlaneMesh->Draw(depthTesting.shader_Shape);
 
+    loadModels.projection = projection;
+    loadModels.view = view;
+    loadModels.u_viewPos = pCamera_->Position;
     foreach(auto modelInfo, m_Models){
         model.setToIdentity();
         model.translate(modelInfo.worldPos);
@@ -232,6 +238,7 @@ void Preview::mousePressEvent(QMouseEvent *event)
 {
     bool hasSelected=false;
     makeCurrent();
+    lastPos=event->pos();
     if(event->buttons()&Qt::LeftButton){
         QVector4D worldPosition = worldPosFromViewPort(event->pos().x(), event->pos().y());
         emit mousePickingPos(QVector3D(worldPosition));
@@ -325,14 +332,40 @@ void Preview::keyPressEvent(QKeyEvent *event)
 
 void Preview::mouseMoveEvent(QMouseEvent *event)
 {
-    static QPoint lastPos(width()/2,height()/2);
-    if(event->buttons() & Qt::RightButton) {
-        auto currentPos = event->pos();
-        mouseDeltaPos_ = currentPos - lastPos;
-        lastPos = currentPos;
-        pCamera_->ProcessMouseMovement(mouseDeltaPos_.x(), -mouseDeltaPos_.y());
-        update();
-    }
+    makeCurrent();
+    if(m_modelMoving){
+        for(auto iter=m_Models.begin();iter!=m_Models.end();iter++){
+            ModelInfo *modelInfo=&iter.value();
+            if(!modelInfo->isSelected) continue;
+            modelInfo->worldPos=
+                    QVector3D(worldPosFromViewPort(event->pos().x(),event->pos().y()));
+        }
+    }else
+        if(event->buttons() & Qt::RightButton
+                || event->buttons() & Qt::LeftButton
+                || event->buttons() & Qt::MiddleButton){
+
+            auto currentPos=event->pos();
+            QPoint deltaPos=currentPos - lastPos;
+            lastPos=currentPos;
+            if(event->buttons() & Qt::RightButton)
+                pCamera_->ProcessMouseMovement(deltaPos.x(),-deltaPos.y());
+            else
+                for(auto iter=m_Models.begin();iter!=m_Models.end();iter++){
+                    ModelInfo *modelInfo=&iter.value();
+                    if(!modelInfo->isSelected)
+                        continue;
+                    if(event->buttons() & Qt::MiddleButton){
+                        modelInfo->roll+=deltaPos.x();
+                    }
+                    else if(event->buttons() & Qt::LeftButton){
+                        modelInfo->yaw+=deltaPos.x();
+                        modelInfo->pitch+=deltaPos.y();
+                    }
+                }
+
+        }
+    doneCurrent();
 }
 
 void Preview::mouseDoubleClickEvent(QMouseEvent *event)
