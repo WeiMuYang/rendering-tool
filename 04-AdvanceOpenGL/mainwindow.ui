@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1280</width>
-    <height>991</height>
+    <width>926</width>
+    <height>353</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,8 +32,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1280</width>
-     <height>21</height>
+     <width>926</width>
+     <height>17</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -50,6 +50,7 @@
     <addaction name="actionStencilOutLine"/>
     <addaction name="actionDiscard"/>
     <addaction name="actionBlending"/>
+    <addaction name="actionCulling"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -117,6 +118,11 @@
   <action name="actionBlending">
    <property name="text">
     <string>混合模式</string>
+   </property>
+  </action>
+  <action name="actionCulling">
+   <property name="text">
+    <string>面剔除</string>
    </property>
   </action>
  </widget>

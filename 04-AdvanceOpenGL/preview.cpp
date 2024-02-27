@@ -514,6 +514,8 @@ void Preview::openBlending() {
     glBlendFunc(blending.srcBlending, blending.desBlending);
 }
 
+
+
 void Preview::DrawBlending_07()
 {
     openBlending();
@@ -550,6 +552,52 @@ void Preview::DrawBlending_07()
     }
 }
 
+void Preview::openFaceCulling() {
+    // 开启面剔除: 默认剔除反面
+    glEnable(GL_CULL_FACE);
+    // 剔除方式
+    glCullFace(faceCulling.cullingType);
+    // 正面判断规则
+    glFrontFace(faceCulling.cullingOri);
+}
+
+void Preview::DrawCulling_08() {
+    openBlending();
+    openFaceCulling();
+
+    QMatrix4x4 projection;
+    QMatrix4x4 view; // 默认是单位矩阵
+    QMatrix4x4 model;
+
+    projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
+    view = pCamera_->GetViewMatrix();
+    blending.projection = projection;
+    blending.view = view;
+    // 1. 先渲染不透明的物理Model，再渲染半透明的物体
+    depthTesting.projection = projection;
+    depthTesting.view = view;
+    depthTesting.u_viewPos = pCamera_->Position;
+    depthTesting.updateShapeShader();
+    m_CubeMesh->Draw(depthTesting.shader_Shape);
+    m_PlaneMesh->Draw(depthTesting.shader_Shape);
+
+    // 2. 半透明混合时需要有先后次序，根据距离镜头的远近排序: 距离镜头越近需要后面渲染
+    map<float, QVector3D> sorted;
+    foreach(auto item,discard.vegetation) {
+        float distance = pCamera_->Position.distanceToPoint(item);
+        sorted[distance] = item;
+    }
+
+    for(map<float, QVector3D>::reverse_iterator riter = sorted.rbegin();
+         riter != sorted.rend(); riter++){
+        model.setToIdentity();
+        model.translate(riter->second);
+        blending.model = model;
+        blending.updateBlendingShader();
+        m_blendingMesh->Draw(blending.shader_Shape);
+    }
+}
+
 
 // 开始绘制
 void Preview::drawModule() {
@@ -575,6 +623,9 @@ void Preview::drawModule() {
     case Scene::BlendingScene:
         DrawBlending_07();
         break;
+    case Scene::FaceCullingScene:
+        DrawCulling_08();
+        break;
     default:
         break;
     }
@@ -588,6 +639,7 @@ void Preview::setCurrentScene(Scene s)
     depthTestingPrecise.close();
     mousePicking.close();
     blending.close();
+    faceCulling.close();
     switch (currentScene_) {
     case Scene::DepthTestingScene:
         depthTesting.showWindow();
@@ -600,6 +652,9 @@ void Preview::setCurrentScene(Scene s)
         break;
     case Scene::BlendingScene:
         blending.showWindow();
+        break;
+    case Scene::FaceCullingScene:
+        faceCulling.showWindow();
         break;
     default:
         break;

@@ -47,6 +47,7 @@ void MainWindow::initAction() {
     connectSceneAction(ui->actionStencilOutLine, Scene::StencilOutLineScene);
     connectSceneAction(ui->actionDiscard, Scene::DisCardScene);
     connectSceneAction(ui->actionBlending, Scene::BlendingScene);
+    connectSceneAction(ui->actionCulling, Scene::FaceCullingScene);
 
 
     connect(ui->actionLoadModel, &QAction::triggered, this, [this]() {

@@ -26,6 +26,7 @@
 #include "05-stencil-outline/stencil_outline.h"
 #include "06-discard/discard.h"
 #include "07-blending/blending.h"
+#include "08-culling/face_culling.h"
 
 struct ModelInfo{
     Model *model;
@@ -68,7 +69,9 @@ public:
     void DrawStencilOutLineControl_05();
     void DrawDiscard_06();
     void DrawBlending_07();
+    void DrawCulling_08();
     void openBlending();
+    void openFaceCulling();
 public slots:
     void on_timeout();
     void setDepthTestingSlot(DepthTestType type);
@@ -124,6 +127,7 @@ private:
     class StencilOutLine stencilOutLine;
     class Discard discard;
     class Blending blending;
+    class FaceCulling faceCulling;
     // name ,  model
     QMap<QString, ModelInfo> m_Models;
     Mesh * m_CubeMesh;

@@ -9,6 +9,9 @@ Blending::Blending(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    srcBlending = BlendingType::SRC_ALPHA;
+    desBlending = BlendingType::ONE_MINUS_SRC_ALPHA;
+
     specularTexID = 0;
 
     initSigSlot();

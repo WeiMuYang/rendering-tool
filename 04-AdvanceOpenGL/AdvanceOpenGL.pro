@@ -17,6 +17,7 @@ SOURCES += \
     05-stencil-outline/stencil_outline.cpp \
     06-discard/discard.cpp \
     07-blending/blending.cpp \
+    08-culling/face_culling.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -33,6 +34,7 @@ HEADERS += \
     05-stencil-outline/stencil_outline.h \
     06-discard/discard.h \
     07-blending/blending.h \
+    08-culling/face_culling.h \
     camera.h \
     data_type.h \
     mainwindow.h \
@@ -45,6 +47,7 @@ FORMS += \
     02-depth-testing-precise/depth_testing_precise.ui \
     03-mouse-picking/mouse_picking.ui \
     07-blending/blending.ui \
+    08-culling/face_culling.ui \
     mainwindow.ui \
 
 # Default rules for deployment.
