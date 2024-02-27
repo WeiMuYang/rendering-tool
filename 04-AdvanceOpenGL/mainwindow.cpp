@@ -38,6 +38,7 @@ void MainWindow::initAction() {
     connectSceneAction(ui->actionMousePicking, Scene::MousePickingScene);
     connectSceneAction(ui->actionModels, Scene::ModelsControlScene);
     connectSceneAction(ui->actionStencilOutLine, Scene::StencilOutLineScene);
+    connectSceneAction(ui->actionDiscard, Scene::DisCardScene);
 
 
     connect(ui->actionLoadModel, &QAction::triggered, this, [this]() {

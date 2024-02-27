@@ -48,6 +48,7 @@
     <addaction name="actionMousePicking"/>
     <addaction name="actionModels"/>
     <addaction name="actionStencilOutLine"/>
+    <addaction name="actionDiscard"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -105,6 +106,11 @@
   <action name="actionStencilOutLine">
    <property name="text">
     <string>模板测试(边框)</string>
+   </property>
+  </action>
+  <action name="actionDiscard">
+   <property name="text">
+    <string>丢弃片段</string>
    </property>
   </action>
  </widget>

@@ -93,6 +93,7 @@ void Preview::initializeGL()
     depthTesting.initTexture();
     mousePicking.initTexture();
     loadModels.initTexture();
+    discard.initTexture();
 
 
     // 3. shader
@@ -102,9 +103,11 @@ void Preview::initializeGL()
     mousePicking.initShader();
     loadModels.initShader();
     stencilOutLine.initShader();
+    discard.initShader();
 
     m_CubeMesh = processMesh(depthTesting.cubeVertices, depthTesting.cubeVerCount, depthTesting.cubeTextures);
     m_PlaneMesh = processMesh(depthTesting.planeVertices, depthTesting.planeVerCount, depthTesting.planeTextures);
+    m_grassMesh = processMesh(discard.grassVertices, discard.grassVerCount, discard.cubeTextures);
 }
 
 void Preview::resizeGL(int w, int h)
@@ -483,6 +486,25 @@ void Preview::DrawDepthTesting_01(){
     m_PlaneMesh->Draw(depthTesting.shader_Shape);
 }
 
+void Preview::DrawDiscard_06(){
+    QMatrix4x4 projection;
+    QMatrix4x4 view; // 默认是单位矩阵
+    QMatrix4x4 model;
+
+    projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
+    view = pCamera_->GetViewMatrix();
+    discard.projection = projection;
+    discard.view = view;
+
+    foreach (auto item, discard.vegetation) {
+        model.setToIdentity();
+        model.translate(item);
+        discard.model = model;
+        discard.updateDiscardShader();
+        m_grassMesh->Draw(discard.shader_Shape);
+    }
+}
+
 
 // 开始绘制
 void Preview::drawModule() {
@@ -501,6 +523,9 @@ void Preview::drawModule() {
         break;
     case Scene::StencilOutLineScene:
         DrawStencilOutLineControl_05();
+        break;
+    case Scene::DisCardScene:
+        DrawDiscard_06();
         break;
     default:
         break;

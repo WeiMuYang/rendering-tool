@@ -23,7 +23,8 @@
 #include "02-depth-testing-precise/depth_testing_precise.h"
 #include "03-mouse-picking/mouse_picking.h"
 #include "04-load-models/load_models.h"
-#include "05-stencil-outline/stencil_outline.h"-
+#include "05-stencil-outline/stencil_outline.h"
+#include "06-discard/discard.h"
 
 struct ModelInfo{
     Model *model;
@@ -64,6 +65,7 @@ public:
 
     void DrawLoadModelsControl_04();
     void DrawStencilOutLineControl_05();
+    void DrawDiscard_06();
 public slots:
     void on_timeout();
     void setDepthTestingSlot(DepthTestType type);
@@ -117,10 +119,12 @@ private:
     class MousePicking mousePicking;
     class LoadModels loadModels;
     class StencilOutLine stencilOutLine;
+    class Discard discard;
     // name ,  model
     QMap<QString, ModelInfo> m_Models;
     Mesh * m_CubeMesh;
     Mesh * m_PlaneMesh;
+    Mesh * m_grassMesh;
     Model* m_model = NULL;
 };
 
