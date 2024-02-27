@@ -94,6 +94,7 @@ void Preview::initializeGL()
     mousePicking.initTexture();
     loadModels.initTexture();
     discard.initTexture();
+    blending.initTexture();
 
 
     // 3. shader
@@ -104,10 +105,12 @@ void Preview::initializeGL()
     loadModels.initShader();
     stencilOutLine.initShader();
     discard.initShader();
+    blending.initShader();
 
     m_CubeMesh = processMesh(depthTesting.cubeVertices, depthTesting.cubeVerCount, depthTesting.cubeTextures);
     m_PlaneMesh = processMesh(depthTesting.planeVertices, depthTesting.planeVerCount, depthTesting.planeTextures);
     m_grassMesh = processMesh(discard.grassVertices, discard.grassVerCount, discard.cubeTextures);
+    m_blendingMesh = processMesh(discard.grassVertices, discard.grassVerCount, blending.cubeTextures);
 }
 
 void Preview::resizeGL(int w, int h)
@@ -506,6 +509,48 @@ void Preview::DrawDiscard_06(){
 }
 
 
+void Preview::openBlending() {
+    glEnable(GL_BLEND);
+    glBlendFunc(blending.srcBlending, blending.desBlending);
+}
+
+void Preview::DrawBlending_07()
+{
+    openBlending();
+
+    QMatrix4x4 projection;
+    QMatrix4x4 view; // 默认是单位矩阵
+    QMatrix4x4 model;
+
+    projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
+    view = pCamera_->GetViewMatrix();
+    blending.projection = projection;
+    blending.view = view;
+    // 1. 先渲染不透明的物理Model，再渲染半透明的物体
+    depthTesting.projection = projection;
+    depthTesting.view = view;
+    depthTesting.u_viewPos = pCamera_->Position;
+    depthTesting.updateShapeShader();
+    m_CubeMesh->Draw(depthTesting.shader_Shape);
+
+    // 2. 半透明混合时需要有先后次序，根据距离镜头的远近排序: 距离镜头越近需要后面渲染
+    map<float, QVector3D> sorted;
+    foreach(auto item,discard.vegetation) {
+        float distance = pCamera_->Position.distanceToPoint(item);
+        sorted[distance] = item;
+    }
+
+    for(map<float, QVector3D>::reverse_iterator riter = sorted.rbegin();
+        riter != sorted.rend(); riter++){
+        model.setToIdentity();
+        model.translate(riter->second);
+        blending.model = model;
+        blending.updateBlendingShader();
+        m_blendingMesh->Draw(blending.shader_Shape);
+    }
+}
+
+
 // 开始绘制
 void Preview::drawModule() {
     switch (currentScene_) {
@@ -527,6 +572,9 @@ void Preview::drawModule() {
     case Scene::DisCardScene:
         DrawDiscard_06();
         break;
+    case Scene::BlendingScene:
+        DrawBlending_07();
+        break;
     default:
         break;
     }
@@ -539,6 +587,7 @@ void Preview::setCurrentScene(Scene s)
     depthTesting.close();
     depthTestingPrecise.close();
     mousePicking.close();
+    blending.close();
     switch (currentScene_) {
     case Scene::DepthTestingScene:
         depthTesting.showWindow();
@@ -548,6 +597,9 @@ void Preview::setCurrentScene(Scene s)
         break;
     case Scene::MousePickingScene:
         mousePicking.showWindow();
+        break;
+    case Scene::BlendingScene:
+        blending.showWindow();
         break;
     default:
         break;

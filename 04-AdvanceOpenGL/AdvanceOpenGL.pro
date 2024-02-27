@@ -16,6 +16,7 @@ SOURCES += \
     04-load-models/load_models.cpp \
     05-stencil-outline/stencil_outline.cpp \
     06-discard/discard.cpp \
+    07-blending/blending.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -31,6 +32,7 @@ HEADERS += \
     04-load-models/load_models.h \
     05-stencil-outline/stencil_outline.h \
     06-discard/discard.h \
+    07-blending/blending.h \
     camera.h \
     data_type.h \
     mainwindow.h \
@@ -42,6 +44,7 @@ FORMS += \
     01-depth-testing/depth_testing.ui \
     02-depth-testing-precise/depth_testing_precise.ui \
     03-mouse-picking/mouse_picking.ui \
+    07-blending/blending.ui \
     mainwindow.ui \
 
 # Default rules for deployment.
@@ -81,7 +84,10 @@ DISTFILES += \
     06-discard/img/container2_specular.png \
     06-discard/img/grass.png \
     06-discard/shader/shapes.frag \
-    06-discard/shader/shapes.vert
+    06-discard/shader/shapes.vert \
+    07-blending/img/blending_transparent_window.png \
+    07-blending/shader/shapes.frag \
+    07-blending/shader/shapes.vert
 
 
 

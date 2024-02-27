@@ -14,6 +14,13 @@ MainWindow::MainWindow(QWidget *parent)
     // 不用给preview创建对象，因为是采用提升的方式创建的PreviewWgt
     // 只需要通过ui->PreviewWgt，就可以找到Preview的属性成员
     initAction();
+
+    ui->statusbar->setStyleSheet("font: 14pt ");
+    ui->statusbar->showMessage(" 世界坐标:    X:"
+                               +QString::number(0,'f', 2)
+                               +" Y:"+QString::number(0,'f', 2)
+                               +" Z:"+QString::number(0,'f', 2)
+                               );
 }
 
 MainWindow::~MainWindow()
@@ -39,6 +46,7 @@ void MainWindow::initAction() {
     connectSceneAction(ui->actionModels, Scene::ModelsControlScene);
     connectSceneAction(ui->actionStencilOutLine, Scene::StencilOutLineScene);
     connectSceneAction(ui->actionDiscard, Scene::DisCardScene);
+    connectSceneAction(ui->actionBlending, Scene::BlendingScene);
 
 
     connect(ui->actionLoadModel, &QAction::triggered, this, [this]() {

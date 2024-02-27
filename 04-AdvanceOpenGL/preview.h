@@ -25,6 +25,7 @@
 #include "04-load-models/load_models.h"
 #include "05-stencil-outline/stencil_outline.h"
 #include "06-discard/discard.h"
+#include "07-blending/blending.h"
 
 struct ModelInfo{
     Model *model;
@@ -66,6 +67,8 @@ public:
     void DrawLoadModelsControl_04();
     void DrawStencilOutLineControl_05();
     void DrawDiscard_06();
+    void DrawBlending_07();
+    void openBlending();
 public slots:
     void on_timeout();
     void setDepthTestingSlot(DepthTestType type);
@@ -120,11 +123,13 @@ private:
     class LoadModels loadModels;
     class StencilOutLine stencilOutLine;
     class Discard discard;
+    class Blending blending;
     // name ,  model
     QMap<QString, ModelInfo> m_Models;
     Mesh * m_CubeMesh;
     Mesh * m_PlaneMesh;
     Mesh * m_grassMesh;
+    Mesh * m_blendingMesh;
     Model* m_model = NULL;
 };
 

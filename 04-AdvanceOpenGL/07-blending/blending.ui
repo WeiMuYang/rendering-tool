@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Blending</class>
+ <widget class="QDialog" name="Blending">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>453</width>
+    <height>147</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_3">
+   <item>
+    <widget class="QGroupBox" name="colorUniformBox_18">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>Src Blending：</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0">
+      <item>
+       <widget class="QComboBox" name="srcBlending_comboBox">
+        <item>
+         <property name="text">
+          <string>ZERO</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>ONE</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>SRC_COLOR</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>ONE_MINUS_SRC_COLOR</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>SRC_ALPHA</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>ONE_MINUS_SRC_ALPHA</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>DST_ALPHA</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>ONE_MINUS_DST_ALPHA</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="colorUniformBox_19">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>Des Blending</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
+      <item>
+       <widget class="QComboBox" name="desBlending_comboBox">
+        <item>
+         <property name="text">
+          <string>ZERO</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>ONE</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>SRC_COLOR</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>ONE_MINUS_SRC_COLOR</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>SRC_ALPHA</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>ONE_MINUS_SRC_ALPHA</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>DST_ALPHA</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>ONE_MINUS_DST_ALPHA</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

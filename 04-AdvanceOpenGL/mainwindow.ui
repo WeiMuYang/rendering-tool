@@ -49,6 +49,7 @@
     <addaction name="actionModels"/>
     <addaction name="actionStencilOutLine"/>
     <addaction name="actionDiscard"/>
+    <addaction name="actionBlending"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -111,6 +112,11 @@
   <action name="actionDiscard">
    <property name="text">
     <string>丢弃片段</string>
+   </property>
+  </action>
+  <action name="actionBlending">
+   <property name="text">
+    <string>混合模式</string>
    </property>
   </action>
  </widget>
