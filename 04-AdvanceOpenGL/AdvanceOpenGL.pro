@@ -18,6 +18,7 @@ SOURCES += \
     06-discard/discard.cpp \
     07-blending/blending.cpp \
     08-culling/face_culling.cpp \
+    09-frame-buffer/frame_buffer.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -35,6 +36,7 @@ HEADERS += \
     06-discard/discard.h \
     07-blending/blending.h \
     08-culling/face_culling.h \
+    09-frame-buffer/frame_buffer.h \
     camera.h \
     data_type.h \
     mainwindow.h \
@@ -48,6 +50,7 @@ FORMS += \
     03-mouse-picking/mouse_picking.ui \
     07-blending/blending.ui \
     08-culling/face_culling.ui \
+    09-frame-buffer/frame_buffer.ui \
     mainwindow.ui \
 
 # Default rules for deployment.

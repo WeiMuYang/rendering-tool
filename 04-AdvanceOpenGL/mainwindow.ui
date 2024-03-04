@@ -33,7 +33,7 @@
      <x>0</x>
      <y>0</y>
      <width>926</width>
-     <height>17</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -51,6 +51,7 @@
     <addaction name="actionDiscard"/>
     <addaction name="actionBlending"/>
     <addaction name="actionCulling"/>
+    <addaction name="actionFrameBuffer"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -123,6 +124,11 @@
   <action name="actionCulling">
    <property name="text">
     <string>面剔除</string>
+   </property>
+  </action>
+  <action name="actionFrameBuffer">
+   <property name="text">
+    <string>帧缓冲</string>
    </property>
   </action>
  </widget>

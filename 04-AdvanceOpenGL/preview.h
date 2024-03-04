@@ -27,6 +27,7 @@
 #include "06-discard/discard.h"
 #include "07-blending/blending.h"
 #include "08-culling/face_culling.h"
+#include "09-frame-buffer/frame_buffer.h"
 
 struct ModelInfo{
     Model *model;
@@ -72,6 +73,7 @@ public:
     void DrawCulling_08();
     void openBlending();
     void openFaceCulling();
+    void DrawFrameBuffer_09();
 public slots:
     void on_timeout();
     void setDepthTestingSlot(DepthTestType type);
@@ -128,12 +130,14 @@ private:
     class Discard discard;
     class Blending blending;
     class FaceCulling faceCulling;
+    class FrameBuffer frameBuffer;
     // name ,  model
     QMap<QString, ModelInfo> m_Models;
     Mesh * m_CubeMesh;
     Mesh * m_PlaneMesh;
     Mesh * m_grassMesh;
     Mesh * m_blendingMesh;
+    Mesh * m_frameBufferMesh;
     Model* m_model = NULL;
 };
 

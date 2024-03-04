@@ -4,6 +4,12 @@ QVector3D viewInitPos(0.0f,0.0f,6.0f);
 
 QPoint lastPos;
 
+
+
+unsigned int fbo;
+unsigned int rbo;
+unsigned int texture; // 帧缓冲纹理
+
 Preview::Preview(QWidget *parent)
     : QOpenGLWidget{parent}
 {
@@ -89,6 +95,7 @@ void Preview::initializeGL()
     // 5.解绑VBO和VAO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+
     // 2. texture
     depthTesting.initTexture();
     mousePicking.initTexture();
@@ -96,6 +103,9 @@ void Preview::initializeGL()
     discard.initTexture();
     blending.initTexture();
 
+    // 帧缓冲，相当于将画面放到一个纹理中
+    frameBuffer.initFrameBufferTex(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>(), width(), height());
+    glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebufferObject());
 
     // 3. shader
     axisXYZ.initShader();
@@ -106,11 +116,13 @@ void Preview::initializeGL()
     stencilOutLine.initShader();
     discard.initShader();
     blending.initShader();
+    frameBuffer.initShader();
 
     m_CubeMesh = processMesh(depthTesting.cubeVertices, depthTesting.cubeVerCount, depthTesting.cubeTextures);
     m_PlaneMesh = processMesh(depthTesting.planeVertices, depthTesting.planeVerCount, depthTesting.planeTextures);
     m_grassMesh = processMesh(discard.grassVertices, discard.grassVerCount, discard.cubeTextures);
     m_blendingMesh = processMesh(discard.grassVertices, discard.grassVerCount, blending.cubeTextures);
+    m_frameBufferMesh = processMesh(frameBuffer.frameBufferVertices, frameBuffer.frameBufferVerCount, frameBuffer.FrameBufferTex);
 }
 
 void Preview::resizeGL(int w, int h)
@@ -271,8 +283,8 @@ void Preview::DrawStencilOutLineControl_05() {
         model.rotate(modelInfo.roll,QVector3D(0.0,0.0,1.0));
         stencilOutLine.model = model;
         stencilOutLine.model = model;
-glStencilFunc(GL_ALWAYS, 1, 0xFF);
-glStencilMask(0xFF);
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glStencilMask(0xFF);
         stencilOutLine.updateShapeShader();
         // 所有的模型都只用这一套shader即可
         modelInfo.model->Draw(stencilOutLine.shader_Shape);
@@ -280,10 +292,10 @@ glStencilMask(0xFF);
 
         if(modelInfo.isSelected==false)
             continue;
-glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-glStencilMask(0x00);
-float height=modelInfo.model->m_maxY-modelInfo.model->m_minY;
-float width=modelInfo.model->m_maxX-modelInfo.model->m_minX;
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+        glStencilMask(0x00);
+        float height=modelInfo.model->m_maxY-modelInfo.model->m_minY;
+        float width=modelInfo.model->m_maxX-modelInfo.model->m_minX;
         if(modelInfo.model->m_minY>=0)
             model.translate(0.0f,height/2,0.0f);
         model.scale(1.1f,1.0+0.1*(width/height));
@@ -294,8 +306,8 @@ float width=modelInfo.model->m_maxX-modelInfo.model->m_minX;
         stencilOutLine.updateOutLineShader();
         modelInfo.model->Draw(stencilOutLine.shader_Outline);
         stencilOutLine.shader_Outline.release();
-glStencilMask(0xFF);
-glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glStencilMask(0xFF);
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
     }
 }
 
@@ -589,7 +601,7 @@ void Preview::DrawCulling_08() {
     }
 
     for(map<float, QVector3D>::reverse_iterator riter = sorted.rbegin();
-         riter != sorted.rend(); riter++){
+        riter != sorted.rend(); riter++){
         model.setToIdentity();
         model.translate(riter->second);
         blending.model = model;
@@ -598,6 +610,73 @@ void Preview::DrawCulling_08() {
     }
 }
 
+void Preview::DrawFrameBuffer_09() {
+    openBlending();
+
+    // first pass: 渲染到帧缓中
+glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer.fbo);
+// 打开深度测试
+glEnable(GL_DEPTH_TEST);
+glDepthFunc(GL_LESS);
+glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    QMatrix4x4 projection;
+    QMatrix4x4 view; // 默认是单位矩阵
+    QMatrix4x4 model;
+
+    projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
+    view = pCamera_->GetViewMatrix();
+    frameBuffer.projection = projection;
+    frameBuffer.view = view;
+    // 1. 先渲染不透明的物理Model，再渲染半透明的物体
+    depthTesting.projection = projection;
+    depthTesting.view = view;
+    depthTesting.u_viewPos = pCamera_->Position;
+    depthTesting.updateShapeShader();
+    m_PlaneMesh->Draw(depthTesting.shader_Shape);
+
+    loadModels.projection = projection;
+    loadModels.view = view;
+    loadModels.u_viewPos = pCamera_->Position;
+    foreach(auto modelInfo, m_Models){
+        model.setToIdentity();
+        model.translate(modelInfo.worldPos);
+        model.rotate(modelInfo.pitch,QVector3D(1.0,0.0,0.0));
+        model.rotate(modelInfo.yaw,QVector3D(0.0,1.0,0.0));
+        model.rotate(modelInfo.roll,QVector3D(0.0,0.0,1.0));
+        loadModels.model = model;
+        loadModels.updateShapeShader();
+        // 所有的模型都只用这一套shader即可
+        modelInfo.model->Draw(loadModels.shader_Shape);
+    }
+
+    // second pass： 渲染到屏幕
+    glBindFramebuffer(GL_FRAMEBUFFER,defaultFramebufferObject() ); // back to default
+    depthTesting.updateShapeShader();
+    m_PlaneMesh->Draw(depthTesting.shader_Shape);
+
+    foreach(auto modelInfo, m_Models){
+        model.setToIdentity();
+        model.translate(modelInfo.worldPos);
+        model.rotate(modelInfo.pitch,QVector3D(1.0,0.0,0.0));
+        model.rotate(modelInfo.yaw,QVector3D(0.0,1.0,0.0));
+        model.rotate(modelInfo.roll,QVector3D(0.0,0.0,1.0));
+        loadModels.model = model;
+        loadModels.updateShapeShader();
+        // 所有的模型都只用这一套shader即可
+        modelInfo.model->Draw(loadModels.shader_Shape);
+    }
+
+    model.setToIdentity();
+    model.translate(0.0f, 2.5f, -25.0f);
+    frameBuffer.model = model;
+    frameBuffer.updateFrameBufferShader();
+    if(frameBuffer.isFrameBuffer) {
+        m_frameBufferMesh->textures = frameBuffer.FrameBufferTex;
+    } else{
+        m_frameBufferMesh->textures = blending.cubeTextures;
+    }
+    m_frameBufferMesh->Draw(frameBuffer.shader_Shape);
+}
 
 // 开始绘制
 void Preview::drawModule() {
@@ -626,6 +705,9 @@ void Preview::drawModule() {
     case Scene::FaceCullingScene:
         DrawCulling_08();
         break;
+    case Scene::FrameBufferScene:
+        DrawFrameBuffer_09();
+        break;
     default:
         break;
     }
@@ -640,6 +722,7 @@ void Preview::setCurrentScene(Scene s)
     mousePicking.close();
     blending.close();
     faceCulling.close();
+    frameBuffer.close();
     switch (currentScene_) {
     case Scene::DepthTestingScene:
         depthTesting.showWindow();
@@ -655,6 +738,9 @@ void Preview::setCurrentScene(Scene s)
         break;
     case Scene::FaceCullingScene:
         faceCulling.showWindow();
+        break;
+    case Scene::FrameBufferScene:
+        frameBuffer.showWindow();
         break;
     default:
         break;
