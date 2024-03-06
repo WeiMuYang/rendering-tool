@@ -49,6 +49,7 @@ void MainWindow::initAction() {
     connectSceneAction(ui->actionBlending, Scene::BlendingScene);
     connectSceneAction(ui->actionCulling, Scene::FaceCullingScene);
     connectSceneAction(ui->actionFrameBuffer, Scene::FrameBufferScene);
+    connectSceneAction(ui->actionPostProcessing, Scene::PostProcessingScene);
 
 
     connect(ui->actionLoadModel, &QAction::triggered, this, [this]() {

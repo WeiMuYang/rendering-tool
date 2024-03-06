@@ -52,6 +52,7 @@
     <addaction name="actionBlending"/>
     <addaction name="actionCulling"/>
     <addaction name="actionFrameBuffer"/>
+    <addaction name="actionPostProcessing"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -129,6 +130,11 @@
   <action name="actionFrameBuffer">
    <property name="text">
     <string>帧缓冲</string>
+   </property>
+  </action>
+  <action name="actionPostProcessing">
+   <property name="text">
+    <string>后处理</string>
    </property>
   </action>
  </widget>

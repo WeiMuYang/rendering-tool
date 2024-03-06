@@ -105,7 +105,7 @@ void Preview::initializeGL()
 
     // 帧缓冲，相当于将画面放到一个纹理中
     frameBuffer.initFrameBufferTex(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>(), width(), height());
-    glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebufferObject());
+    //    glBindFramebuffer(GL_FRAMEBUFFER,defaultFramebufferObject());  // 切换到默认缓冲也就是屏幕
 
     // 3. shader
     axisXYZ.initShader();
@@ -117,6 +117,7 @@ void Preview::initializeGL()
     discard.initShader();
     blending.initShader();
     frameBuffer.initShader();
+    postProcessing.initShader();
 
     m_CubeMesh = processMesh(depthTesting.cubeVertices, depthTesting.cubeVerCount, depthTesting.cubeTextures);
     m_PlaneMesh = processMesh(depthTesting.planeVertices, depthTesting.planeVerCount, depthTesting.planeTextures);
@@ -614,11 +615,11 @@ void Preview::DrawFrameBuffer_09() {
     openBlending();
 
     // first pass: 渲染到帧缓中
-glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer.fbo);
-// 打开深度测试
-glEnable(GL_DEPTH_TEST);
-glDepthFunc(GL_LESS);
-glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer.fbo);
+    // 打开深度测试
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     QMatrix4x4 projection;
     QMatrix4x4 view; // 默认是单位矩阵
     QMatrix4x4 model;
@@ -650,7 +651,7 @@ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     // second pass： 渲染到屏幕
-    glBindFramebuffer(GL_FRAMEBUFFER,defaultFramebufferObject() ); // back to default
+    glBindFramebuffer(GL_FRAMEBUFFER,defaultFramebufferObject()); // back to default
     depthTesting.updateShapeShader();
     m_PlaneMesh->Draw(depthTesting.shader_Shape);
 
@@ -676,6 +677,82 @@ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         m_frameBufferMesh->textures = blending.cubeTextures;
     }
     m_frameBufferMesh->Draw(frameBuffer.shader_Shape);
+}
+
+void Preview::DrawPostProcessing_10() {
+    openBlending();
+    // first pass: 渲染到帧缓中
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer.fbo);
+    // 打开深度测试
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    QMatrix4x4 projection;
+    QMatrix4x4 view; // 默认是单位矩阵
+    QMatrix4x4 model;
+
+    projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
+    view = pCamera_->GetViewMatrix();
+    frameBuffer.projection = projection;
+    frameBuffer.view = view;
+
+    // 1. 先渲染不透明的物理Model，再渲染半透明的物体
+    depthTesting.projection = projection;
+    depthTesting.view = view;
+    depthTesting.u_viewPos = pCamera_->Position;
+    depthTesting.updateShapeShader();
+    m_PlaneMesh->textures[0] = loadModels.texPlane; // 修改Plane原来的纹理图片
+    m_PlaneMesh->Draw(depthTesting.shader_Shape);
+    depthTesting.shader_Shape.release();
+
+    loadModels.projection = projection;
+    loadModels.view = view;
+    loadModels.u_viewPos = pCamera_->Position;
+    foreach(auto modelInfo, m_Models){
+        model.setToIdentity();
+        model.translate(modelInfo.worldPos);
+        model.rotate(modelInfo.pitch,QVector3D(1.0,0.0,0.0));
+        model.rotate(modelInfo.yaw,QVector3D(0.0,1.0,0.0));
+        model.rotate(modelInfo.roll,QVector3D(0.0,0.0,1.0));
+        loadModels.model = model;
+        loadModels.updateShapeShader();
+        // 所有的模型都只用这一套shader即可
+        modelInfo.model->Draw(loadModels.shader_Shape);
+        loadModels.shader_Shape.release();
+    }
+
+    // second pass： 渲染到屏幕
+    glBindFramebuffer(GL_FRAMEBUFFER,defaultFramebufferObject()); // back to default
+    depthTesting.updateShapeShader();
+    m_PlaneMesh->Draw(depthTesting.shader_Shape);
+
+    foreach(auto modelInfo, m_Models){
+        model.setToIdentity();
+        model.translate(modelInfo.worldPos);
+        model.rotate(modelInfo.pitch,QVector3D(1.0,0.0,0.0));
+        model.rotate(modelInfo.yaw,QVector3D(0.0,1.0,0.0));
+        model.rotate(modelInfo.roll,QVector3D(0.0,0.0,1.0));
+        loadModels.model = model;
+        loadModels.updateShapeShader();
+        // 所有的模型都只用这一套shader即可
+        modelInfo.model->Draw(loadModels.shader_Shape);
+        loadModels.shader_Shape.release();
+    }
+
+    model.setToIdentity();
+    model.translate(0.0f, 2.5f, -25.0f);
+    frameBuffer.projection = projection;
+    frameBuffer.view = view;
+    frameBuffer.model = model;
+    frameBuffer.updateFrameBufferShader();
+    frameBuffer.shader_Shape.release();
+    postProcessing.projection = projection;
+    postProcessing.view = view;
+    postProcessing.model = model;
+    postProcessing.updateShader();
+    m_frameBufferMesh->textures = frameBuffer.FrameBufferTex;
+    m_frameBufferMesh->Draw(*postProcessing.currentShader);
+    postProcessing.currentShader->release();
 }
 
 // 开始绘制
@@ -708,6 +785,9 @@ void Preview::drawModule() {
     case Scene::FrameBufferScene:
         DrawFrameBuffer_09();
         break;
+    case Scene::PostProcessingScene:
+        DrawPostProcessing_10();
+        break;
     default:
         break;
     }
@@ -723,6 +803,7 @@ void Preview::setCurrentScene(Scene s)
     blending.close();
     faceCulling.close();
     frameBuffer.close();
+    postProcessing.close();
     switch (currentScene_) {
     case Scene::DepthTestingScene:
         depthTesting.showWindow();
@@ -741,6 +822,9 @@ void Preview::setCurrentScene(Scene s)
         break;
     case Scene::FrameBufferScene:
         frameBuffer.showWindow();
+        break;
+    case Scene::PostProcessingScene:
+        postProcessing.showWindow();
         break;
     default:
         break;

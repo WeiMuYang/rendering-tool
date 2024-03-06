@@ -19,6 +19,7 @@ SOURCES += \
     07-blending/blending.cpp \
     08-culling/face_culling.cpp \
     09-frame-buffer/frame_buffer.cpp \
+    10-post-processing/post_processing.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -37,6 +38,7 @@ HEADERS += \
     07-blending/blending.h \
     08-culling/face_culling.h \
     09-frame-buffer/frame_buffer.h \
+    10-post-processing/post_processing.h \
     camera.h \
     data_type.h \
     mainwindow.h \
@@ -51,6 +53,7 @@ FORMS += \
     07-blending/blending.ui \
     08-culling/face_culling.ui \
     09-frame-buffer/frame_buffer.ui \
+    10-post-processing/post_processing.ui \
     mainwindow.ui \
 
 # Default rules for deployment.
@@ -93,9 +96,13 @@ DISTFILES += \
     06-discard/shader/shapes.vert \
     07-blending/img/blending_transparent_window.png \
     07-blending/shader/shapes.frag \
-    07-blending/shader/shapes.vert
-
-
+    07-blending/shader/shapes.vert \
+    10-post-processing/shader/blur.frag \
+    10-post-processing/shader/shapes.vert \
+    10-post-processing/shader/grayscale.frag \
+    10-post-processing/shader/inversion.frag \
+    10-post-processing/shader/sharpen.frag \
+    10-post-processing/shader/weighted.frag
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Assimp/lib/ -lassimp-vc142-mt

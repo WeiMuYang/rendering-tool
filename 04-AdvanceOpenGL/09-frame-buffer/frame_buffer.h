@@ -40,7 +40,6 @@ public:
 
     QOpenGLTexture* glassSpecular;
 
-
     // 镜头相关
     QMatrix4x4 projection;
     QMatrix4x4 view; // 默认是单位矩阵

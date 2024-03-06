@@ -77,6 +77,13 @@ void FrameBuffer::initFrameBufferTex(QOpenGLFunctions_3_3_Core * openGLFun, int 
     FrameBufferTex.push_back(tex);
 }
 
+
+
+FrameBuffer::~FrameBuffer()
+{
+    delete ui;
+}
+
 void FrameBuffer::updateFrameBufferShader() {
     shader_Shape.bind();
 
@@ -85,11 +92,6 @@ void FrameBuffer::updateFrameBufferShader() {
     shader_Shape.setUniformValue("projection", projection);
     shader_Shape.setUniformValue("view", view);
     shader_Shape.setUniformValue("model", model);
-}
-
-FrameBuffer::~FrameBuffer()
-{
-    delete ui;
 }
 
 void FrameBuffer::showWindow()

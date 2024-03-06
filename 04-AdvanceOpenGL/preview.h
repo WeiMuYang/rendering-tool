@@ -28,6 +28,7 @@
 #include "07-blending/blending.h"
 #include "08-culling/face_culling.h"
 #include "09-frame-buffer/frame_buffer.h"
+#include "10-post-processing/post_processing.h"
 
 struct ModelInfo{
     Model *model;
@@ -74,6 +75,7 @@ public:
     void openBlending();
     void openFaceCulling();
     void DrawFrameBuffer_09();
+    void DrawPostProcessing_10();
 public slots:
     void on_timeout();
     void setDepthTestingSlot(DepthTestType type);
@@ -131,6 +133,7 @@ private:
     class Blending blending;
     class FaceCulling faceCulling;
     class FrameBuffer frameBuffer;
+    class PostProcessing postProcessing;
     // name ,  model
     QMap<QString, ModelInfo> m_Models;
     Mesh * m_CubeMesh;
