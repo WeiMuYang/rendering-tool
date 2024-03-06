@@ -9,7 +9,6 @@
 #include <QMatrix4x4>
 #include <QOpenGLTexture>
 
-
 namespace Ui {
 class PostProcessing;
 }
@@ -31,8 +30,6 @@ public:
     QOpenGLShaderProgram shader_Blur;       // 核效果  模糊(Blur)
 
     QOpenGLShaderProgram* currentShader;
-
-    QOpenGLTexture* glassSpecular;
 
     // 镜头相关
     QMatrix4x4 projection;

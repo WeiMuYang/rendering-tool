@@ -53,6 +53,7 @@
     <addaction name="actionCulling"/>
     <addaction name="actionFrameBuffer"/>
     <addaction name="actionPostProcessing"/>
+    <addaction name="actionSkyBox"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -135,6 +136,11 @@
   <action name="actionPostProcessing">
    <property name="text">
     <string>后处理</string>
+   </property>
+  </action>
+  <action name="actionSkyBox">
+   <property name="text">
+    <string>天空盒子</string>
    </property>
   </action>
  </widget>

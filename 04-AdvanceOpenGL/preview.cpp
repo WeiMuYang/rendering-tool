@@ -5,11 +5,6 @@ QVector3D viewInitPos(0.0f,0.0f,6.0f);
 QPoint lastPos;
 
 
-
-unsigned int fbo;
-unsigned int rbo;
-unsigned int texture; // 帧缓冲纹理
-
 Preview::Preview(QWidget *parent)
     : QOpenGLWidget{parent}
 {
@@ -91,7 +86,7 @@ void Preview::initializeGL()
     initializeOpenGLFunctions();
     // 2.
     initAxisVAO();
-
+    skyBox.initSkyBoxVAO(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>());
     // 5.解绑VBO和VAO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -102,10 +97,10 @@ void Preview::initializeGL()
     loadModels.initTexture();
     discard.initTexture();
     blending.initTexture();
-
     // 帧缓冲，相当于将画面放到一个纹理中
     frameBuffer.initFrameBufferTex(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>(), width(), height());
     //    glBindFramebuffer(GL_FRAMEBUFFER,defaultFramebufferObject());  // 切换到默认缓冲也就是屏幕
+    skyBox.initCubeMapTex();
 
     // 3. shader
     axisXYZ.initShader();
@@ -118,6 +113,7 @@ void Preview::initializeGL()
     blending.initShader();
     frameBuffer.initShader();
     postProcessing.initShader();
+    skyBox.initShader();
 
     m_CubeMesh = processMesh(depthTesting.cubeVertices, depthTesting.cubeVerCount, depthTesting.cubeTextures);
     m_PlaneMesh = processMesh(depthTesting.planeVertices, depthTesting.planeVerCount, depthTesting.planeTextures);
@@ -755,6 +751,51 @@ void Preview::DrawPostProcessing_10() {
     postProcessing.currentShader->release();
 }
 
+void Preview::DrawSkyBox_11() {
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    QMatrix4x4 projection;
+    QMatrix4x4 view; // 默认是单位矩阵
+    QMatrix4x4 model;
+
+    projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
+    view = pCamera_->GetViewMatrix();
+    depthTesting.projection = projection;
+    depthTesting.view = view;
+    depthTesting.u_viewPos = pCamera_->Position;
+    m_PlaneMesh->textures[0] = loadModels.texPlane; // 修改Plane原来的纹理图片
+    depthTesting.updateShapeShader();
+    m_PlaneMesh->Draw(depthTesting.shader_Shape);
+    depthTesting.shader_Shape.release();
+
+    loadModels.projection = projection;
+    loadModels.view = view;
+    loadModels.u_viewPos = pCamera_->Position;
+    foreach(auto modelInfo, m_Models){
+        model.setToIdentity();
+        model.translate(modelInfo.worldPos);
+        model.rotate(modelInfo.pitch,QVector3D(1.0,0.0,0.0));
+        model.rotate(modelInfo.yaw,QVector3D(0.0,1.0,0.0));
+        model.rotate(modelInfo.roll,QVector3D(0.0,0.0,1.0));
+        loadModels.model = model;
+        loadModels.updateShapeShader();
+        // 所有的模型都只用这一套shader即可
+        modelInfo.model->Draw(loadModels.shader_Shape);
+    }
+    loadModels.shader_Shape.release();
+    glDepthFunc(GL_LEQUAL); // 确保天空盒=1也能通过测试
+    skyBox.projection = projection;
+    // 防止view矩阵影响到天空盒子
+    view.setColumn(3,QVector4D(0.0f,0.0f,0.0f,1.0f));
+    skyBox.view = view;
+    skyBox.updateSkyBoxShader();
+
+    skyBox.drawSkyBox(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>());
+}
+
 // 开始绘制
 void Preview::drawModule() {
     switch (currentScene_) {
@@ -788,6 +829,9 @@ void Preview::drawModule() {
     case Scene::PostProcessingScene:
         DrawPostProcessing_10();
         break;
+    case Scene::SkyBoxScene:
+        DrawSkyBox_11();
+        break;
     default:
         break;
     }
@@ -804,6 +848,7 @@ void Preview::setCurrentScene(Scene s)
     faceCulling.close();
     frameBuffer.close();
     postProcessing.close();
+    skyBox.close();
     switch (currentScene_) {
     case Scene::DepthTestingScene:
         depthTesting.showWindow();

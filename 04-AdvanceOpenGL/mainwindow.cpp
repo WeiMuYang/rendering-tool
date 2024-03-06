@@ -50,6 +50,7 @@ void MainWindow::initAction() {
     connectSceneAction(ui->actionCulling, Scene::FaceCullingScene);
     connectSceneAction(ui->actionFrameBuffer, Scene::FrameBufferScene);
     connectSceneAction(ui->actionPostProcessing, Scene::PostProcessingScene);
+    connectSceneAction(ui->actionSkyBox, Scene::SkyBoxScene);
 
 
     connect(ui->actionLoadModel, &QAction::triggered, this, [this]() {

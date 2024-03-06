@@ -29,6 +29,7 @@
 #include "08-culling/face_culling.h"
 #include "09-frame-buffer/frame_buffer.h"
 #include "10-post-processing/post_processing.h"
+#include "11-sky-box/sky_box.h"
 
 struct ModelInfo{
     Model *model;
@@ -76,6 +77,7 @@ public:
     void openFaceCulling();
     void DrawFrameBuffer_09();
     void DrawPostProcessing_10();
+    void DrawSkyBox_11();
 public slots:
     void on_timeout();
     void setDepthTestingSlot(DepthTestType type);
@@ -96,15 +98,10 @@ protected:
     virtual void paintGL();
 
     void keyPressEvent(QKeyEvent *event);
-
     void mouseMoveEvent(QMouseEvent *event);
-
     void wheelEvent(QWheelEvent *event);
-
     void mousePressEvent(QMouseEvent *event);
-
     void mouseDoubleClickEvent(QMouseEvent *event);
-
 
 signals:
     void sigPosition(QVector3D pos);
@@ -134,6 +131,8 @@ private:
     class FaceCulling faceCulling;
     class FrameBuffer frameBuffer;
     class PostProcessing postProcessing;
+    class SkyBox skyBox;
+
     // name ,  model
     QMap<QString, ModelInfo> m_Models;
     Mesh * m_CubeMesh;

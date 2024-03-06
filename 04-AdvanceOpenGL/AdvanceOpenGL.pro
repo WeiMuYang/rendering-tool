@@ -20,6 +20,7 @@ SOURCES += \
     08-culling/face_culling.cpp \
     09-frame-buffer/frame_buffer.cpp \
     10-post-processing/post_processing.cpp \
+    11-sky-box/sky_box.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -39,6 +40,7 @@ HEADERS += \
     08-culling/face_culling.h \
     09-frame-buffer/frame_buffer.h \
     10-post-processing/post_processing.h \
+    11-sky-box/sky_box.h \
     camera.h \
     data_type.h \
     mainwindow.h \
@@ -54,6 +56,7 @@ FORMS += \
     08-culling/face_culling.ui \
     09-frame-buffer/frame_buffer.ui \
     10-post-processing/post_processing.ui \
+    11-sky-box/sky_box.ui \
     mainwindow.ui \
 
 # Default rules for deployment.
@@ -102,7 +105,17 @@ DISTFILES += \
     10-post-processing/shader/grayscale.frag \
     10-post-processing/shader/inversion.frag \
     10-post-processing/shader/sharpen.frag \
-    10-post-processing/shader/weighted.frag
+    10-post-processing/shader/weighted.frag \
+    11-sky-box/img/skybox/back.jpg \
+    11-sky-box/img/skybox/bottom.jpg \
+    11-sky-box/img/skybox/front.jpg \
+    11-sky-box/img/skybox/left.jpg \
+    11-sky-box/img/skybox/right.jpg \
+    11-sky-box/img/skybox/top.jpg \
+    11-sky-box/shader/shapes.frag \
+    11-sky-box/shader/shapes.vert \
+    11-sky-box/shader/skybox.frag \
+    11-sky-box/shader/skybox.vert
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Assimp/lib/ -lassimp-vc142-mt
