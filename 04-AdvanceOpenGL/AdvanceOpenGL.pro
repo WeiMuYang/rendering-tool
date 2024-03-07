@@ -112,6 +112,12 @@ DISTFILES += \
     11-sky-box/img/skybox/left.jpg \
     11-sky-box/img/skybox/right.jpg \
     11-sky-box/img/skybox/top.jpg \
+    11-sky-box/shader/reflect-tex.frag \
+    11-sky-box/shader/reflect-tex.vert \
+    11-sky-box/shader/reflection.frag \
+    11-sky-box/shader/reflection.vert \
+    11-sky-box/shader/refraction.frag \
+    11-sky-box/shader/refraction.vert \
     11-sky-box/shader/shapes.frag \
     11-sky-box/shader/shapes.vert \
     11-sky-box/shader/skybox.frag \

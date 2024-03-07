@@ -774,6 +774,11 @@ void Preview::DrawSkyBox_11() {
     loadModels.projection = projection;
     loadModels.view = view;
     loadModels.u_viewPos = pCamera_->Position;
+
+    skyBox.projection = projection;
+    skyBox.view = view;
+    skyBox.viewPos = pCamera_->Position;
+
     foreach(auto modelInfo, m_Models){
         model.setToIdentity();
         model.translate(modelInfo.worldPos);
@@ -781,11 +786,33 @@ void Preview::DrawSkyBox_11() {
         model.rotate(modelInfo.yaw,QVector3D(0.0,1.0,0.0));
         model.rotate(modelInfo.roll,QVector3D(0.0,0.0,1.0));
         loadModels.model = model;
-        loadModels.updateShapeShader();
-        // 所有的模型都只用这一套shader即可
-        modelInfo.model->Draw(loadModels.shader_Shape);
+        skyBox.model = model;
+
+        switch (skyBox.currentStatus) {
+        case SkyScene::Normal:
+            loadModels.updateShapeShader();
+            modelInfo.model->Draw(loadModels.shader_Shape);
+            break;
+        case SkyScene::Reflect:
+            skyBox.updateReflectShader();
+            modelInfo.model->Draw(skyBox.shader_reflect);
+            break;
+        case SkyScene::Refract:
+            skyBox.updateRefractShader();
+            modelInfo.model->Draw(skyBox.shader_refract);
+            break;
+        default:
+            skyBox.updateReflectTexShader();
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, skyBox.m_CubeMap->textureId());
+            skyBox.shader_reflectTex.setUniformValue("skybox",2);
+            modelInfo.model->Draw(skyBox.shader_reflectTex);
+            break;
+        }
     }
     loadModels.shader_Shape.release();
+    skyBox.shader_reflect.release();
+    skyBox.shader_refract.release();
     glDepthFunc(GL_LEQUAL); // 确保天空盒=1也能通过测试
     skyBox.projection = projection;
     // 防止view矩阵影响到天空盒子
@@ -870,6 +897,9 @@ void Preview::setCurrentScene(Scene s)
         break;
     case Scene::PostProcessingScene:
         postProcessing.showWindow();
+        break;
+    case Scene::SkyBoxScene:
+        skyBox.showWindow();
         break;
     default:
         break;

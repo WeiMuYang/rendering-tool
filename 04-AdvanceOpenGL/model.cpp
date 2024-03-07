@@ -76,6 +76,10 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
         vector<Texture> specularMaps =
                 loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+
+        vector<Texture> reflectionMaps =  // 用环境纹理当做反射纹理
+                loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_reflection");
+        textures.insert(textures.end(), reflectionMaps.begin(), reflectionMaps.end());
     }
     return Mesh(m_glFuns,vertices, indices, textures);
 

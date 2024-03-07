@@ -43,6 +43,7 @@ void Mesh::Draw(QOpenGLShaderProgram &shader)
 {
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
+    unsigned int reflectionNr =1;
     for(unsigned int i = 0; i < textures.size(); i++) {
         m_glFuns->glActiveTexture(GL_TEXTURE0 + i);
         string number;
@@ -51,6 +52,8 @@ void Mesh::Draw(QOpenGLShaderProgram &shader)
             number = std::to_string(diffuseNr++);
         else if(name == "texture_specular")
             number = std::to_string(specularNr++);
+        else if(name == "texture_reflection")
+            number = std::to_string(reflectionNr++);
 
         m_glFuns->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         m_glFuns->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);

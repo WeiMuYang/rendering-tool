@@ -6,13 +6,54 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>470</width>
-    <height>175</height>
+    <width>493</width>
+    <height>111</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="colorUniformBox_19">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>Sky Box：</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0">
+      <item>
+       <widget class="QComboBox" name="skyBox_comboBox">
+        <item>
+         <property name="text">
+          <string>无效果(Normal)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>整个模型反射(reflect)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>整个模型折射(refract)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>纹理反射(reflectTex)</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>
