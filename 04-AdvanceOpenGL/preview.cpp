@@ -29,6 +29,12 @@ Preview::Preview(QWidget *parent)
     m_elapsedTime.start();
 
     connect(&depthTesting, &DepthTesting::sigChangeDepthTest, this, &Preview::setDepthTestingSlot);
+
+    connect(&modifyDataBuffer, &ModifyDataBuffer::sigCurrentVBOType, this,[&](ModifyVBOType type) {
+        Mesh::currentBufferModifyType = type;
+        m_CubeMesh->modifyVBO();
+//        m_CubeMesh = processMesh(depthTesting.cubeVertices, depthTesting.cubeVerCount, depthTesting.cubeTextures);
+    });
 }
 
 Preview::~Preview()
@@ -823,6 +829,11 @@ void Preview::DrawSkyBox_11() {
     skyBox.drawSkyBox(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>());
 }
 
+void Preview::DrawModifyData_12() {
+    // 复用01的例子，在mesh.cpp中修改VBO的数据
+    DrawDepthTesting_01();
+}
+
 // 开始绘制
 void Preview::drawModule() {
     switch (currentScene_) {
@@ -859,6 +870,9 @@ void Preview::drawModule() {
     case Scene::SkyBoxScene:
         DrawSkyBox_11();
         break;
+    case Scene::AdvancedDataScene:
+        DrawModifyData_12();
+        break;
     default:
         break;
     }
@@ -876,6 +890,7 @@ void Preview::setCurrentScene(Scene s)
     frameBuffer.close();
     postProcessing.close();
     skyBox.close();
+    modifyDataBuffer.close();
     switch (currentScene_) {
     case Scene::DepthTestingScene:
         depthTesting.showWindow();
@@ -900,6 +915,9 @@ void Preview::setCurrentScene(Scene s)
         break;
     case Scene::SkyBoxScene:
         skyBox.showWindow();
+        break;
+    case Scene::AdvancedDataScene:
+        modifyDataBuffer.showWindow();
         break;
     default:
         break;

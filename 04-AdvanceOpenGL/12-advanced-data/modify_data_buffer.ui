@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ModifyDataBuffer</class>
+ <widget class="QDialog" name="ModifyDataBuffer">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>481</width>
+    <height>153</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="colorUniformBox_19">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>Modify Data Buffer：</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0">
+      <item>
+       <widget class="QComboBox" name="comboBox">
+        <item>
+         <property name="text">
+          <string>正常(Normal)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>glMapBuffer给一半数据(PtrHalf)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>glMapBuffer给另一半数据(PtrAll)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>glBufferSubData给一半数据(SubHalf)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>glBufferSubData给另一半数据(SubAll)</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

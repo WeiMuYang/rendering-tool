@@ -1,7 +1,7 @@
 #include "mesh.h"
 
-Mesh::Mesh(QOpenGLFunctions_3_3_Core *glFuns,
-           vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
+Mesh::Mesh(QOpenGLFunctions_3_3_Core *glFuns, vector<Vertex> vertices,
+           vector<unsigned int> indices, vector<Texture> textures)
     :m_glFuns(glFuns)
 {
     this->vertices = vertices;
@@ -9,6 +9,8 @@ Mesh::Mesh(QOpenGLFunctions_3_3_Core *glFuns,
     this->textures = textures;
     setupMesh();
 }
+
+int Mesh::currentBufferModifyType = 0; // 初始化
 
 void Mesh::setupMesh()
 {
@@ -20,9 +22,9 @@ void Mesh::setupMesh()
     m_glFuns->glBindVertexArray(VAO);
     m_glFuns->glBindBuffer(GL_ARRAY_BUFFER, VBO);
     //为当前绑定到target的缓冲区对象创建一个新的数据存储。
-    //如果data不是NULL，则使用来自此指针的数据初始化数据存储
     m_glFuns->glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(Vertex),
                            &vertices[0], GL_STATIC_DRAW);
+
     m_glFuns->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     m_glFuns->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                            indices.size() * sizeof(unsigned int),&indices[0], GL_STATIC_DRAW);
@@ -63,6 +65,75 @@ void Mesh::Draw(QOpenGLShaderProgram &shader)
 
     }
     m_glFuns->glBindVertexArray(VAO);
-    //m_glFuns->glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+    qDebug() << indices.size();
+    GLenum err;
+    while ((err = m_glFuns->glGetError()) != GL_NO_ERROR) {
+        qDebug() << "OpenGL error: " << err ;
+    }
     m_glFuns->glDrawElements(GL_TRIANGLES,indices.size(),GL_UNSIGNED_INT,0);
+
+}
+
+void Mesh::modifyVBO() {
+    char *ptr;
+
+
+    //创建VBO和VAO对象，并赋予ID
+    m_glFuns->glGenVertexArrays(1, &VAO);
+    m_glFuns->glGenBuffers(1, &VBO);
+    m_glFuns->glGenBuffers(1,&EBO);
+    //绑定VBO和VAO对象
+    m_glFuns->glBindVertexArray(VAO);
+    m_glFuns->glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    //为当前绑定到target的缓冲区对象创建一个新的数据存储。
+
+
+    switch (currentBufferModifyType) {
+    case 0:
+        //初始化VBO  如果data不是NULL，则使用来自此指针的数据初始化数据存储
+        m_glFuns->glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(Vertex),
+                               &vertices[0], GL_STATIC_DRAW);
+        break;
+    case 1:
+        m_glFuns->glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(Vertex),
+                               NULL, GL_STATIC_DRAW);
+        ptr = (char*)m_glFuns->glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+        GLenum err;
+        while ((err = m_glFuns->glGetError()) != GL_NO_ERROR) {
+            qDebug() << "OpenGL error: " << err ;
+        }
+
+        // 添加前一半
+        memcpy(ptr, &vertices[0], vertices.size()*sizeof(Vertex)/2);
+        m_glFuns->glUnmapBuffer(GL_ARRAY_BUFFER);
+        break;
+    case 2:
+        m_glFuns->glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(Vertex),
+                               NULL, GL_STATIC_DRAW);
+
+        ptr = (char*)m_glFuns->glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+        // 添加前一半
+        memcpy(ptr, &vertices[0], vertices.size()*sizeof(Vertex)/2);
+        // 添加后一半
+        memcpy(ptr+vertices.size() * sizeof(Vertex)/2, &vertices[vertices.size()/2], vertices.size()*sizeof(Vertex)/2);
+        m_glFuns->glUnmapBuffer(GL_ARRAY_BUFFER);
+        break;
+    case 3:
+        m_glFuns->glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(Vertex),
+                               NULL, GL_STATIC_DRAW);
+        // 不借助指针
+        m_glFuns->glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size()*sizeof(Vertex)/2, &vertices[0]);
+        break;
+    case 4:
+        m_glFuns->glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(Vertex),
+                               NULL, GL_STATIC_DRAW);
+        // 不借助指针
+        m_glFuns->glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size()*sizeof(Vertex)/2, &vertices[0]);
+        break;
+    default: // 0
+        m_glFuns->glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(Vertex),
+                               &vertices[0], GL_STATIC_DRAW);
+        break;
+    }
+
 }

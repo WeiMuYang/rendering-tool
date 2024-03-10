@@ -54,6 +54,7 @@
     <addaction name="actionFrameBuffer"/>
     <addaction name="actionPostProcessing"/>
     <addaction name="actionSkyBox"/>
+    <addaction name="actionAdvancedData"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -141,6 +142,11 @@
   <action name="actionSkyBox">
    <property name="text">
     <string>天空盒子</string>
+   </property>
+  </action>
+  <action name="actionAdvancedData">
+   <property name="text">
+    <string>高级数据(VBO操作)</string>
    </property>
   </action>
  </widget>

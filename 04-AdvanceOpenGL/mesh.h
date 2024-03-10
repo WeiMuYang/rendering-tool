@@ -5,6 +5,8 @@
 #include <QOpenGLFunctions_3_3_Core>
 #include <string>
 #include <vector>
+
+
 using namespace std;
 struct Vertex {
     QVector3D Position;
@@ -19,15 +21,18 @@ struct Texture {
 
 class Mesh {
 public:
+    Mesh(QOpenGLFunctions_3_3_Core *glFuns, vector<Vertex> vertices,
+         vector<unsigned int> indices, vector<Texture> textures);
     // mesh data
     vector<Vertex> vertices;
     vector<unsigned int> indices;
     vector<Texture> textures;
 
     void Draw(QOpenGLShaderProgram &shader);
-    Mesh(QOpenGLFunctions_3_3_Core *glFuns,
-         vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures);
-private:
+
+    static int currentBufferModifyType;
+    void modifyVBO();
+
     // render data
     unsigned int VAO, VBO, EBO;
     void setupMesh();
@@ -35,5 +40,6 @@ private:
     // 获取初始后的OpenGL函数指针
     QOpenGLFunctions_3_3_Core *m_glFuns;
 };
+
 
 #endif // DATA_TYPE_H

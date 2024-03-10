@@ -21,6 +21,7 @@ SOURCES += \
     09-frame-buffer/frame_buffer.cpp \
     10-post-processing/post_processing.cpp \
     11-sky-box/sky_box.cpp \
+    12-advanced-data/modify_data_buffer.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -41,6 +42,7 @@ HEADERS += \
     09-frame-buffer/frame_buffer.h \
     10-post-processing/post_processing.h \
     11-sky-box/sky_box.h \
+    12-advanced-data/modify_data_buffer.h \
     camera.h \
     data_type.h \
     mainwindow.h \
@@ -57,6 +59,7 @@ FORMS += \
     09-frame-buffer/frame_buffer.ui \
     10-post-processing/post_processing.ui \
     11-sky-box/sky_box.ui \
+    12-advanced-data/modify_data_buffer.ui \
     mainwindow.ui \
 
 # Default rules for deployment.

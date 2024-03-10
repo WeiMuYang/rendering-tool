@@ -30,6 +30,7 @@
 #include "09-frame-buffer/frame_buffer.h"
 #include "10-post-processing/post_processing.h"
 #include "11-sky-box/sky_box.h"
+#include "12-advanced-data/modify_data_buffer.h"
 
 struct ModelInfo{
     Model *model;
@@ -78,6 +79,7 @@ public:
     void DrawFrameBuffer_09();
     void DrawPostProcessing_10();
     void DrawSkyBox_11();
+    void DrawModifyData_12();
 public slots:
     void on_timeout();
     void setDepthTestingSlot(DepthTestType type);
@@ -132,6 +134,7 @@ private:
     class FrameBuffer frameBuffer;
     class PostProcessing postProcessing;
     class SkyBox skyBox;
+    class ModifyDataBuffer modifyDataBuffer;
 
     // name ,  model
     QMap<QString, ModelInfo> m_Models;
