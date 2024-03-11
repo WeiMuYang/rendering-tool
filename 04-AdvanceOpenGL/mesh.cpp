@@ -65,13 +65,7 @@ void Mesh::Draw(QOpenGLShaderProgram &shader)
 
     }
     m_glFuns->glBindVertexArray(VAO);
-    qDebug() << indices.size();
-    GLenum err;
-    while ((err = m_glFuns->glGetError()) != GL_NO_ERROR) {
-        qDebug() << "OpenGL error: " << err ;
-    }
-    m_glFuns->glDrawElements(GL_TRIANGLES,indices.size(),GL_UNSIGNED_INT,0);
-
+    m_glFuns->glDrawElements(GL_TRIANGLES,(GLsizei)indices.size(),GL_UNSIGNED_INT,0);
 }
 
 void Mesh::modifyVBO() {

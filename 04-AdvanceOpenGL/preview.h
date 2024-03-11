@@ -31,6 +31,7 @@
 #include "10-post-processing/post_processing.h"
 #include "11-sky-box/sky_box.h"
 #include "12-advanced-data/modify_data_buffer.h"
+#include "13-glsl-variable/glsl_variable.h"
 
 struct ModelInfo{
     Model *model;
@@ -80,6 +81,7 @@ public:
     void DrawPostProcessing_10();
     void DrawSkyBox_11();
     void DrawModifyData_12();
+    void DrawGLSLVariable_13();
 public slots:
     void on_timeout();
     void setDepthTestingSlot(DepthTestType type);
@@ -135,7 +137,7 @@ private:
     class PostProcessing postProcessing;
     class SkyBox skyBox;
     class ModifyDataBuffer modifyDataBuffer;
-
+    class GLSLVariable glslVer;
     // name ,  model
     QMap<QString, ModelInfo> m_Models;
     Mesh * m_CubeMesh;

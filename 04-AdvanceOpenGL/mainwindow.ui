@@ -55,6 +55,7 @@
     <addaction name="actionPostProcessing"/>
     <addaction name="actionSkyBox"/>
     <addaction name="actionAdvancedData"/>
+    <addaction name="actionGLSLVariable"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -147,6 +148,11 @@
   <action name="actionAdvancedData">
    <property name="text">
     <string>高级数据(VBO操作)</string>
+   </property>
+  </action>
+  <action name="actionGLSLVariable">
+   <property name="text">
+    <string>GLSL变量</string>
    </property>
   </action>
  </widget>
