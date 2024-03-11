@@ -121,6 +121,7 @@ void Preview::initializeGL()
     postProcessing.initShader();
     skyBox.initShader();
     glslVer.initShader();
+    interfaceBlock.initShader();
 
     m_CubeMesh = processMesh(depthTesting.cubeVertices, depthTesting.cubeVerCount, depthTesting.cubeTextures);
     m_PlaneMesh = processMesh(depthTesting.planeVertices, depthTesting.planeVerCount, depthTesting.planeTextures);
@@ -890,6 +891,61 @@ void Preview::DrawGLSLVariable_13() {
     skyBox.drawSkyBox(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>());
 }
 
+void Preview::DrawInterfaceBlock_14() {
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    QMatrix4x4 projection;
+    QMatrix4x4 view; // 默认是单位矩阵
+    QMatrix4x4 model;
+
+    projection.perspective(pCamera_->fov,(float)width()/height(),pCamera_->nearPlane,pCamera_->farPlane);
+    view = pCamera_->GetViewMatrix();
+    depthTesting.projection = projection;
+    depthTesting.view = view;
+    depthTesting.u_viewPos = pCamera_->Position;
+
+    interfaceBlock.projection = projection;
+    interfaceBlock.view = view;
+    interfaceBlock.viewPos = pCamera_->Position;
+    interfaceBlock.model = model;
+
+    m_PlaneMesh->textures[0] = loadModels.texPlane; // 修改Plane原来的纹理图片
+    interfaceBlock.updateShader();
+    m_PlaneMesh->Draw(interfaceBlock.shader_InterfaceBlock);
+
+    skyBox.projection = projection;
+    skyBox.view = view;
+    skyBox.viewPos = pCamera_->Position;
+
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skyBox.m_CubeMap->textureId());
+    interfaceBlock.shader_InterfaceBlock.setUniformValue("skybox",2);
+
+    foreach(auto modelInfo, m_Models){
+        model.setToIdentity();
+        model.translate(modelInfo.worldPos);
+        model.rotate(modelInfo.pitch,QVector3D(1.0,0.0,0.0));
+        model.rotate(modelInfo.yaw,QVector3D(0.0,1.0,0.0));
+        model.rotate(modelInfo.roll,QVector3D(0.0,0.0,1.0));
+        skyBox.model = model;
+        interfaceBlock.model = model;
+        interfaceBlock.updateShader();
+        modelInfo.model->Draw(interfaceBlock.shader_InterfaceBlock);
+    }
+    interfaceBlock.shader_InterfaceBlock.release();
+
+    glDepthFunc(GL_LEQUAL); // 确保天空盒=1也能通过测试
+    skyBox.projection = projection;
+    // 防止view矩阵影响到天空盒子
+    view.setColumn(3,QVector4D(0.0f,0.0f,0.0f,1.0f));
+    skyBox.view = view;
+    skyBox.updateSkyBoxShader();
+    skyBox.drawSkyBox(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>());
+}
+
 // 开始绘制
 void Preview::drawModule() {
     switch (currentScene_) {
@@ -931,6 +987,9 @@ void Preview::drawModule() {
         break;
     case Scene::GLSLVariableScene:
         DrawGLSLVariable_13();
+        break;
+    case Scene::InterfaceBlockScene:
+        DrawInterfaceBlock_14();
         break;
     default:
         break;

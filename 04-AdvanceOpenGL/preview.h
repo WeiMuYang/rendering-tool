@@ -32,6 +32,7 @@
 #include "11-sky-box/sky_box.h"
 #include "12-advanced-data/modify_data_buffer.h"
 #include "13-glsl-variable/glsl_variable.h"
+#include "14-interface-block/interface_block.h"
 
 struct ModelInfo{
     Model *model;
@@ -82,6 +83,7 @@ public:
     void DrawSkyBox_11();
     void DrawModifyData_12();
     void DrawGLSLVariable_13();
+    void DrawInterfaceBlock_14();
 public slots:
     void on_timeout();
     void setDepthTestingSlot(DepthTestType type);
@@ -138,6 +140,7 @@ private:
     class SkyBox skyBox;
     class ModifyDataBuffer modifyDataBuffer;
     class GLSLVariable glslVer;
+    class InterfaceBlock interfaceBlock;
     // name ,  model
     QMap<QString, ModelInfo> m_Models;
     Mesh * m_CubeMesh;

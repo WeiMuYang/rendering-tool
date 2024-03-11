@@ -53,6 +53,7 @@ void MainWindow::initAction() {
     connectSceneAction(ui->actionSkyBox, Scene::SkyBoxScene);
     connectSceneAction(ui->actionAdvancedData, Scene::AdvancedDataScene);
     connectSceneAction(ui->actionGLSLVariable, Scene::GLSLVariableScene);
+    connectSceneAction(ui->actionInterfaceBlock, Scene::InterfaceBlockScene);
 
 
     connect(ui->actionLoadModel, &QAction::triggered, this, [this]() {

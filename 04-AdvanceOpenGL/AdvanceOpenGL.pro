@@ -23,6 +23,7 @@ SOURCES += \
     11-sky-box/sky_box.cpp \
     12-advanced-data/modify_data_buffer.cpp \
     13-glsl-variable/glsl_variable.cpp \
+    14-interface-block/interface_block.cpp \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -45,6 +46,7 @@ HEADERS += \
     11-sky-box/sky_box.h \
     12-advanced-data/modify_data_buffer.h \
     13-glsl-variable/glsl_variable.h \
+    14-interface-block/interface_block.h \
     camera.h \
     data_type.h \
     mainwindow.h \
@@ -128,7 +130,9 @@ DISTFILES += \
     11-sky-box/shader/skybox.frag \
     11-sky-box/shader/skybox.vert \
     13-glsl-variable/shader/shapes.frag \
-    13-glsl-variable/shader/shapes.vert
+    13-glsl-variable/shader/shapes.vert \
+    14-interface-block/shader/shapes.frag \
+    14-interface-block/shader/shapes.vert
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Assimp/lib/ -lassimp-vc142-mt

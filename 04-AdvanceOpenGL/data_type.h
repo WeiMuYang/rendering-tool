@@ -5,7 +5,7 @@
 enum Scene {
     DepthTestingScene, DepthTestingPreciseScene, MousePickingScene, ModelsControlScene,
     StencilOutLineScene, DisCardScene, BlendingScene, FaceCullingScene, FrameBufferScene,
-    PostProcessingScene, SkyBoxScene, AdvancedDataScene, GLSLVariableScene
+    PostProcessingScene, SkyBoxScene, AdvancedDataScene, GLSLVariableScene, InterfaceBlockScene
 };
 
 enum BlendingType{
