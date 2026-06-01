@@ -10,6 +10,7 @@
 *.dylib
 
 **/build
+**/release
 
 # Qt-es
 object_script.*.Release
