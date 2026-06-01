@@ -27,8 +27,8 @@ GLSLVariable::GLSLVariable(QObject *parent)
 void GLSLVariable::initShader() {
     // shader
     bool success;
-    shader_GLSLVar.addShaderFromSourceFile(QOpenGLShader::Fragment,"../13-glsl-variable/shader/shapes.frag");
-    shader_GLSLVar.addShaderFromSourceFile(QOpenGLShader::Vertex,"../13-glsl-variable/shader/shapes.vert");
+    shader_GLSLVar.addShaderFromSourceFile(QOpenGLShader::Fragment,":/13-glsl-variable/shader/shapes.frag");
+    shader_GLSLVar.addShaderFromSourceFile(QOpenGLShader::Vertex,":/13-glsl-variable/shader/shapes.vert");
     success = shader_GLSLVar.link();
     if(!success) {
         qDebug() << "ERR:" << shader_GLSLVar.log();

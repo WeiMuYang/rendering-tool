@@ -31,8 +31,8 @@ void FrameBuffer::initShader() {
     // shader
     bool success;
 
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,"../09-frame-buffer/shader/shapes.frag");
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,"../09-frame-buffer/shader/shapes.vert");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,":/09-frame-buffer/shader/shapes.frag");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,":/09-frame-buffer/shader/shapes.vert");
     success = shader_Shape.link();
     if(!success) {
         qDebug() << "ERR:" << shader_Shape.log();
@@ -67,7 +67,7 @@ void FrameBuffer::initFrameBufferTex(QOpenGLFunctions_3_3_Core * openGLFun, int 
     m_glFuns->glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
     // 善后工作
     if (m_glFuns->glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        qDebug() << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
+        qDebug() << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!";
 
 
     Texture tex;

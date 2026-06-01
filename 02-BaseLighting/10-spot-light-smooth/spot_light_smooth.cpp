@@ -43,16 +43,16 @@ SpotLightSmooth::~SpotLightSmooth()
 void SpotLightSmooth::initShader() {
     // shader
     bool success;
-    shader_Light.addShaderFromSourceFile(QOpenGLShader::Fragment,"../10-spot-light-smooth/shader/light.frag");
-    shader_Light.addShaderFromSourceFile(QOpenGLShader::Vertex,"../10-spot-light-smooth/shader/light.vert");
+    shader_Light.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/smooth_light.frag");
+    shader_Light.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/smooth_light.vert");
     success = shader_Light.link();
     if(!success) {
         qDebug()<<"ERR:"<<shader_Light.log();
     }
     updateLightShader();
 
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,"../10-spot-light-smooth/shader/shapes.frag");
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,"../10-spot-light-smooth/shader/shapes.vert");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/smooth_shapes.frag");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/smooth_shapes.vert");
     success = shader_Shape.link();
     if(!success) {
         qDebug() << "ERR:" << shader_Shape.log();
@@ -64,8 +64,8 @@ void SpotLightSmooth::initTexture()
 {
     // 按照编号 0 1 2 ... 放到CPU
     // TODO: 编号应该是整个在OpenGl中的所有的texture，所以需要看下之前有没有贴图初始化，如果有的话，编号对应会顺延
-    texConrainerDiffuse = new QOpenGLTexture(QImage("../10-spot-light-smooth/img/container2.png").mirrored());
-    texConrainerSpecular = new QOpenGLTexture(QImage("../10-spot-light-smooth/img/container2_specular.png").mirrored());
+    texConrainerDiffuse = new QOpenGLTexture(QImage(":/img/smooth_container2.png").mirrored());
+    texConrainerSpecular = new QOpenGLTexture(QImage(":/img/smooth_container2_specular.png").mirrored());
 }
 
 

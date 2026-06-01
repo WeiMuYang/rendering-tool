@@ -126,16 +126,16 @@ void ColorOfObject::initSigSlot() {
 void ColorOfObject::initShader() {
     // shader
     bool success;
-    shader_Light.addShaderFromSourceFile(QOpenGLShader::Fragment,"../01-color-of-object/shader/ColorOfObject_light.frag");
-    shader_Light.addShaderFromSourceFile(QOpenGLShader::Vertex,"../01-color-of-object/shader/ColorOfObject_light.vert");
+    shader_Light.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/ColorOfObject_light.frag");
+    shader_Light.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/ColorOfObject_light.vert");
     success = shader_Light.link();
     if(!success) {
         qDebug()<<"ERR:"<<shader_Light.log();
     }
     updateLightShader();
 
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,"../01-color-of-object/shader/ColorOfObject_shapes.frag");
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,"../01-color-of-object/shader/ColorOfObject_shapes.vert");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/ColorOfObject_shapes.frag");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/ColorOfObject_shapes.vert");
     success = shader_Shape.link();
     if(!success) {
         qDebug()<<"ERR:"<<shader_Shape.log();

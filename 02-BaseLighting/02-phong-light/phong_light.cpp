@@ -90,16 +90,16 @@ void PhongLight::showWindow()
 void PhongLight::initShader() {
     // shader
     bool success;
-    shader_Light.addShaderFromSourceFile(QOpenGLShader::Fragment,"../02-phong-light/shader/light.frag");
-    shader_Light.addShaderFromSourceFile(QOpenGLShader::Vertex,"../02-phong-light/shader/light.vert");
+    shader_Light.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/phong_light.frag");
+    shader_Light.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/phong_light.vert");
     success = shader_Light.link();
     if(!success) {
         qDebug()<<"ERR:"<<shader_Light.log();
     }
     updateLightShader();
 
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,"../02-phong-light/shader/shapes.frag");
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,"../02-phong-light/shader/shapes.vert");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/phong_shapes.frag");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/phong_shapes.vert");
     success = shader_Shape.link();
     if(!success) {
         qDebug()<<"ERR:"<<shader_Shape.log();

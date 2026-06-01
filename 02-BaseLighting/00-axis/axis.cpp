@@ -27,22 +27,22 @@ Axis::Axis(QObject *parent)
 void Axis::initShader()
 {
     bool success;
-    shader_axisX.addShaderFromSourceFile(QOpenGLShader::Vertex,"../00-axis/shader/axis_X.vert");
-    shader_axisX.addShaderFromSourceFile(QOpenGLShader::Fragment,"../00-axis/shader/axis_X.frag");
+    shader_axisX.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/axis_X.vert");
+    shader_axisX.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/axis_X.frag");
     success = shader_axisX.link();
     if(!success) {
         qDebug()<<"ERR:"<<shader_axisX.log();
     }
 
-    shader_axisY.addShaderFromSourceFile(QOpenGLShader::Vertex,"../00-axis/shader/axis_Y.vert");
-    shader_axisY.addShaderFromSourceFile(QOpenGLShader::Fragment,"../00-axis/shader/axis_Y.frag");
+    shader_axisY.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/axis_Y.vert");
+    shader_axisY.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/axis_Y.frag");
     success = shader_axisY.link();
     if(!success) {
         qDebug()<<"ERR:"<<shader_axisY.log();
     }
 
-    shader_axisZ.addShaderFromSourceFile(QOpenGLShader::Vertex,"../00-axis/shader/axis_Z.vert");
-    shader_axisZ.addShaderFromSourceFile(QOpenGLShader::Fragment,"../00-axis/shader/axis_Z.frag");
+    shader_axisZ.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/axis_Z.vert");
+    shader_axisZ.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/axis_Z.frag");
     success = shader_axisZ.link();
     if(!success) {
         qDebug()<<"ERR:"<<shader_axisZ.log();

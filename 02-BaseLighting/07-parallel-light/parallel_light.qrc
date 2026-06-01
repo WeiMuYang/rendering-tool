@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>shader/parallel_light.frag</file>
+        <file>shader/parallel_light.vert</file>
+        <file>shader/parallel_shapes.frag</file>
+        <file>shader/parallel_shapes.vert</file>
+        <file>img/parallel_awesomeface.png</file>
+        <file>img/parallel_container2.png</file>
+        <file>img/parallel_container2_specular.png</file>
+        <file>img/parallel_lighting_maps_specular_color.png</file>
+        <file>img/parallel_matrix.jpg</file>
+        <file>img/parallel_wall.jpg</file>
+    </qresource>
+</RCC>

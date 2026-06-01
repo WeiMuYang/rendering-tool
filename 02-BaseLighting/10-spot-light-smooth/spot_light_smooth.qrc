@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>shader/smooth_light.frag</file>
+        <file>shader/smooth_light.vert</file>
+        <file>shader/smooth_shapes.frag</file>
+        <file>shader/smooth_shapes.vert</file>
+        <file>img/smooth_container2.png</file>
+        <file>img/smooth_container2_specular.png</file>
+        <file>img/smooth_lighting_maps_specular_color.png</file>
+    </qresource>
+</RCC>

@@ -42,8 +42,8 @@ Material::~Material()
 void Material::initShader() {
     // shader
     bool success;
-    shader_Light.addShaderFromSourceFile(QOpenGLShader::Fragment,"../04-material/shader/light.frag");
-    shader_Light.addShaderFromSourceFile(QOpenGLShader::Vertex,"../04-material/shader/light.vert");
+    shader_Light.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/material_light.frag");
+    shader_Light.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/material_light.vert");
     success = shader_Light.link();
     if(!success) {
         qDebug()<<"ERR:"<<shader_Light.log();
@@ -51,8 +51,8 @@ void Material::initShader() {
     shader_Light.bind();
     shader_Light.setUniformValue("lightColor",u_lightColor);
 
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,"../04-material/shader/shapes.frag");
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,"../04-material/shader/shapes.vert");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/material_shapes.frag");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/material_shapes.vert");
     success = shader_Shape.link();
     if(!success) {
         qDebug()<<"ERR:"<<shader_Shape.log();

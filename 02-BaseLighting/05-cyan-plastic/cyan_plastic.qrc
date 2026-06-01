@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>shader/cyan_light.frag</file>
+        <file>shader/cyan_light.vert</file>
+        <file>shader/cyan_shapes.frag</file>
+        <file>shader/cyan_shapes.vert</file>
+    </qresource>
+</RCC>

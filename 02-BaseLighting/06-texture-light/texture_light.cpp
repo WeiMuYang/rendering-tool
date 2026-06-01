@@ -88,16 +88,16 @@ TextureLight::~TextureLight()
 void TextureLight::initShader() {
     // shader
     bool success;
-    shader_Light.addShaderFromSourceFile(QOpenGLShader::Fragment,"../06-texture-light/shader/light.frag");
-    shader_Light.addShaderFromSourceFile(QOpenGLShader::Vertex,"../06-texture-light/shader/light.vert");
+    shader_Light.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/texture_light.frag");
+    shader_Light.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/texture_light.vert");
     success = shader_Light.link();
     if(!success) {
         qDebug()<<"ERR:"<<shader_Light.log();
     }
     updateLightShader();
 
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,"../06-texture-light/shader/shapes.frag");
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,"../06-texture-light/shader/shapes.vert");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/texture_shapes.frag");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/texture_shapes.vert");
     success = shader_Shape.link();
     if(!success) {
         qDebug() << "ERR:" << shader_Shape.log();
@@ -109,10 +109,10 @@ void TextureLight::initTexture()
 {
     // 按照编号 0 1 2 ... 放到CPU
     // TODO: 编号应该是整个在OpenGl中的所有的texture，所以需要看下之前有没有贴图初始化，如果有的话，编号对应会顺延
-    texConrainerDiffuse = new QOpenGLTexture(QImage("../06-texture-light/img/container2.png").mirrored());
-    texConrainerSpecular = new QOpenGLTexture(QImage("../06-texture-light/img/container2_specular.png").mirrored());
-    texConrainerSpecularColor = new QOpenGLTexture(QImage("../06-texture-light/img/lighting_maps_specular_color.png").mirrored());
-    texConrainerMat = new QOpenGLTexture(QImage("../06-texture-light/img/matrix.jpg").mirrored());
+    texConrainerDiffuse = new QOpenGLTexture(QImage(":/img/texture_container2.png").mirrored());
+    texConrainerSpecular = new QOpenGLTexture(QImage(":/img/texture_container2_specular.png").mirrored());
+    texConrainerSpecularColor = new QOpenGLTexture(QImage(":/img/texture_lighting_maps_specular_color.png").mirrored());
+    texConrainerMat = new QOpenGLTexture(QImage(":/img/texture_matrix.jpg").mirrored());
 }
 
 void TextureLight::setShader(QString name , QVector3D value) {

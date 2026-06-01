@@ -1,6 +1,6 @@
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets core openglwidgets
 
 CONFIG += c++17
 
@@ -65,83 +65,19 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-DISTFILES += \
-    00-axis/shader/axis_X.frag \
-    00-axis/shader/axis_X.vert \
-    00-axis/shader/axis_Y.frag \
-    00-axis/shader/axis_Y.vert \
-    00-axis/shader/axis_Z.frag \
-    00-axis/shader/axis_Z.vert \
-    01-color-of-object/shader/ColorOfObject_light.frag \
-    01-color-of-object/shader/ColorOfObject_light.vert \
-    01-color-of-object/shader/ColorOfObject_shapes.frag \
-    01-color-of-object/shader/ColorOfObject_shapes.vert \
-    02-phong-light/shader/light.frag \
-    02-phong-light/shader/light.vert \
-    02-phong-light/shader/shapes.frag \
-    02-phong-light/shader/shapes.vert \
-    03-gourand-light/shader/light.frag \
-    03-gourand-light/shader/light.vert \
-    03-gourand-light/shader/shapes.frag \
-    03-gourand-light/shader/shapes.vert \
-    04-material/shader/light.frag \
-    04-material/shader/light.vert \
-    04-material/shader/shapes.frag \
-    04-material/shader/shapes.vert \
-    05-cyan-plastic/shader/light.frag \
-    05-cyan-plastic/shader/light.vert \
-    05-cyan-plastic/shader/shapes.frag \
-    05-cyan-plastic/shader/shapes.vert \
-    06-texture-light/img/awesomeface.png \
-    06-texture-light/img/container2.png \
-    06-texture-light/img/container2_specular.png \
-    06-texture-light/img/lighting_maps_specular_color.png \
-    06-texture-light/img/matrix.jpg \
-    06-texture-light/img/wall.jpg \
-    06-texture-light/shader/light.frag \
-    06-texture-light/shader/light.vert \
-    06-texture-light/shader/shapes.frag \
-    06-texture-light/shader/shapes.vert \
-    07-parallel-light/img/awesomeface.png \
-    07-parallel-light/img/container2.png \
-    07-parallel-light/img/container2_specular.png \
-    07-parallel-light/img/lighting_maps_specular_color.png \
-    07-parallel-light/img/matrix.jpg \
-    07-parallel-light/img/wall.jpg \
-    07-parallel-light/shader/light.frag \
-    07-parallel-light/shader/light.vert \
-    07-parallel-light/shader/shapes.frag \
-    07-parallel-light/shader/shapes.vert \
-    08-point-light/img/awesomeface.png \
-    08-point-light/img/container2.png \
-    08-point-light/img/container2_specular.png \
-    08-point-light/img/lighting_maps_specular_color.png \
-    08-point-light/img/matrix.jpg \
-    08-point-light/img/wall.jpg \
-    08-point-light/shader/light.frag \
-    08-point-light/shader/light.vert \
-    08-point-light/shader/shapes.frag \
-    08-point-light/shader/shapes.vert \
-    09-spot-light/img/container2.png \
-    09-spot-light/img/container2_specular.png \
-    09-spot-light/img/lighting_maps_specular_color.png \
-    09-spot-light/shader/light.frag \
-    09-spot-light/shader/light.vert \
-    09-spot-light/shader/shapes.frag \
-    09-spot-light/shader/shapes.vert \
-    10-spot-light-smooth/img/container2.png \
-    10-spot-light-smooth/img/container2_specular.png \
-    10-spot-light-smooth/img/lighting_maps_specular_color.png \
-    10-spot-light-smooth/shader/light.frag \
-    10-spot-light-smooth/shader/light.vert \
-    10-spot-light-smooth/shader/shapes.frag \
-    10-spot-light-smooth/shader/shapes.vert \
-    11-mult-light/img/container2.png \
-    11-mult-light/img/container2_specular.png \
-    11-mult-light/img/lighting_maps_specular_color.png \
-    11-mult-light/shader/light.frag \
-    11-mult-light/shader/light.vert \
-    11-mult-light/shader/shapes.frag \
-    11-mult-light/shader/shapes.vert
+
+RESOURCES += \
+    00-axis/axis.qrc \
+    01-color-of-object/color-of-object.qrc \
+    02-phong-light/phong-light.qrc \
+    03-gourand-light/gouraud_light.qrc \
+    04-material/material.qrc \
+    05-cyan-plastic/cyan_plastic.qrc \
+    06-texture-light/texture_light.qrc \
+    07-parallel-light/parallel_light.qrc \
+    08-point-light/point_light.qrc \
+    09-spot-light/spot_light.qrc \
+    10-spot-light-smooth/spot_light_smooth.qrc \
+    11-mult-light/mult_light.qrc
 
 

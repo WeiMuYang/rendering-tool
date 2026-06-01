@@ -1,4 +1,7 @@
 #include "preview.h"
+#include <QtOpenGL>
+#include <QOpenGLVersionFunctionsFactory>
+
 
 QVector3D viewInitPos(0.0,0.0,5.0);
 
@@ -210,8 +213,8 @@ Mesh *Preview::processMesh()
     tex.id= box3D.texConrainerSpecular->textureId();
     tex.type = "texture_specular";
     _textures.push_back(tex);
-    return new Mesh(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>()
-                    ,_vertices,_indices,_textures);
+    auto *gl = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_3_3_Core>(QOpenGLContext::currentContext());
+    return new Mesh(gl, _vertices, _indices, _textures);
 }
 
 void Preview::drawAxis() {
@@ -274,8 +277,9 @@ void Preview::loadModel(string path)
 
     m_model=NULL;
     makeCurrent();
-    m_model = new Model(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>()
-                        ,path.c_str());
+
+    m_model = new Model(QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_3_3_Core>(QOpenGLContext::currentContext()),
+                        path.c_str());
     pCamera_->Position = cameraPosInit(m_model->m_maxY,m_model->m_minY);
     doneCurrent();
 }

@@ -1,6 +1,6 @@
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += core gui widgets openglwidgets opengl
 
 CONFIG += c++17
 
@@ -71,68 +71,6 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-DISTFILES += \
-    00-axis/shader/axis_X.frag \
-    00-axis/shader/axis_X.vert \
-    00-axis/shader/axis_Y.frag \
-    00-axis/shader/axis_Y.vert \
-    00-axis/shader/axis_Z.frag \
-    00-axis/shader/axis_Z.vert \
-    01-depth-testing/img/container2.png \
-    01-depth-testing/img/container2_specular.png \
-    01-depth-testing/img/matrix.jpg \
-    01-depth-testing/shader/light.frag \
-    01-depth-testing/shader/light.vert \
-    01-depth-testing/shader/shapes.frag \
-    01-depth-testing/shader/shapes.vert \
-    02-depth-testing-precise/shader/shapes-linear.frag \
-    02-depth-testing-precise/shader/shapes-linear.vert \
-    02-depth-testing-precise/shader/shapes-not-linear.frag \
-    02-depth-testing-precise/shader/shapes-not-linear.vert \
-    03-mouse-picking/img/container2.png \
-    03-mouse-picking/img/matrix.jpg \
-    03-mouse-picking/shader/shapes.frag \
-    03-mouse-picking/shader/shapes.vert \
-    04-load-models/img/wall.jpg \
-    04-load-models/shader/shapes.frag \
-    04-load-models/shader/shapes.vert \
-    05-stencil-outline/shader/shapes.frag \
-    05-stencil-outline/shader/shapes.vert \
-    05-stencil-outline/shader/singleColor.frag \
-    06-discard/img/container2.png \
-    06-discard/img/container2_specular.png \
-    06-discard/img/grass.png \
-    06-discard/shader/shapes.frag \
-    06-discard/shader/shapes.vert \
-    07-blending/img/blending_transparent_window.png \
-    07-blending/shader/shapes.frag \
-    07-blending/shader/shapes.vert \
-    10-post-processing/shader/blur.frag \
-    10-post-processing/shader/shapes.vert \
-    10-post-processing/shader/grayscale.frag \
-    10-post-processing/shader/inversion.frag \
-    10-post-processing/shader/sharpen.frag \
-    10-post-processing/shader/weighted.frag \
-    11-sky-box/img/skybox/back.jpg \
-    11-sky-box/img/skybox/bottom.jpg \
-    11-sky-box/img/skybox/front.jpg \
-    11-sky-box/img/skybox/left.jpg \
-    11-sky-box/img/skybox/right.jpg \
-    11-sky-box/img/skybox/top.jpg \
-    11-sky-box/shader/reflect-tex.frag \
-    11-sky-box/shader/reflect-tex.vert \
-    11-sky-box/shader/reflection.frag \
-    11-sky-box/shader/reflection.vert \
-    11-sky-box/shader/refraction.frag \
-    11-sky-box/shader/refraction.vert \
-    11-sky-box/shader/shapes.frag \
-    11-sky-box/shader/shapes.vert \
-    11-sky-box/shader/skybox.frag \
-    11-sky-box/shader/skybox.vert \
-    13-glsl-variable/shader/shapes.frag \
-    13-glsl-variable/shader/shapes.vert \
-    14-interface-block/shader/shapes.frag \
-    14-interface-block/shader/shapes.vert
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Assimp/lib/ -lassimp-vc142-mt
@@ -140,3 +78,6 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Assimp/lib/ -lassimp
 
 INCLUDEPATH += $$PWD/../Assimp/include
 DEPENDPATH += $$PWD/../Assimp/include
+
+RESOURCES += \
+    src.qrc

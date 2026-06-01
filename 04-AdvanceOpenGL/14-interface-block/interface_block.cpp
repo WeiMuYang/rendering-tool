@@ -27,8 +27,8 @@ InterfaceBlock::InterfaceBlock(QObject *parent)
 void InterfaceBlock::initShader() {
     // shader
     bool success;
-    shader_InterfaceBlock.addShaderFromSourceFile(QOpenGLShader::Fragment,"../14-interface-block/shader/shapes.frag");
-    shader_InterfaceBlock.addShaderFromSourceFile(QOpenGLShader::Vertex,"../14-interface-block/shader/shapes.vert");
+    shader_InterfaceBlock.addShaderFromSourceFile(QOpenGLShader::Fragment,":/14-interface-block/shader/shapes.frag");
+    shader_InterfaceBlock.addShaderFromSourceFile(QOpenGLShader::Vertex,":/14-interface-block/shader/shapes.vert");
     success = shader_InterfaceBlock.link();
     if(!success) {
         qDebug() << "ERR:" << shader_InterfaceBlock.log();

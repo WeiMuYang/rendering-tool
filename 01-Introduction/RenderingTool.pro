@@ -1,6 +1,6 @@
-QT       += core gui
+QT       += core gui opengl
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets opengl core gui openglwidgets
 
 CONFIG += c++17
 
@@ -30,29 +30,8 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-DISTFILES += \
-    shader/axis.frag \
-    shader/axis.vert \
-    shader/base.frag \
-    shader/base.vert \
-    shader/base_aCol.frag \
-    shader/base_aCol.vert \
-    shader/base_uniform.frag \
-    shader/base_uniform.vert \
-    shader/box_3d_mvp.frag \
-    shader/box_3d_mvp.vert \
-    shader/rect_aCol.frag \
-    shader/rect_aCol.vert \
-    shader/rect_tex.frag \
-    shader/rect_tex.vert \
-    shader/rect_tex_filter.frag \
-    shader/rect_tex_filter.vert \
-    shader/rect_uniform.frag \
-    shader/rect_uniform.vert \
-    shader/tran_rota_scale.frag \
-    shader/tran_rota_scale.vert \
-    shader/triangle.frag \
-    shader/triangle.vert
-
 RESOURCES += \
-    img.qrc
+    img.qrc \
+    shader.qrc
+
+

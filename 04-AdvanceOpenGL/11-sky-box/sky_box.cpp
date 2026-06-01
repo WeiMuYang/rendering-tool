@@ -85,16 +85,16 @@ SkyBox::~SkyBox()
 void SkyBox::initShader() {
     // shader
     bool success;
-    shader_skyBox.addShaderFromSourceFile(QOpenGLShader::Fragment,"../11-sky-box/shader/skybox.frag");
-    shader_skyBox.addShaderFromSourceFile(QOpenGLShader::Vertex,"../11-sky-box/shader/skybox.vert");
+    shader_skyBox.addShaderFromSourceFile(QOpenGLShader::Fragment,":/11-sky-box/shader/skybox.frag");
+    shader_skyBox.addShaderFromSourceFile(QOpenGLShader::Vertex,":/11-sky-box/shader/skybox.vert");
     success = shader_skyBox.link();
     if(!success) {
         qDebug() << "ERR:" << shader_skyBox.log();
     }
     updateSkyBoxShader();
 
-    shader_reflect.addShaderFromSourceFile(QOpenGLShader::Fragment,"../11-sky-box/shader/reflection.frag");
-    shader_reflect.addShaderFromSourceFile(QOpenGLShader::Vertex,"../11-sky-box/shader/reflection.vert");
+    shader_reflect.addShaderFromSourceFile(QOpenGLShader::Fragment,":/11-sky-box/shader/reflection.frag");
+    shader_reflect.addShaderFromSourceFile(QOpenGLShader::Vertex,":/11-sky-box/shader/reflection.vert");
     success = shader_reflect.link();
     if(!success) {
         qDebug() << "ERR:" << shader_reflect.log();
@@ -102,8 +102,8 @@ void SkyBox::initShader() {
     updateReflectShader();
 
     // shader_refract
-    shader_refract.addShaderFromSourceFile(QOpenGLShader::Fragment,"../11-sky-box/shader/refraction.frag");
-    shader_refract.addShaderFromSourceFile(QOpenGLShader::Vertex,"../11-sky-box/shader/refraction.vert");
+    shader_refract.addShaderFromSourceFile(QOpenGLShader::Fragment,":/11-sky-box/shader/refraction.frag");
+    shader_refract.addShaderFromSourceFile(QOpenGLShader::Vertex,":/11-sky-box/shader/refraction.vert");
     success = shader_refract.link();
     if(!success) {
         qDebug() << "ERR:" << shader_refract.log();
@@ -111,8 +111,8 @@ void SkyBox::initShader() {
     updateRefractShader();
 
     // shader_reflectTex
-    shader_reflectTex.addShaderFromSourceFile(QOpenGLShader::Fragment,"../11-sky-box/shader/reflect-tex.frag");
-    shader_reflectTex.addShaderFromSourceFile(QOpenGLShader::Vertex,"../11-sky-box/shader/reflect-tex.vert");
+    shader_reflectTex.addShaderFromSourceFile(QOpenGLShader::Fragment,":/11-sky-box/shader/reflect-tex.frag");
+    shader_reflectTex.addShaderFromSourceFile(QOpenGLShader::Vertex,":/11-sky-box/shader/reflect-tex.vert");
     success = shader_reflectTex.link();
     if(!success) {
         qDebug() << "ERR:" << shader_reflectTex.log();
@@ -123,12 +123,12 @@ void SkyBox::initShader() {
 void SkyBox::initCubeMapTex()
 {
     m_CubeMap = new QOpenGLTexture(QOpenGLTexture::TargetCubeMap);
-    QImage _right   = QImage("../11-sky-box/img/skybox/right.jpg").convertToFormat(QImage::Format_RGB888);
-    QImage _left    = QImage("../11-sky-box/img/skybox/left.jpg").convertToFormat(QImage::Format_RGB888);
-    QImage _top     = QImage("../11-sky-box/img/skybox/top.jpg").convertToFormat(QImage::Format_RGB888);
-    QImage _bottom  = QImage("../11-sky-box/img/skybox/bottom.jpg").convertToFormat(QImage::Format_RGB888);
-    QImage _front   = QImage("../11-sky-box/img/skybox/front.jpg").convertToFormat(QImage::Format_RGB888);
-    QImage _back    = QImage("../11-sky-box/img/skybox/back.jpg").convertToFormat(QImage::Format_RGB888);
+    QImage _right   = QImage(":/11-sky-box/img/skybox/right.jpg").convertToFormat(QImage::Format_RGB888);
+    QImage _left    = QImage(":/11-sky-box/img/skybox/left.jpg").convertToFormat(QImage::Format_RGB888);
+    QImage _top     = QImage(":/11-sky-box/img/skybox/top.jpg").convertToFormat(QImage::Format_RGB888);
+    QImage _bottom  = QImage(":/11-sky-box/img/skybox/bottom.jpg").convertToFormat(QImage::Format_RGB888);
+    QImage _front   = QImage(":/11-sky-box/img/skybox/front.jpg").convertToFormat(QImage::Format_RGB888);
+    QImage _back    = QImage(":/11-sky-box/img/skybox/back.jpg").convertToFormat(QImage::Format_RGB888);
     m_CubeMap->setSize(_right.width(), _right.height());
     m_CubeMap->setFormat(QOpenGLTexture::RGBFormat);
     m_CubeMap->allocateStorage(QOpenGLTexture::RGB, QOpenGLTexture::UInt8);

@@ -42,16 +42,16 @@ SpotLight::~SpotLight()
 void SpotLight::initShader() {
     // shader
     bool success;
-    shader_Light.addShaderFromSourceFile(QOpenGLShader::Fragment,"../09-spot-light/shader/light.frag");
-    shader_Light.addShaderFromSourceFile(QOpenGLShader::Vertex,"../09-spot-light/shader/light.vert");
+    shader_Light.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/spot_light.frag");
+    shader_Light.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/spot_light.vert");
     success = shader_Light.link();
     if(!success) {
         qDebug()<<"ERR:"<<shader_Light.log();
     }
     updateLightShader();
 
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,"../09-spot-light/shader/shapes.frag");
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,"../09-spot-light/shader/shapes.vert");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/spot_shapes.frag");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/spot_shapes.vert");
     success = shader_Shape.link();
     if(!success) {
         qDebug() << "ERR:" << shader_Shape.log();
@@ -63,8 +63,8 @@ void SpotLight::initTexture()
 {
     // 按照编号 0 1 2 ... 放到CPU
     // TODO: 编号应该是整个在OpenGl中的所有的texture，所以需要看下之前有没有贴图初始化，如果有的话，编号对应会顺延
-    texConrainerDiffuse = new QOpenGLTexture(QImage("../09-spot-light/img/container2.png").mirrored());
-    texConrainerSpecular = new QOpenGLTexture(QImage("../09-spot-light/img/container2_specular.png").mirrored());
+    texConrainerDiffuse = new QOpenGLTexture(QImage(":/img/spot_container2.png").mirrored());
+    texConrainerSpecular = new QOpenGLTexture(QImage(":/img/spot_container2_specular.png").mirrored());
 }
 
 

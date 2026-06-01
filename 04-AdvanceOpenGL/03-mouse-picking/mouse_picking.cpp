@@ -34,8 +34,8 @@ MousePicking::~MousePicking()
 void MousePicking::initShader() {
     // shader
     bool success;
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,"../03-mouse-picking/shader/shapes.frag");
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,"../03-mouse-picking/shader/shapes.vert");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,":/03-mouse-picking/shader/shapes.frag");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,":/03-mouse-picking/shader/shapes.vert");
     success = shader_Shape.link();
     if(!success) {
         qDebug() << "ERR:" << shader_Shape.log();
@@ -47,8 +47,8 @@ void MousePicking::initTexture()
 {
     // 按照编号 0 1 2 ... 放到CPU
     // TODO: 编号应该是整个在OpenGl中的所有的texture，所以需要看下之前有没有贴图初始化，如果有的话，编号对应会顺延
-    texConrainerDiffuse = new QOpenGLTexture(QImage("../03-mouse-picking/img/container2.png").mirrored());
-    texConrainerSpecular = new QOpenGLTexture(QImage("../03-mouse-picking/img/matrix.jpg").mirrored());
+    texConrainerDiffuse = new QOpenGLTexture(QImage(":/03-mouse-picking/img/container2.png").mirrored());
+    texConrainerSpecular = new QOpenGLTexture(QImage(":/03-mouse-picking/img/matrix.jpg").mirrored());
 }
 
 void MousePicking::updateShapeShader() {

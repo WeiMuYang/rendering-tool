@@ -19,8 +19,8 @@ void PostProcessing::initShader() {
     // shader
     bool success;
 
-    shader_Inversion.addShaderFromSourceFile(QOpenGLShader::Fragment,"../10-post-processing/shader/inversion.frag");
-    shader_Inversion.addShaderFromSourceFile(QOpenGLShader::Vertex,"../10-post-processing/shader/shapes.vert");
+    shader_Inversion.addShaderFromSourceFile(QOpenGLShader::Fragment,":/10-post-processing/shader/inversion.frag");
+    shader_Inversion.addShaderFromSourceFile(QOpenGLShader::Vertex,":/10-post-processing/shader/shapes.vert");
     success = shader_Inversion.link();
     if(!success) {
         qDebug() << "ERR:" << shader_Inversion.log();
@@ -28,8 +28,8 @@ void PostProcessing::initShader() {
     currentShader = &shader_Inversion;
     updateShader();
 
-    shader_Grayscale.addShaderFromSourceFile(QOpenGLShader::Fragment,"../10-post-processing/shader/grayscale.frag");
-    shader_Grayscale.addShaderFromSourceFile(QOpenGLShader::Vertex,"../10-post-processing/shader/shapes.vert");
+    shader_Grayscale.addShaderFromSourceFile(QOpenGLShader::Fragment,":/10-post-processing/shader/grayscale.frag");
+    shader_Grayscale.addShaderFromSourceFile(QOpenGLShader::Vertex,":/10-post-processing/shader/shapes.vert");
     success = shader_Grayscale.link();
     if(!success) {
         qDebug() << "ERR:" << shader_Grayscale.log();
@@ -37,8 +37,8 @@ void PostProcessing::initShader() {
     currentShader = &shader_Grayscale;
     updateShader();
 
-    shader_Weighted.addShaderFromSourceFile(QOpenGLShader::Fragment,"../10-post-processing/shader/weighted.frag");
-    shader_Weighted.addShaderFromSourceFile(QOpenGLShader::Vertex,"../10-post-processing/shader/shapes.vert");
+    shader_Weighted.addShaderFromSourceFile(QOpenGLShader::Fragment,":/10-post-processing/shader/weighted.frag");
+    shader_Weighted.addShaderFromSourceFile(QOpenGLShader::Vertex,":/10-post-processing/shader/shapes.vert");
     success = shader_Weighted.link();
     if(!success) {
         qDebug() << "ERR:" << shader_Weighted.log();
@@ -46,8 +46,8 @@ void PostProcessing::initShader() {
     currentShader = &shader_Weighted;
     updateShader();
 
-    shader_Sharpen.addShaderFromSourceFile(QOpenGLShader::Fragment,"../10-post-processing/shader/sharpen.frag");
-    shader_Sharpen.addShaderFromSourceFile(QOpenGLShader::Vertex,"../10-post-processing/shader/shapes.vert");
+    shader_Sharpen.addShaderFromSourceFile(QOpenGLShader::Fragment,":/10-post-processing/shader/sharpen.frag");
+    shader_Sharpen.addShaderFromSourceFile(QOpenGLShader::Vertex,":/10-post-processing/shader/shapes.vert");
     success = shader_Sharpen.link();
     if(!success) {
         qDebug() << "ERR:" << shader_Sharpen.log();
@@ -55,8 +55,8 @@ void PostProcessing::initShader() {
     currentShader = &shader_Sharpen;
     updateShader();
 
-    shader_Blur.addShaderFromSourceFile(QOpenGLShader::Fragment,"../10-post-processing/shader/blur.frag");
-    shader_Blur.addShaderFromSourceFile(QOpenGLShader::Vertex,"../10-post-processing/shader/shapes.vert");
+    shader_Blur.addShaderFromSourceFile(QOpenGLShader::Fragment,":/10-post-processing/shader/blur.frag");
+    shader_Blur.addShaderFromSourceFile(QOpenGLShader::Vertex,":/10-post-processing/shader/shapes.vert");
     success = shader_Blur.link();
     if(!success) {
         qDebug() << "ERR:" << shader_Blur.log();

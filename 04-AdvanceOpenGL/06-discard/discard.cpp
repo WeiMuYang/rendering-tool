@@ -33,10 +33,10 @@ void Discard::initTexture()
     cubeTextures.clear();
     // 按照编号 0 1 2 ... 放到CPU
     // TODO: 编号应该是整个在OpenGl中的所有的texture，所以需要看下之前有没有贴图初始化，如果有的话，编号对应会顺延
-    glassSpecular = new QOpenGLTexture(QImage("../06-discard/img/grass.png"));
+    glassSpecular = new QOpenGLTexture(QImage(":/06-discard/img/grass.png"));
 
     Texture tex;
-    tex.path = "../06-discard/img/grass.png";
+    tex.path = ":/06-discard/img/grass.png";
     tex.id = glassSpecular->textureId();
     tex.type = "texture_specular";
     cubeTextures.push_back(tex);
@@ -46,8 +46,8 @@ void Discard::initShader() {
     // shader
     bool success;
 
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,"../06-discard/shader/shapes.frag");
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,"../06-discard/shader/shapes.vert");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,":/06-discard/shader/shapes.frag");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,":/06-discard/shader/shapes.vert");
     success = shader_Shape.link();
     if(!success) {
         qDebug() << "ERR:" << shader_Shape.log();

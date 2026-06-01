@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file>shader/axis.frag</file>
+        <file>shader/axis.vert</file>
+        <file>shader/box_3d_mvp.frag</file>
+        <file>shader/box_3d_mvp.vert</file>
+        <file>shader/rect_aCol.frag</file>
+        <file>shader/rect_aCol.vert</file>
+        <file>shader/rect_tex.frag</file>
+        <file>shader/rect_tex.vert</file>
+        <file>shader/rect_tex_filter.frag</file>
+        <file>shader/rect_tex_filter.vert</file>
+        <file>shader/rect_uniform.frag</file>
+        <file>shader/rect_uniform.vert</file>
+        <file>shader/tran_rota_scale.frag</file>
+        <file>shader/tran_rota_scale.vert</file>
+        <file>shader/triangle.frag</file>
+        <file>shader/triangle.vert</file>
+    </qresource>
+</RCC>

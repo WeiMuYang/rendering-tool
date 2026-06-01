@@ -168,22 +168,22 @@ Preview::~Preview()
 void Preview::initShaderProgram() {
     bool success;
 
-    shaderProAxis.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/axis.vert");
-    shaderProAxis.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/axis.frag");
+    shaderProAxis.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/axis.vert");
+    shaderProAxis.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/axis.frag");
     success = shaderProAxis.link();
     if(!success) {
         qDebug()<<"ERR:"<<shaderProAxis.log();
     }
 
-    shaderProTri.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/triangle.vert");
-    shaderProTri.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/triangle.frag");
+    shaderProTri.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/triangle.vert");
+    shaderProTri.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/triangle.frag");
     success = shaderProTri.link();
     if(!success) {
         qDebug()<<"ERR:"<<shaderProTri.log();
     }
 
-    shaderProRectUniform.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/rect_uniform.vert");
-    shaderProRectUniform.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/rect_uniform.frag");
+    shaderProRectUniform.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/rect_uniform.vert");
+    shaderProRectUniform.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/rect_uniform.frag");
     success = shaderProRectUniform.link();
     if(!success) {
         qDebug()<<"ERR:"<<shaderProRectUniform.log();
@@ -191,15 +191,15 @@ void Preview::initShaderProgram() {
     shaderProRectUniform.bind();
     shaderProRectUniform.setUniformValue("u_Color" ,0, 0, 0, 1);
 
-    shaderProRectACol.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/rect_aCol.vert");
-    shaderProRectACol.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/rect_aCol.frag");
+    shaderProRectACol.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/rect_aCol.vert");
+    shaderProRectACol.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/rect_aCol.frag");
     success = shaderProRectACol.link();
     if(!success) {
         qDebug()<<"ERR:"<<shaderProRectACol.log();
     }
 
-    shaderProRectTex.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/rect_tex.vert");
-    shaderProRectTex.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/rect_tex.frag");
+    shaderProRectTex.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/rect_tex.vert");
+    shaderProRectTex.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/rect_tex.frag");
 
     success = shaderProRectTex.link();
     if(!success) {
@@ -212,16 +212,16 @@ void Preview::initShaderProgram() {
     shaderProRectTex.setUniformValue("textureWall",0);
     shaderProRectTex.setUniformValue("textureSmile",1);
 
-    shaderProRectTexFilter.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/rect_tex_filter.vert");
-    shaderProRectTexFilter.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/rect_tex_filter.frag");
+    shaderProRectTexFilter.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/rect_tex_filter.vert");
+    shaderProRectTexFilter.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/rect_tex_filter.frag");
     success = shaderProRectTexFilter.link();
     if(!success) {
         qDebug()<<"ERR:"<<shaderProRectTexFilter.log();
     }
 
 
-    shaderProTransRotaScale.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/tran_rota_scale.vert");
-    shaderProTransRotaScale.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/tran_rota_scale.frag");
+    shaderProTransRotaScale.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/tran_rota_scale.vert");
+    shaderProTransRotaScale.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/tran_rota_scale.frag");
     success = shaderProTransRotaScale.link();
     if(!success) {
         qDebug()<<"ERR:"<<shaderProTransRotaScale.log();
@@ -231,8 +231,8 @@ void Preview::initShaderProgram() {
     shaderProTransRotaScale.setUniformValue("theMatrix" , matrix);
 
 
-    shaderProBox3dMVP.addShaderFromSourceFile(QOpenGLShader::Vertex,"../shader/box_3d_mvp.vert");
-    shaderProBox3dMVP.addShaderFromSourceFile(QOpenGLShader::Fragment,"../shader/box_3d_mvp.frag");
+    shaderProBox3dMVP.addShaderFromSourceFile(QOpenGLShader::Vertex,":/shader/box_3d_mvp.vert");
+    shaderProBox3dMVP.addShaderFromSourceFile(QOpenGLShader::Fragment,":/shader/box_3d_mvp.frag");
     success = shaderProBox3dMVP.link();
     if(!success) {
         qDebug()<<"ERR:"<<shaderProBox3dMVP.log();

@@ -27,10 +27,10 @@ void Blending::initTexture()
     cubeTextures.clear();
     // 按照编号 0 1 2 ... 放到CPU
     // TODO: 编号应该是整个在OpenGl中的所有的texture，所以需要看下之前有没有贴图初始化，如果有的话，编号对应会顺延
-    blendingSpecular = new QOpenGLTexture(QImage("../07-blending/img/blending_transparent_window.png"));
+    blendingSpecular = new QOpenGLTexture(QImage(":/07-blending/img/blending_transparent_window.png"));
 
     Texture tex;
-    tex.path = "../07-blending/img/blending_transparent_window.png";
+    tex.path = ":/07-blending/img/blending_transparent_window.png";
     tex.id = blendingSpecular->textureId();
     tex.type = "texture_specular";
     cubeTextures.push_back(tex);
@@ -40,8 +40,8 @@ void Blending::initShader() {
     // shader
     bool success;
 
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,"../07-blending/shader/shapes.frag");
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,"../07-blending/shader/shapes.vert");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,":/07-blending/shader/shapes.frag");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,":/07-blending/shader/shapes.vert");
     success = shader_Shape.link();
     if(!success) {
         qDebug() << "ERR:" << shader_Shape.log();

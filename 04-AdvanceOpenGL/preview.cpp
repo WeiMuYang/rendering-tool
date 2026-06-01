@@ -1,4 +1,5 @@
 #include "preview.h"
+#include <QOpenGLVersionFunctionsFactory>
 
 QVector3D viewInitPos(0.0f,0.0f,6.0f);
 
@@ -92,7 +93,8 @@ void Preview::initializeGL()
     initializeOpenGLFunctions();
     // 2.
     initAxisVAO();
-    skyBox.initSkyBoxVAO(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>());
+    // skyBox.initSkyBoxVAO(QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_3_3_Core>(QOpenGLContext::currentContext()));
+    skyBox.initSkyBoxVAO(QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_3_3_Core>(QOpenGLContext::currentContext()));
     // 5.解绑VBO和VAO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -104,7 +106,7 @@ void Preview::initializeGL()
     discard.initTexture();
     blending.initTexture();
     // 帧缓冲，相当于将画面放到一个纹理中
-    frameBuffer.initFrameBufferTex(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>(), width(), height());
+    frameBuffer.initFrameBufferTex(QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_3_3_Core>(QOpenGLContext::currentContext()), width(), height());
     //    glBindFramebuffer(GL_FRAMEBUFFER,defaultFramebufferObject());  // 切换到默认缓冲也就是屏幕
     skyBox.initCubeMapTex();
 
@@ -828,7 +830,7 @@ void Preview::DrawSkyBox_11() {
     skyBox.view = view;
     skyBox.updateSkyBoxShader();
 
-    skyBox.drawSkyBox(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>());
+    skyBox.drawSkyBox(QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_3_3_Core>(QOpenGLContext::currentContext()));
 }
 
 void Preview::DrawModifyData_12() {
@@ -888,7 +890,7 @@ void Preview::DrawGLSLVariable_13() {
     view.setColumn(3,QVector4D(0.0f,0.0f,0.0f,1.0f));
     skyBox.view = view;
     skyBox.updateSkyBoxShader();
-    skyBox.drawSkyBox(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>());
+    skyBox.drawSkyBox(QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_3_3_Core>(QOpenGLContext::currentContext()));
 }
 
 void Preview::DrawInterfaceBlock_14() {
@@ -943,7 +945,7 @@ void Preview::DrawInterfaceBlock_14() {
     view.setColumn(3,QVector4D(0.0f,0.0f,0.0f,1.0f));
     skyBox.view = view;
     skyBox.updateSkyBoxShader();
-    skyBox.drawSkyBox(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>());
+    skyBox.drawSkyBox(QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_3_3_Core>(QOpenGLContext::currentContext()));
 }
 
 // 开始绘制
@@ -1054,7 +1056,7 @@ void Preview::loadModel(string path)
 {
     static int i = 0;
     makeCurrent();
-    Model * _model = new Model(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>()
+    Model * _model = new Model(QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_3_3_Core>(QOpenGLContext::currentContext())
                                ,path.c_str());
     pCamera_->Position = cameraPosInit(_model->m_maxY ,_model->m_minY);
     m_Models["模型" + QString::number(i++)]=
@@ -1091,7 +1093,7 @@ Mesh *Preview::processMesh(std::vector<float> vertices,int size, vector<Texture>
         _indices.push_back(i);
     }
 
-    return new Mesh(QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>()
+    return new Mesh(QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_3_3_Core>(QOpenGLContext::currentContext())
                     ,_vertices,_indices,textures);
 }
 

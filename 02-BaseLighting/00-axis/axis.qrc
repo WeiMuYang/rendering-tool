@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>shader/axis_X.frag</file>
+        <file>shader/axis_X.vert</file>
+        <file>shader/axis_Y.frag</file>
+        <file>shader/axis_Y.vert</file>
+        <file>shader/axis_Z.frag</file>
+        <file>shader/axis_Z.vert</file>
+    </qresource>
+</RCC>

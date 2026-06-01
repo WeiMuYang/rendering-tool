@@ -1,6 +1,6 @@
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += core gui widgets openglwidgets opengl
 
 CONFIG += c++17
 
@@ -38,24 +38,6 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-DISTFILES += \
-    00-axis/shader/axis_X.frag \
-    00-axis/shader/axis_X.vert \
-    00-axis/shader/axis_Y.frag \
-    00-axis/shader/axis_Y.vert \
-    00-axis/shader/axis_Z.frag \
-    00-axis/shader/axis_Z.vert \
-    01-box-3d/img/container2.png \
-    01-box-3d/img/container2_specular.png \
-    01-box-3d/shader/light.frag \
-    01-box-3d/shader/light.vert \
-    01-box-3d/shader/shapes.frag \
-    01-box-3d/shader/shapes.vert \
-    02-load-model/shader/light.frag \
-    02-load-model/shader/light.vert \
-    02-load-model/shader/shapes.frag \
-    02-load-model/shader/shapes.vert
-
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Assimp/lib/ -lassimp-vc142-mt
@@ -63,3 +45,6 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Assimp/lib/ -lassimp
 
 INCLUDEPATH += $$PWD/../Assimp/include
 DEPENDPATH += $$PWD/../Assimp/include
+
+RESOURCES += \
+    src.qrc

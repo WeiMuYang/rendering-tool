@@ -28,16 +28,16 @@ void StencilOutLine::initShader() {
     // shader
     bool success;
 
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,"../05-stencil-outline/shader/shapes.frag");
-    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,"../05-stencil-outline/shader/shapes.vert");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Fragment,":/05-stencil-outline/shader/shapes.frag");
+    shader_Shape.addShaderFromSourceFile(QOpenGLShader::Vertex,":/05-stencil-outline/shader/shapes.vert");
     success = shader_Shape.link();
     if(!success) {
         qDebug() << "ERR:" << shader_Shape.log();
     }
     updateShapeShader();
 
-    shader_Outline.addShaderFromSourceFile(QOpenGLShader::Fragment,"../05-stencil-outline/shader/singleColor.frag");
-    shader_Outline.addShaderFromSourceFile(QOpenGLShader::Vertex,"../05-stencil-outline/shader/shapes.vert");
+    shader_Outline.addShaderFromSourceFile(QOpenGLShader::Fragment,":/05-stencil-outline/shader/singleColor.frag");
+    shader_Outline.addShaderFromSourceFile(QOpenGLShader::Vertex,":/05-stencil-outline/shader/shapes.vert");
     success = shader_Outline.link();
     if(!success) {
         qDebug() << "ERR:" << shader_Shape.log();

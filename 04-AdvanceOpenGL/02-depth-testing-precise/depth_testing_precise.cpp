@@ -21,16 +21,16 @@ void DepthTestingPrecise::initShader() {
     // shader
     bool success;
 
-    shader_Shape_NotLinear.addShaderFromSourceFile(QOpenGLShader::Fragment,"../02-depth-testing-precise/shader/shapes-not-linear.frag");
-    shader_Shape_NotLinear.addShaderFromSourceFile(QOpenGLShader::Vertex,"../02-depth-testing-precise/shader/shapes-not-linear.vert");
+    shader_Shape_NotLinear.addShaderFromSourceFile(QOpenGLShader::Fragment,":/02-depth-testing-precise/shader/shapes-not-linear.frag");
+    shader_Shape_NotLinear.addShaderFromSourceFile(QOpenGLShader::Vertex,":/02-depth-testing-precise/shader/shapes-not-linear.vert");
     success = shader_Shape_NotLinear.link();
     if(!success) {
         qDebug() << "ERR:" << shader_Shape_NotLinear.log();
     }
     current_Shader_Shape = &shader_Shape_NotLinear;
 
-    shader_Shape_Linear.addShaderFromSourceFile(QOpenGLShader::Fragment,"../02-depth-testing-precise/shader/shapes-linear.frag");
-    shader_Shape_Linear.addShaderFromSourceFile(QOpenGLShader::Vertex,"../02-depth-testing-precise/shader/shapes-linear.vert");
+    shader_Shape_Linear.addShaderFromSourceFile(QOpenGLShader::Fragment,":/02-depth-testing-precise/shader/shapes-linear.frag");
+    shader_Shape_Linear.addShaderFromSourceFile(QOpenGLShader::Vertex,":/02-depth-testing-precise/shader/shapes-linear.vert");
     success = shader_Shape_Linear.link();
     if(!success) {
         qDebug() << "ERR:" << shader_Shape_Linear.log();

@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/">
+        <file>00-axis/shader/axis_X.frag</file>
+        <file>00-axis/shader/axis_X.vert</file>
+        <file>00-axis/shader/axis_Y.frag</file>
+        <file>00-axis/shader/axis_Y.vert</file>
+        <file>00-axis/shader/axis_Z.frag</file>
+        <file>00-axis/shader/axis_Z.vert</file>
+        <file>01-box-3d/shader/box_light.frag</file>
+        <file>01-box-3d/shader/box_light.vert</file>
+        <file>01-box-3d/shader/box_shapes.frag</file>
+        <file>01-box-3d/shader/box_shapes.vert</file>
+        <file>01-box-3d/img/box_container2.png</file>
+        <file>01-box-3d/img/box_container2_specular.png</file>
+        <file>02-load-model/shader/load_light.frag</file>
+        <file>02-load-model/shader/load_light.vert</file>
+        <file>02-load-model/shader/load_shapes.frag</file>
+        <file>02-load-model/shader/load_shapes.vert</file>
+        <file>02-load-model/img/load_container2.png</file>
+        <file>02-load-model/img/load_container2_specular.png</file>
+    </qresource>
+</RCC>
